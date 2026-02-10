@@ -140,7 +140,7 @@
         "swiftmailer/swiftmailer" : "5.4.8",
         "jonthornton/jquery-timepicker": "^1.11.14",
         "npm-asset/tablesaw": "2.0.3",
-        "npm-asset/morris.js": "0.5.1",
+        "npm-asset/morris.js": "0.5.0",
         "npm-asset/raphael": "2.2.7",
         "npm-asset/bootstrap": "3.3.7",
         "npm-asset/select2": "4.0.3",
