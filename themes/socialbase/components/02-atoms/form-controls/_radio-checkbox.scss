@@ -40,15 +40,7 @@
 .checkbox {
   position: relative;
   display: block;
-  margin-bottom: 8px;
-
-  > .form-wrapper {
-    margin-bottom: 1.1rem;
-  }
-}
-
-.checkbox.form-item-event-all-day {
-  margin-bottom: 1.5rem;
+  margin-bottom: 5px;
 }
 
 .radio + .radio,
@@ -62,21 +54,22 @@
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
   position: absolute;
-  left: 0;
+  left: -9999px;
   opacity: 0;
-  cursor: pointer;
-  height: 100%;
 }
 
-.form-no-label.checkbox {
-  label {
-    font-size: 0;
+[type="radio"], [type="checkbox"] {
+  .form-no-label.checkbox & {
+    opacity: 1;
+    left: 0;
+    margin: 0;
+    position: static;
   }
 }
 
 .checkbox label,
 .radio label {
-  font-weight: 400;
+  font-weight: 300;
   position: relative;
   padding-left: $radio-width;
   cursor: pointer;
@@ -85,12 +78,6 @@
   font-size: 0.875rem;
   transition: .28s ease;
   user-select: none;
-  margin-bottom: 0;
-
-  [dir='rtl'] & {
-    padding-left: 0;
-    padding-right: $radio-width;
-  }
 }
 
 
@@ -105,11 +92,6 @@
   height: 16px;
   z-index: 0;
   transition: .28s ease;
-
-  [dir='rtl'] & {
-    left: auto;
-    right: 0;
-  }
 }
 
 /* Unchecked styles */
@@ -126,20 +108,14 @@
 }
 
 // Checked styles
-[type="radio"]:checked {
-  + label {
-    font-weight: 700;
+[type="radio"]:checked + label:before {
+  border-radius: 50%;
+}
 
-    &:before {
-      border-radius: 50%;
-    }
-
-    &:after {
-       border-radius: 50%;
-       z-index: 0;
-       transform: scale(.5);
-    }
-  }
+[type="radio"]:checked + label:after {
+  border-radius: 50%;
+  z-index: 0;
+  transform: scale(.5);
 }
 
 /* Disabled style */
@@ -181,11 +157,6 @@
     /* .1s delay is for check animation */
     transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
     z-index: 1;
-
-    [dir='rtl'] & {
-      left: auto;
-      right: 0;
-    }
   }
 
   // Unchecked style
@@ -198,10 +169,6 @@
     transform: rotateZ(37deg);
     -webkit-transform-origin: 20% 40%;
     transform-origin: 100% 100%;
-
-    [dir='rtl'] & {
-      right: 6px;
-    }
   }
 
   &:not(:checked) + label:after {
@@ -215,28 +182,19 @@
 
   // Checked style
   &:checked {
-    + label {
-      font-weight: 700;
-
-      &:before {
-        top: 0;
-        left: 1px;
-        width: 8px;
-        height: 13px;
-        border-top: 2px solid transparent;
-        border-left: 2px solid transparent;
-        border-right: 2px solid $input-bg-color;
-        border-bottom: 2px solid $input-bg-color;
-        transform: rotateZ(37deg);
-        margin-top: 2px;
-        transition: .2s;
-        transform-origin: 100% 100%;
-
-        [dir='rtl'] & {
-          left: auto;
-          right: 10px;
-        }
-      }
+    + label:before {
+      top: 0;
+      left: 1px;
+      width: 8px;
+      height: 13px;
+      border-top: 2px solid transparent;
+      border-left: 2px solid transparent;
+      border-right: 2px solid $input-bg-color;
+      border-bottom: 2px solid $input-bg-color;
+      transform: rotateZ(37deg);
+      margin-top: 2px;
+      transition: .2s;
+      transform-origin: 100% 100%;
     }
 
     + label:after {
@@ -302,70 +260,4 @@
 
   }
 
-}
-
-// Radio buttons for the group and node create pages.
-&.group-form,
-&.node-form {
-  .field--widget-options-buttons {
-    .fieldgroup {
-      .fieldset-wrapper {
-        margin: 5px -.75rem -8px;
-
-        > .radio {
-          padding: 0 .75rem;
-          margin-top: -5px;
-        }
-      }
-
-      &#edit-field-group-allowed-visibility--wrapper #edit-field-group-allowed-visibility,
-      &#edit-field-social-idea-phases--wrapper #edit-field-social-idea-phases,
-      &#edit-field-topic-type--wrapper #edit-field-topic-type {
-        margin: 5px -.75rem -8px;
-        padding: 0 .75rem;
-
-        > .checkbox {
-          padding: 0 .75rem;
-          margin-top: -5px;
-        }
-      }
-
-      &#edit-field-social-idea-phases--wrapper #edit-field-social-idea-phases {
-        flex-direction: column;
-      }
-    }
-  }
-}
-
-// Webform.
-&.webform-submission-form {
-  .tableselect {
-    .checkbox {
-      width: 20px;
-      height: 20px;
-      margin-bottom: 0;
-
-      label {
-        top: -2px;
-        padding-left: 20px;
-        line-height: inherit;
-      }
-
-      input {
-        width: 20px;
-        height: 20px;
-        top: 0;
-        z-index: 10;
-      }
-    }
-  }
-
-  .checkbox label {
-    &.sr-only {
-      height: auto;
-      width: auto;
-      overflow: visible;
-      margin: 0;
-    }
-  }
 }

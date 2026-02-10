@@ -78,12 +78,11 @@ $gray-lighter:          #e6e6e6;
 $gray-lighter-1:        #f7f7f7;
 $gray-lightest:         #f3f3f3;
 
-$default-color:         #343434;
+$default-color:         #4d4d4d;
 
 $brand-primary:         #29abe2;
 $brand-secondary:       #1f80aa;
 $brand-accent:          #ffc142;
-$brand-accent-text:     #343434;
 
 $brand-success:         #5cb85c;
 $brand-info:            #33b5e5;
@@ -91,8 +90,6 @@ $brand-warning:         #f80;
 $brand-danger:          #d9534f;
 
 $brand-primary-dark:    mix($gray-base, $brand-primary, 30%);
-
-$brand-link:            #33b5e5;
 
 $state-success-text:    #3c763d;
 $state-success-bg:      #dff0d8;
@@ -110,12 +107,7 @@ $state-danger-text:     #a94442;
 $state-danger-bg:       #f2dede;
 $state-danger-border:   darken(adjust-hue($state-danger-bg, -10), 5%);
 
-$text-muted:            $gray;
-
-$second-line-navbar-bg: #004494;
-$second-line-navbar-text: #fffff1;
-$second-line-navbar-active-bg: #f2f5f9;
-$second-line-navbar-active-text: #002f67;
+$text-muted:            $gray-light;
 
 
 // Bootstrap 4.0 Beta syntax

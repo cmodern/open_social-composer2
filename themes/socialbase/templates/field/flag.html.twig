@@ -11,7 +11,7 @@
  * - flaggable: The flaggable entity.
  */
 #}
-{% apply spaceless %}
+{% spaceless %}
 
 {# Depending on the flag action, set the appropriate action class. #}
 {% if action == 'unflag' %}
@@ -23,15 +23,16 @@
 {# Set the remaining Flag CSS classes. #}
 {% set classes = [
 'btn',
-follow_user ? '' : 'btn-sm',
+'btn-default',
+'btn-sm',
 'btn-follow',
 'flag',
-'flag-' ~ flag.id()|clean_class,
-'js-flag-' ~ flag.id()|clean_class ~ '-' ~ flaggable.id(),
+'flag-' ~ flag.id(),
+'flag-' ~ flag.id() ~ '-' ~ flaggable.id(),
 action_class
 ] %}
 {% set attributes = attributes.addClass(classes) %}
 
 <a role="button"{{ attributes }}>{{ title }}</a>
 
-{% endapply %}
+{% endspaceless %}

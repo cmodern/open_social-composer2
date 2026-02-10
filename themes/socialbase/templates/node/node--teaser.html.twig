@@ -67,101 +67,78 @@
 #}
 
 {{ attach_library('socialbase/teaser')}}
-{{ attach_library('socialbase/page-node')}}
 
 {%
   set classes = [
     'teaser',
-    'teaser-' ~ node.bundle|clean_class,
     view_mode == 'teaser' ? 'card',
     view_mode == 'activity' ? 'teaser--stream',
     view_mode == 'activity_comment' ? 'teaser--stream',
     node.isPromoted() ? 'promoted',
     node.isSticky() ? 'sticky',
     not node.isPublished() ? 'teaser--unpublished',
-    no_image ? 'no-image'
   ]
 %}
 
-<div{{ attributes.addClass(classes).removeAttribute('dir') }}>
-  {% if status_label %}
-    <div class="node--unpublished__label">
-      {{ status_label }}
-    </div>
-  {% endif %}
+<div{{ attributes.addClass(classes) }}>
 
   <div class='teaser__image'>
 
-    {% if view_mode == 'teaser' or no_image %}
+    {% if view_mode == 'teaser' %}
       {% block card_teaser_type %}
-        <a href="{{ url }}" aria-hidden="true" title="{{- node.bundle|clean_class|capitalize -}}: &nbsp; {{- label|render|striptags|trim -}}">
-          <div class="teaser__teaser-type">
-            <svg class="teaser__teaser-type-icon">
-              <title>{{- node.bundle|clean_class|capitalize -}}: &nbsp; {{- label|render|striptags|trim -}}</title>
-              {% if topic_type_icon %}
-                <use xlink:href="#{{- topic_type_icon -}}"></use>
-              {% else %}
-                <use xlink:href="#icon-{{- node.bundle|clean_class -}}"></use>
-              {% endif %}
-            </svg>
-          </div>
-        </a>
+
+        <div class="teaser__teaser-type">
+          <svg class="teaser__teaser-type-icon">
+            <use xlink:href="#icon-{{- node.bundle|clean_class -}}"></use>
+          </svg>
+        </div>
+
       {% endblock %}
     {% endif %}
 
+    {# allows for new content types to just use the plain field_image name #}
     {% block card_image %}
-      {{ node_image }}
+      {{ content.field_event_image }}
+      {{ content.field_topic_image }}
+      {{ content.field_page_image }}
+      {{ content.field_book_image }}
+      {{ content.field_image }}
     {% endblock %}
+
+    {% if status_label %}
+      <div class="status">
+        {{ status_label }}
+      </div>
+    {% endif %}
 
   </div>
 
   <div class='teaser__body'>
     <div class="teaser__content">
-
-      {% block card_title %}
-        {{ title_prefix }}
-          <h4{{ title_attributes }} class="teaser__title">
+      {{ title_prefix }}
+      {% if not page %}
+        <h4{{ title_attributes }} class="teaser__title">
             <a href="{{ url }}" rel="bookmark">{{ label }}</a>
-          </h4>
-        {{ title_suffix }}
-      {%- endblock -%}
+        </h4>
+      {% endif %}
+      {{ title_suffix }}
 
       {% block card_body %}
 
-        {% if display_submitted %}
-          {% embed "node--teaser__field.html.twig" %}
-            {%- block field_icon -%} account_circle {%- endblock -%}
-            {%- block svg_title -%} {% trans %}Author name{% endtrans %} {%- endblock -%}
-            {%- block field_value %}
-              <div class="teaser__published">
-                <span class="sr-only">{% trans %}Created on{% endtrans %} </span>
-                <div class="teaser__published-date">{{ date }} <span aria-hidden="true">&bullet;</span></div>
-                <span class="sr-only"> {% trans %}by{% endtrans %} </span>
-                <div class="teaser__published-author">{{ author }}</div>
-              </div>
-            {%- endblock -%}
-          {% endembed %}
-        {% endif %}
-
-        {% if topic_type %}
-          {% embed "node--teaser__field.html.twig" %}
-            {%- block field_icon -%} label {%- endblock -%}
-            {%- block svg_title -%} {% trans %}Topic type:{% endtrans %} {%- endblock -%}
-            {%- block field_value -%}
-              <span class="sr-only">{% trans %}Topic type:{% endtrans %}</span>
-              {{ topic_type }}
-            {%- endblock -%}
-          {% endembed %}
-        {% endif %}
+        {% embed "node--teaser__field.html.twig" %}
+          {%- block field_icon -%} account_circle {%- endblock -%}
+          {%- block field_value %}
+            <div class="teaser__published">
+              <div class="teaser__published-date"> {{ date }} &bullet; </div>
+              <div class="teaser__published-author"> {{ author_name }} </div>
+            </div>
+          {%- endblock -%}
+        {% endembed %}
 
         {% if content.group_name %}
           {% embed "node--teaser__field.html.twig" %}
             {%- block field_icon -%} group {%- endblock -%}
-            {%- block svg_title -%} {% trans %}Group{% endtrans %} {%- endblock -%}
-            {%- block field_value -%}
-              <span class="sr-only">{% trans %}This content is posted in{% endtrans %} </span>
-              {{ content.group_name }}
-            {%- endblock -%}
+            {%- block field_value -%} {{ content.group_name }} {%- endblock -%}
           {% endembed %}
         {% endif %}
 
@@ -173,51 +150,33 @@
     </div>
 
     <div class="card__actionbar">
-      {% block card_actionbar %}
 
-        {% if visibility_icon and visibility_label %}
-          <div class="badge teaser__badge">
-            <span class="badge__container">
-                <svg class="badge__icon">
-                  <title>{% trans %} Visibility {% endtrans %}</title>
-                  <use xlink:href="#icon-{{ visibility_icon }}"></use>
-                </svg>
-                <span class="badge__label text-gray">{{ visibility_label|capitalize }}</span>
-            </span>
-          </div>
-        {% endif %}
-
-
-        {% if likes_count is not empty %}
-          <div class="badge teaser__badge">
+        {% if comment_count > 0 %}
+          <a href="{{ url }}#section-comments" class="badge badge--pill badge-default teaser__badge">
             <span class="badge__container">
               <svg class="badge__icon">
-                <title>{% trans %} Total amount of likes {% endtrans %}</title>
-                <use xlink:href="#icon-like"></use>
-              </svg>
-              <span class="badge__label text-gray">
-                {{ likes_count }}
-              </span>
-            </span>
-          </div>
-        {% endif %}
-
-        {% if comment_count is not empty %}
-          <a href="{{ url }}#section-comments" class="badge badge--pill teaser__badge"
-             title="{% trans %}Total amount of comments{% endtrans %}">
-            <span class="badge__container">
-              <svg class="badge__icon" aria-hidden="true">
-                <title>{% trans %} Total amount of comments {% endtrans %}</title>
                 <use xlink:href="#icon-comment"></use>
               </svg>
-              <span class="badge__label text-gray">{{ comment_count }}</span>
+              <span class="badge__label">{{ comment_count }}</span>
             </span>
           </a>
         {% endif %}
 
-        {{ content.links }}
+        {% if visibility_icon and visibility_label %}
+          <div class="badge teaser__badge" title="{% trans %}The visibility of this content is set to {% endtrans %} {{ visibility_label }}">
+              <svg class="badge__icon">
+                <use xlink:href="#icon-{{ visibility_icon }}"></use>
+              </svg>
+          </div>
+        {% endif %}
 
-      {% endblock %}
+        {% if content.enrolled %}
+          <span class="badge badge-secondary teaser__badge">
+            {%- trans -%} Enrolled {%- endtrans -%}
+          </span>
+        {% endif %}
+
+      {{ content.links }}
     </div>
 
   </div>

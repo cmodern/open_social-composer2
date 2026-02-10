@@ -12,8 +12,8 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .vote-like {
@@ -27,7 +27,7 @@
   padding: 0 1px;
   line-height: 1;
   fill: transparent;
-  stroke: #343434;
+  stroke: #4d4d4d;
   stroke-width: 15px;
   -webkit-transition: 0.3s;
   transition: 0.3s;
@@ -42,13 +42,17 @@ svg[class^="icon-vote"] {
   font-size: 14px;
 }
 
+.vote__count .use-ajax {
+  outline: 0;
+}
+
 .vote-widget a.disable-status {
   cursor: default;
 }
 
 .vote-widget a.disable-status .icon-vote {
   fill: transparent;
-  stroke: #343434;
+  stroke: #4d4d4d;
 }
 
 .voted-like .icon-vote {
@@ -68,13 +72,13 @@ svg[class^="icon-vote"] {
 
 .view--who-liked .row {
   -ms-flex-wrap: nowrap;
-  flex-wrap: nowrap;
+      flex-wrap: nowrap;
   -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   border-bottom: 1px solid #e6e6e6;
   padding: 0.5rem 0;
 }
@@ -85,8 +89,8 @@ svg[class^="icon-vote"] {
 
 .view--who-liked .views-field-rendered-entity-1 {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 54px;
-  flex: 0 0 54px;
+      -ms-flex: 0 0 54px;
+          flex: 0 0 54px;
 }
 
 .view--who-liked .views-field-rendered-entity-1 a:focus {
@@ -95,8 +99,8 @@ svg[class^="icon-vote"] {
 
 .view--who-liked .views-field-name {
   -webkit-box-flex: 2;
-  -ms-flex: 2 1 auto;
-  flex: 2 1 auto;
+      -ms-flex: 2 1 auto;
+          flex: 2 1 auto;
   min-width: 0;
 }
 
@@ -119,16 +123,17 @@ svg[class^="icon-vote"] {
   .vote-like a:hover .icon-vote {
     stroke: black;
     fill: transparent;
-    width: 20px;
+    -webkit-transform: scale(1.3);
+            transform: scale(1.3);
     -webkit-transition: 0.3s;
     transition: 0.3s;
   }
   .vote-like a:hover.voted-like .icon-vote,
   .vote-like a:hover.disable-status .icon-vote {
-    fill: #343434;
-    stroke: #343434;
+    fill: #4d4d4d;
+    stroke: #4d4d4d;
     -webkit-transform: none;
-    transform: none;
+            transform: none;
   }
 }
 
@@ -147,7 +152,7 @@ svg[class^="icon-vote"] {
     text-align: center;
     vertical-align: middle;
     -ms-touch-action: manipulation;
-    touch-action: manipulation;
+        touch-action: manipulation;
     cursor: pointer;
     background-image: none;
     border: 1px solid transparent;
@@ -156,9 +161,10 @@ svg[class^="icon-vote"] {
     font-size: 0.875rem;
     line-height: 1.5;
     -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    text-transform: uppercase;
     -webkit-transition: .3s ease-out;
     transition: .3s ease-out;
     outline: 0;
@@ -171,8 +177,8 @@ svg[class^="icon-vote"] {
   }
   .vote__wrapper {
     -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
   }
   .vote-like {
     margin-right: 10px;

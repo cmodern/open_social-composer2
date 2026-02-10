@@ -87,7 +87,7 @@ em.placeholder {
   margin: 0;
 
   @include for-tablet-portrait-up {
-    padding-left: 0;
+    padding-left: 20px;
 
 
     &.section-title-stream {
@@ -95,9 +95,10 @@ em.placeholder {
     }
 
     &.section-title-node {
-      padding-left: 0;
+      padding-left: 48px;
     }
   }
+
 }
 
 .text-truncate {
@@ -222,10 +223,4 @@ sup {
 
 sub {
   bottom: -0.25em;
-}
-
-.line-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
 }

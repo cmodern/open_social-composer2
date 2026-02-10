@@ -2,9 +2,9 @@
 
 namespace Drupal\activity_creator;
 
-use Drupal\Core\Link;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Routing\LinkGeneratorTrait;
 use Drupal\Core\Url;
 
 /**
@@ -13,12 +13,12 @@ use Drupal\Core\Url;
  * @ingroup activity_creator
  */
 class ActivityListBuilder extends EntityListBuilder {
+  use LinkGeneratorTrait;
 
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header = [];
     $header['id'] = $this->t('Activity ID');
     $header['name'] = $this->t('Name');
     return $header + parent::buildHeader();
@@ -28,18 +28,16 @@ class ActivityListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $row = [];
-    /** @var \Drupal\activity_creator\Entity\Activity $entity */
+    /* @var $entity \Drupal\activity_creator\Entity\Activity */
     $row['id'] = $entity->id();
-    $label = $entity->label();
-    if (!empty($row['id']) && !empty($label)) {
-      $row['name'] = Link::fromTextAndUrl($label, new Url(
+    $row['name'] = $this->l(
+      $entity->label(),
+      new Url(
         'entity.activity.edit_form', [
           'activity' => $entity->id(),
         ]
-      ));
-    }
-
+      )
+    );
     return $row + parent::buildRow($entity);
   }
 

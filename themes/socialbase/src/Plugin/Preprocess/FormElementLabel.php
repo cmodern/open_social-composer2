@@ -18,24 +18,17 @@ class FormElementLabel extends BaseFormElementLabel {
   /**
    * {@inheritdoc}
    */
-  public function preprocessElement(Element $element, Variables $variables): void {
-    if (isset($element['#id'])) {
-      if ((isset($element['#render_icon']) && $element['#render_icon']) ||
-        strpos($element['#id'], 'field-visibility') !== FALSE ||
-        strpos($element['#id'], 'field-join-method') !== FALSE) {
+  public function preprocessElement(Element $element, Variables $variables) {
 
+    if (isset($element['#id'])) {
+      if (strpos($element['#id'], 'field-visibility') !== FALSE) {
         if (isset($element['#attributes']['title'])) {
           $description = $element['#attributes']['title'];
           $element['#attributes'] = [];
           $variables['description'] = $description;
         }
         // Set the materialize icon.
-        if (strpos($element['#id'], 'join-method') !== FALSE) {
-          $variables['icon'] = _socialbase_get_join_method_icon($element['#title']);
-        }
-        else {
-          $variables['icon'] = _socialbase_get_visibility_icon($element['#title']);
-        }
+        $variables['icon'] = _socialbase_get_visibility_icon($element['#title']);
       }
 
       if ($element['#id'] == 'edit-message-0-value') {
@@ -44,7 +37,7 @@ class FormElementLabel extends BaseFormElementLabel {
 
       // Date fields that need labels to distinguish date from time fields
       // These include daterange fields already as well.
-      // @todo update date fields of event to daterange fields and remove
+      // @TODO update date fields of event to daterange fields and remove
       // the last 4 variables of this array.
       $date_fields = [
         'edit-field-date-0-value-time',
@@ -73,18 +66,10 @@ class FormElementLabel extends BaseFormElementLabel {
         $variables->addClass('control-label--wide');
       }
 
-      // Provide meaningful labels for VBO checkboxes to ensure accessibility.
-      if (
-        str_contains($element['#id'], 'edit-social-views-bulk-operations-bulk-form-invites') !== FALSE &&
-        isset($element['#is_checkbox']) &&
-        empty($element['#title'])
-      ) {
-        $variables['title'] = t('Anonymous Invited user');
-        $variables['title_display'] = 'invisible';
-      }
     }
 
     parent::preprocessElement($element, $variables);
+
   }
 
 }

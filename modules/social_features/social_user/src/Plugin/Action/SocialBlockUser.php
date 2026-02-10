@@ -4,6 +4,7 @@ namespace Drupal\social_user\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Alternate action plugin that can block users.
@@ -31,12 +32,12 @@ class SocialBlockUser extends ActionBase {
   /**
    * {@inheritdoc}
    */
-  public function access($object, ?AccountInterface $account = NULL, $return_as_object = FALSE) {
+  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\user\UserInterface $object */
     $access = $object->status->access('edit', $account, TRUE)
       ->andIf($object->access('update', $account, TRUE));
 
-    return $return_as_object ? $access : $access->isAllowed() | $account->hasPermission('block users');
+    return $return_as_object ? $access : $access->isAllowed() | AccessResult::allowedIf($account->hasPermission('block users'));
   }
 
 }

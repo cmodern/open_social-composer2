@@ -68,10 +68,7 @@
 #}
 {{ content.commented_entity }}
 {{ content.comment_link }}
-
-{% if dashboard is null or dashboard == false %}
 <div class="card__nested-section">
-{% endif %}
 
   {{ content.comment }}
 
@@ -81,6 +78,4 @@
     </div>
   {% endif %}
 
-{% if dashboard is null or dashboard == false %}
 </div>
-{% endif %}

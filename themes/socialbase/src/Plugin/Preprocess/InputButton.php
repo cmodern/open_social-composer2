@@ -18,7 +18,7 @@ class InputButton extends BaseInputButton {
   /**
    * {@inheritdoc}
    */
-  public function preprocessElement(Element $element, Variables $variables): void {
+  public function preprocessElement(Element $element, Variables $variables) {
     $element->setButtonSize();
     $element->setIcon($element->getProperty('icon'));
     $variables['icon_only'] = $element->getProperty('icon_only');

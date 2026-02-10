@@ -16,7 +16,7 @@ class EventEnrollmentForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\social_event\Entity\EventEnrollment $entity */
+    /* @var $entity \Drupal\social_event\Entity\EventEnrollment */
     $form = parent::buildForm($form, $form_state);
 
     return $form;
@@ -31,13 +31,13 @@ class EventEnrollmentForm extends ContentEntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        $this->messenger()->addStatus($this->t('Created the %label Event enrollment.', [
+        drupal_set_message($this->t('Created the %label Event enrollment.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        $this->messenger()->addStatus($this->t('Saved the %label Event enrollment.', [
+        drupal_set_message($this->t('Saved the %label Event enrollment.', [
           '%label' => $entity->label(),
         ]));
     }

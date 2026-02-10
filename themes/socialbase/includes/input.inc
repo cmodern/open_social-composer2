@@ -8,7 +8,7 @@
 /**
  * Implements hook_preprocess_input().
  */
-function socialbase_preprocess_input(&$variables): void {
+function socialbase_preprocess_input(&$variables) {
 
   if (isset($variables['element']['#type']) && $variables['element']['#type'] === 'radio') {
     // Only reaction on the visibility field.
@@ -39,6 +39,10 @@ function socialbase_preprocess_input(&$variables): void {
   // usually tables -> remove button.
   if (isset($variables['element']['#submit']) && in_array('file_managed_file_submit', $variables['element']['#submit'], TRUE)) {
     $variables['button_type'] = 'flat';
+  }
+
+  if (isset($variables['element']['#addsearchicon'])) {
+    $variables['addsearchicon'] = TRUE;
   }
 
   // Button types are determined in the hook_form_alter and set to be
@@ -90,18 +94,12 @@ function socialbase_preprocess_input(&$variables): void {
     ];
   }
 
-  // Render a simple VBO checkbox.
-  if (isset($variables['element']['#id']) && $variables['element']['#id'] !== NULL && (strpos($variables['element']['#id'], 'edit-views-bulk-operations') !== FALSE || strpos($variables['element']['#id'], 'edit-social-views-bulk-operations') !== FALSE)
-    && $variables['type'] == 'checkbox') {
-    $variables['element']['#simple_checkbox'] = TRUE;
-    $variables['simple_checkbox'] = TRUE;
-  }
 }
 
 /**
  * Implements hook_preprocess_textarea().
  */
-function socialbase_preprocess_textarea(&$variables): void {
+function socialbase_preprocess_textarea(&$variables) {
 
   if (isset($variables['element']['#array_parents'])) {
     $context = $variables['element']['#array_parents'];

@@ -9,11 +9,10 @@ dependencies:
     - field.field.node.topic.field_topic_comments
     - field.field.node.topic.field_topic_image
     - field.field.node.topic.field_topic_type
-    - image.style.social_file_thumbnails
     - node.type.topic
   module:
+    - file
     - group_core_comments
-    - social_core
     - text
     - user
 id: node.topic.default
@@ -31,39 +30,32 @@ content:
   field_files:
     weight: 3
     label: above
-    settings:
-      image_style: social_file_thumbnails
-      image_link: file
+    settings: {  }
     third_party_settings: {  }
     region: content
-    type: file_image_default
+    type: file_default
   field_topic_comments:
     weight: 1
     label: above
     settings:
       pager_id: 0
-      view_mode: default
     third_party_settings: {  }
     region: content
     type: comment_group_content
   flag_follow_content:
     weight: 10
-    region: content
-    settings: {  }
     third_party_settings: {  }
+    region: content
   like_and_dislike:
     weight: 2
-    region: content
     settings: {  }
     third_party_settings: {  }
-  links:
-    weight: 6
     region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   field_content_visibility: true
   field_topic_image: true
   field_topic_type: true
+  links: true
   groups: true
-  search_api_excerpt: true
+  groups_type_closed_group: true
+  groups_type_open_group: true

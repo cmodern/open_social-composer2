@@ -35,7 +35,7 @@ class RouteSubscriber extends RouteSubscriberBase {
     }
     // Route the user view page to user/{uid}/timeline.
     if ($route = $collection->get('entity.user.canonical')) {
-      $route->setPath('/user/{user}/home');
+      $route->setPath('/user/{user}/stream');
       $defaults = $route->getDefaults();
       $defaults['_title_callback'] = '\Drupal\social_user\Controller\SocialUserController::setUserStreamTitle';
       $route->setDefaults($defaults);
@@ -45,22 +45,6 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setOption('_admin_route', FALSE);
     }
 
-    // Restrict access for AN and AU to all views pages (except own).
-    $routes = $collection->all();
-    foreach ($routes as $route_name => $route) {
-      // Apply only for "views" routes.
-      if (!str_starts_with($route_name, 'view.')) {
-        continue;
-      }
-
-      $path = $route->getPath();
-      // Make sure the route has a path to user page.
-      if (!str_starts_with($path, '/user/{user}/') && !str_starts_with($path, '/user/{uid}/')) {
-        continue;
-      }
-
-      $route->setRequirement('_user_pages_access_checker', 'TRUE');
-    }
   }
 
 }

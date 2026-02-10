@@ -3,11 +3,11 @@ status: true
 dependencies: {  }
 id: profile
 label: Profile
-display_label: null
-multiple: false
 registration: false
+multiple: false
 roles:
   authenticated: '0'
   administrator: '0'
-allow_revisions: false
-new_revision: false
+weight: 0
+use_revisions: false
+description: 'The default Open Social profile type'

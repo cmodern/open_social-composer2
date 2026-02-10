@@ -3,7 +3,6 @@
 namespace Drupal\activity_creator\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Defines an interface for Activity action plugins.
@@ -23,6 +22,6 @@ interface ActivityActionInterface extends PluginInspectionInterface {
   /**
    * Checks if this is a valid entity for the action.
    */
-  public function isValidEntity(EntityInterface $entity): bool;
+  public function isValidEntity($entity);
 
 }

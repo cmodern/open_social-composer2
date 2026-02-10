@@ -17,6 +17,7 @@ description: ''
 tag: ''
 base_table: node_field_data
 base_field: nid
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -150,8 +151,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -192,8 +191,6 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -232,8 +229,6 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -292,6 +287,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'user.node_grants:view'
         - user.permissions
       tags: {  }
   block_events_on_profile:
@@ -350,8 +346,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -392,8 +386,6 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -438,8 +430,6 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -476,8 +466,6 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -493,19 +481,55 @@ display:
           entity_type: node
           plugin_id: event_enrolled_or_created
           entity_field: uid
+        nid:
+          id: nid
+          table: node_access
+          field: nid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: node_access
       use_ajax: false
       filter_groups:
         operator: AND
         groups:
           1: AND
       title: 'Upcoming events'
-      rendering_language: '***LANGUAGE_language_interface***'
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - 'user.node_grants:view'
         - user.permissions
       tags: {  }
   events_overview:
@@ -558,8 +582,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -600,8 +622,6 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -617,35 +637,36 @@ display:
           plugin_id: boolean
           entity_type: node
           entity_field: status
-        event_date:
-          id: event_date
+        field_event_date_value:
+          id: field_event_date_value
           table: node__field_event_date
-          field: event_date
+          field: field_event_date_value
           relationship: none
           group_type: group
           admin_label: ''
-          operator: in
-          value: null
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+            type: date
           group: 1
           exposed: true
           expose:
-            operator_id: event_date_op
-            label: 'Event date'
+            operator_id: field_event_date_value_op
+            label: 'Start date'
             description: null
             use_operator: false
-            operator: event_date_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: event_date
+            operator: field_event_date_value_op
+            identifier: field_event_date_value
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-            reduce: false
           is_grouped: true
           group_info:
-            label: ''
+            label: 'Event status'
             description: ''
             identifier: field_event_date_value
             optional: false
@@ -656,18 +677,22 @@ display:
             default_group_multiple: {  }
             group_items:
               1:
-                title: 'Ongoing and upcoming events'
-                operator: in
-                value: '1'
+                title: 'Upcoming events'
+                operator: '>='
+                value:
+                  type: offset
+                  value: now
+                  min: ''
+                  max: ''
               2:
-                title: 'Past events'
-                operator: in
-                value: '2'
-              3:
-                title: ''
-                operator: in
-                value: null
-          plugin_id: social_event_date_filter
+                title: 'Events that have started or are finished'
+                operator: '<'
+                value:
+                  type: offset
+                  value: now
+                  min: ''
+                  max: ''
+          plugin_id: datetime
         event_enrolled_or_created_filter:
           id: event_enrolled_or_created_filter
           table: node
@@ -691,8 +716,6 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -707,6 +730,42 @@ display:
             group_items: {  }
           entity_type: node
           plugin_id: event_enrolled_or_created
+        nid:
+          id: nid
+          table: node_access
+          field: nid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: node_access
       defaults:
         filters: false
         filter_groups: false
@@ -716,10 +775,10 @@ display:
         groups:
           1: AND
       sorts:
-        event_date:
-          id: event_date
-          table: node__field_event_date
-          field: event_date
+        event_passed_upcoming_sort:
+          id: event_passed_upcoming_sort
+          table: node
+          field: event_passed_upcoming_sort
           relationship: none
           group_type: group
           admin_label: ''
@@ -728,8 +787,8 @@ display:
           expose:
             label: ''
           granularity: minute
-          plugin_id: social_event_date_sort
-      rendering_language: '***LANGUAGE_language_interface***'
+          entity_type: node
+          plugin_id: event_passed_upcoming_sort
     cache_metadata:
       max-age: -1
       contexts:
@@ -737,5 +796,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'user.node_grants:view'
         - user.permissions
       tags: {  }

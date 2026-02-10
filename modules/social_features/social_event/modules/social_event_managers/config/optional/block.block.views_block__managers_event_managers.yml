@@ -22,8 +22,8 @@ settings:
   views_label: 'Event Organisers'
   items_per_page: none
 visibility:
-  entity_bundle:node:
-    id: 'entity_bundle:node'
+  node_type:
+    id: node_type
     bundles:
       event: event
     negate: false

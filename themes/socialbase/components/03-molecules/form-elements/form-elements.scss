@@ -52,7 +52,7 @@
 label {
   display: inline-block;
   max-width: 100%; // Force IE8 to wrap long content (see https://github.com/twbs/bootstrap/issues/13141)
-  margin-bottom: .5rem;
+  margin-bottom: 5px;
 }
 
 .control-label {
@@ -89,7 +89,7 @@ label {
 // horizontal forms, use the predefined grid classes.
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: $form-group-margin-bottom;
   position: relative;
 
   .radio,
@@ -115,11 +115,6 @@ label {
     margin-left: 8px;
     margin-bottom: 5px;
 
-    [dir='rtl'] & {
-      margin-left: 0;
-      margin-right: 8px;
-    }
-
     // Safari fix
     flex-shrink: 0;
   }
@@ -139,30 +134,11 @@ label {
   display: none;
 }
 
-// Nested checkboxes are indented to show that they belong together.
-.form-group.checkboxes--nested {
-  outline: red;
-
-  & > .form-checkboxes,
-  & > .form-group {
-    margin-left: 25px;
-    margin-bottom: .5em;
-  }
-
-  .checkboxes__label {
-    margin-bottom: 0;
-  }
-}
-
-// In the search filter they do not appear in a form-group.
-.checkboxes--nested .checkboxes--nested__child + label {
-  margin-left: 25px;
-}
-
 // Indication on labels for required fields
 span.form-required {
   margin: 0 3px;
 }
+
 
 // Help text
 //
@@ -176,12 +152,9 @@ span.form-required {
   color: $help-block;
 
   .radio & {
+    padding-left: $radio-width;
     max-width: none;
     margin-top: 0;
-  }
-
-  > a {
-    font-weight: 700;
   }
 
 }
@@ -222,11 +195,6 @@ span.form-required {
     margin-left: auto;
     margin-right: 0;
     order: 10;
-
-    [dir='rtl'] & {
-      margin-left: 0;
-      margin-right: auto;
-    }
   }
 }
 
@@ -244,6 +212,7 @@ span.form-required {
     float: none;
     position: absolute;
     right: 0;
+    top: 0;
     line-height: 16px;
     padding: $alert-padding-y-sm $alert-padding-x-sm;
   }
@@ -254,9 +223,9 @@ span.form-required {
     position: absolute;
     left: 20px;
     top: -7px;
-    border-bottom: 8px dashed;
-    border-right: 8px solid transparent;
-    border-left: 8px solid transparent;
+    border-bottom:  8px dashed;
+    border-right:   8px solid transparent;
+    border-left:    8px solid transparent;
   }
 }
 
@@ -305,129 +274,5 @@ span.form-required {
 
   .has-error & {
     margin-bottom: 0;
-  }
-}
-
-.field--label-inline {
-  .field--label {
-    font-weight: 500;
-    display: inline-block;
-    &:after {
-      content: ':';
-    }
-    & + .field--item {
-      display: inline-block;
-      a {
-        font-weight: 400;
-      }
-    }
-  }
-}
-
-// The time zone block on the event edit pages
-#edit-timezone-indication {
-  .node-event-form &,
-  .node-event-edit-form & {
-    .btn {
-      cursor: auto;
-    }
-  }
-}
-
-// Fieldset and fieldset elemenets styles.
-fieldset.card {
-  legend.card__title {
-    width: 100%;
-    top: 1.5rem;
-    margin-bottom: 1.25rem;
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-  }
-}
-
-legend.control-label {
-  margin-bottom: 5px;
-}
-
-.form-wrapper {
-  .card__block {
-    padding-bottom: 1rem;
-  }
-}
-
-details {
-  summary {
-    position: relative;
-
-    svg.icon-summary-arrow {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      right: 1.25rem;
-      margin-right: 0;
-      top: .75rem;
-
-      [dir='rtl'] & {
-        right: auto;
-        left: 1.25rem;
-      }
-    }
-
-    &,
-    &.btn {
-      &:focus {
-        outline: $default-outline solid 2px;
-      }
-    }
-  }
-
-  &[open] {
-    summary {
-      border-bottom: 1px solid $gray-lighter;
-
-      svg.icon-summary-arrow {
-        transform: rotate(180deg);
-      }
-    }
-  }
-}
-
-select {
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-}
-
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  select:focus {
-    font-size: 1rem;
-  }
-}
-
-// User login form.
-.social-user-login-form {
-  > .form-item > .card__block {
-    > .form-item + .help-block {
-      margin-top: calc(-1.5rem + 5px);
-    }
-
-    > .help-block {
-      margin-bottom: 1.5rem;
-    }
-  }
-}
-
-// Links styles on the user forms.
-.social-user-login-form,
-.social-user-password-form,
-.user-register-form {
-  a {
-    text-decoration: underline;
-    text-decoration-color: var(--link-color);
-
-    &:hover,
-    &:focus {
-      color: var(--link-color);
-    }
   }
 }

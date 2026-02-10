@@ -1,74 +1,34 @@
 @font-face {
   font-family: 'montserrat';
-  src: url("../font/montserrat/montserrat-light.eot");
-  src: url("../font/montserrat/montserrat-light.eot") format("embedded-opentype"), url("../font/montserrat/montserrat-light.woff2") format("woff2"), url("../font/montserrat/montserrat-light.woff") format("woff"), url("../font/montserrat/montserrat-light.ttf") format("truetype"), url("../font/montserrat/montserrat-light.svg#montserrat-light") format("svg");
+  src: url("../font/montserrat/montserrat-light.eot") format('embedded-opentype'),
+       url("../font/montserrat/montserrat-light.woff2") format('woff2'),
+       url("../font/montserrat/montserrat-light.woff") format('woff'),
+       url("../font/montserrat/montserrat-light.ttf") format('truetype'),
+       url("../font/montserrat/montserrat-light.svg") format('svg');
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'montserrat';
-  src: url("../font/montserrat/montserrat-normal.eot");
-  src: url("../font/montserrat/montserrat-normal.eot") format("embedded-opentype"), url("../font/montserrat/montserrat-normal.woff2") format("woff2"), url("../font/montserrat/montserrat-normal.woff") format("woff"), url("../font/montserrat/montserrat-normal.ttf") format("truetype"), url("../font/montserrat/montserrat-normal.svg#montserrat-normal") format("svg");
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'montserrat';
-  src: url("../font/montserrat/montserrat-medium.eot");
-  src: url("../font/montserrat/montserrat-medium.eot") format("embedded-opentype"), url("../font/montserrat/montserrat-medium.woff2") format("woff2"), url("../font/montserrat/montserrat-medium.woff") format("woff"), url("../font/montserrat/montserrat-medium.ttf") format("truetype"), url("../font/montserrat/montserrat-medium.svg#montserrat-medium") format("svg");
+  src: url("../font/montserrat/montserrat-normal.eot") format('embedded-opentype'),
+       url("../font/montserrat/montserrat-normal.woff2") format('woff2'),
+       url("../font/montserrat/montserrat-normal.woff") format('woff'),
+       url("../font/montserrat/montserrat-normal.ttf") format('truetype'),
+       url("../font/montserrat/montserrat-normal.svg") format('svg');
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'montserrat';
-  src: url("../font/montserrat/montserrat-semibold.eot");
-  src: url("../font/montserrat/montserrat-semibold.eot") format("embedded-opentype"), url("../font/montserrat/montserrat-semibold.woff2") format("woff2"), url("../font/montserrat/montserrat-semibold.woff") format("woff"), url("../font/montserrat/montserrat-semibold.ttf") format("truetype"), url("../font/montserrat/montserrat-semibold.svg#montserrat-semibold") format("svg");
-  font-weight: 600;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'montserrat';
-  src: url("../font/montserrat/montserrat-bold.eot");
-  src: url("../font/montserrat/montserrat-bold.eot") format("embedded-opentype"), url("../font/montserrat/montserrat-bold.woff2") format("woff2"), url("../font/montserrat/montserrat-bold.woff") format("woff"), url("../font/montserrat/montserrat-bold.ttf") format("truetype"), url("../font/montserrat/montserrat-bold.svg#montserrat-bold") format("svg");
+  src: url("../font/montserrat/montserrat-bold.eot") format('embedded-opentype'),
+       url("../font/montserrat/montserrat-bold.woff2") format('woff2'),
+       url("../font/montserrat/montserrat-bold.woff") format('woff'),
+       url("../font/montserrat/montserrat-bold.ttf") format('truetype'),
+       url("../font/montserrat/montserrat-bold.svg") format('svg');
   font-weight: 700;
   font-style: normal;
-}
-
-@font-face {
-  font-family: 'Almarai';
-  src: url("../font/Almarai/Almarai-Light.ttf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  unicode-range: U+0600-06FF;
-  /* We do this to only download the font when arabic characters are available on the page.*/
-}
-
-@font-face {
-  font-family: 'Almarai';
-  src: url("../font/Almarai/Almarai-Regular.ttf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  unicode-range: U+0600-06FF;
-}
-
-@font-face {
-  font-family: 'Almarai';
-  src: url("../font/Almarai/Almarai-Bold.ttf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  unicode-range: U+0600-06FF;
-}
-
-@font-face {
-  font-family: 'Almarai';
-  src: url("../font/Almarai/Almarai-ExtraBold.ttf") format("opentype");
-  font-weight: 800;
-  font-style: normal;
-  unicode-range: U+0600-06FF;
 }
 
 code,
@@ -99,49 +59,12 @@ pre {
   border-radius: 10px;
 }
 
-.field--name-field-introduction-text *:not(.badge):not(.section__title) > a:not(.btn),
-.field--name-field-featured-items-description *:not(.badge):not(.section__title) > a:not(.btn),
-.field--name-field-featured-description *:not(.badge):not(.section__title) > a:not(.btn),
-.field--name-field-accord-description *:not(.badge):not(.section__title) > a:not(.btn),
-.field--name-field-accord-item-description *:not(.badge):not(.section__title) > a:not(.btn),
-.field--name-field-phase-description *:not(.badge):not(.section__title) > a:not(.btn),
-.paragraph--type--image-text .field--name-field-text *:not(.badge):not(.section__title) > a:not(.btn),
-.paragraph--type--text-image .field--name-field-text *:not(.badge):not(.section__title) > a:not(.btn),
-.paragraph--type--text .field--name-field-text *:not(.badge):not(.section__title) > a:not(.btn),
-.scorm-form--body *:not(.badge):not(.section__title) > a:not(.btn),
-.quiz-form__text *:not(.badge):not(.section__title) > a:not(.btn),
-.course-full .card__body *:not(.badge):not(.section__title) > a:not(.btn),
-.teaser--course *:not(.badge):not(.section__title) > a:not(.btn),
-.body-text *:not(.badge):not(.section__title) > a:not(.btn),
-.block--intro-text .block--intro-text__content *:not(.badge):not(.section__title) > a:not(.btn),
-.block-inline-blockkpi-analytics .field--name-body *:not(.badge):not(.section__title) > a:not(.btn),
-.basic-block .field--name-field-text-block *:not(.badge):not(.section__title) > a:not(.btn),
-.hero--dashboard .field--name-field-text-block *:not(.badge):not(.section__title) > a:not(.btn),
-.certificate-footer .bottom *:not(.badge):not(.section__title) > a:not(.btn),
-.certificate-header .description *:not(.badge):not(.section__title) > a:not(.btn) {
-  font-weight: 400;
-  text-decoration: underline;
-  -webkit-text-decoration-color: var(--link-color);
-          text-decoration-color: var(--link-color);
-}
-
-.comment__text p a:not(.btn) {
-  font-weight: 400;
-  text-decoration: underline;
-  -webkit-text-decoration-color: var(--link-color);
-          text-decoration-color: var(--link-color);
-}
-
 blockquote {
   border-left: 3px solid #29abe2;
 }
 
 strong {
-  font-weight: 600;
-}
-
-:lang(ar) {
-  font-family: "Almarai", "montserrat", sans-serif;
+  font-weight: 500;
 }
 
 .text-primary {
@@ -190,12 +113,12 @@ a.text-danger:focus {
 }
 
 .text-muted {
-  color: #555555;
+  color: #777;
 }
 
 a.text-muted:hover,
 a.text-muted:focus {
-  color: #3c3c3c;
+  color: #5e5e5e;
 }
 
 .text-gray {
@@ -340,14 +263,14 @@ a.brand-secondary:focus {
 .brand-accent {
   background-color: #ffc142;
   border-color: #ffc142;
-  color: #343434;
+  color: #4d4d4d;
 }
 
 a.brand-accent:hover,
 a.brand-accent:focus {
   background-color: #ffb00f;
   border-color: #ffb00f;
-  color: #343434;
+  color: #4d4d4d;
 }
 
 .brand-user {
@@ -366,22 +289,22 @@ a.brand-user:focus {
 .default-light {
   background-color: #e6e6e6;
   border-color: #e6e6e6;
-  color: #343434;
+  color: #4d4d4d;
 }
 
 a.default-light:hover,
 a.default-light:focus {
   background-color: #cdcdcd;
   border-color: #cdcdcd;
-  color: #343434;
+  color: #4d4d4d;
 }
 
 body {
   font-family: "montserrat", sans-serif;
-  font-weight: 400;
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #343434;
+  color: #4d4d4d;
   background-color: #f3f3f3;
 }
 
@@ -540,7 +463,7 @@ body {
 }
 
 .table th a {
-  color: var(--primary-color);
+  color: #1d789e;
 }
 
 .table th.is-active > a {

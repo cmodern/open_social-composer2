@@ -9,7 +9,6 @@
 
   @include for-tablet-portrait-up {
     display: flex;
-    flex-wrap: wrap;
 
     .preview {
       flex: 0 0 auto;
@@ -19,25 +18,27 @@
       margin-bottom: 0.5rem;
     }
 
-    .image-widget-data {
-      flex: 1;
-    }
-
   }
 
   .image-widget-data {
     padding: 0.5rem 1rem;
     background-color: $gray-lightest;
   }
-
-  .messages {
-    margin-bottom: 16px;
-  }
 }
 
 // close the gap between an image upload and the description text right below it.
 .form-type-managed-file .image-widget + .help-block {
-  margin-top: -0.5rem
+  margin-top: -0.875rem
+}
+
+
+// This is kind of a hack. The upload field op on the post needs to display inline, but the image should not. Since this library is only loaded when the preview is there, the following line overrides the style from form-post-create.
+.form--post-create .field--name-field-post-image.container-post-image {
+
+  @include for-tablet-portrait-up {
+    flex-basis: 100%;
+  }
+
 }
 
 .btn--post-remove-image {
@@ -55,10 +56,6 @@
     .btn-icon {
       transform: rotate(90deg);
     }
-  }
-
-  &:focus {
-    outline: none;
   }
 
   .btn-icon {

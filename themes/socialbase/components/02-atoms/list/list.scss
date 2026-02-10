@@ -36,6 +36,7 @@
 
 .list-item {
   display: flex;
+  justify-content: center;
   width: 100%;
   padding-top: ($card-spacer-x/2);
   padding-bottom: ($card-spacer-x/2);
@@ -43,18 +44,12 @@
 }
 
 .list-item__avatar {
-  display: block;
   width: 24px;
   height: 24px;
   flex: 0 0 24px;
   margin-right: 10px;
   border-radius: 50%;
   margin-top: 2px; // vertical alignment
-
-  [dir='rtl'] & {
-    margin-right: 0;
-    margin-left: 10px;
-  }
 }
 
 .list-item__avatar--medium {
@@ -82,17 +77,10 @@
   flex-grow: 1;
   max-width: 100%;
   margin: 0;
-  font-size: .875rem;
   line-height: 1.25;
 
   p {
     margin-bottom: 0;
-  }
-
-  .list-item__text--small {
-    color: #555;
-    font-weight: 400;
-    margin-top: 5px;
   }
 }
 
@@ -101,35 +89,15 @@
   padding-right: 1rem;
   margin-bottom: -1px;
   justify-content: flex-start;
-  cursor: pointer;
 
-  .form-group {
-    label {
-      font-weight: 500;
-    }
-
-    .form-radio {
-      z-index: -1;
-    }
-  }
-
-  &:hover, &:focus-within {
-    background-color: $gray-lighter;
+  .form-group label {
+    font-weight: 500;
     cursor: pointer;
   }
 
-  // The visibility list contains anchor elements to fix keyboard support so we
-  // must clear the default anchor list styling from dropdown.scss.
-  .dropdown-menu--visibility > & > a {
-    padding: 0;
-
-    // :hover, :focus for the required specificity.
-    // Removes the outline for links since the background indicates focus.
-    &, &:hover, &:focus {
-      background-color: inherit;
-      box-shadow: none;
-      outline: none;
-    }
+  &:hover {
+    background-color: $gray-lighter;
+    cursor: pointer;
   }
 
   .icon-small {

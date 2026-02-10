@@ -55,30 +55,6 @@
     min-height: 410px;
   }
 
-  &.small {
-    @include for-tablet-portrait-up {
-      height: 193px;
-      min-height: auto;
-    }
-
-    .page-title {
-      h1 {
-        @include for-tablet-portrait-up {
-          font-size: 2rem;
-          max-height: 70px;
-          overflow: hidden;
-        }
-      }
-    }
-
-    > .hero-footer {
-      @include for-tablet-portrait-up {
-        position: static;
-        margin-top: -2.5rem;
-      }
-    }
-  }
-
   // this excludes the social_landing page hero section
   > .hero-footer {
     @include for-tablet-portrait-up {
@@ -87,17 +63,6 @@
     }
   }
 
-}
-
-/* IE11 */
-@media all and (-ms-high-contrast:none) {
-  *::-ms-backdrop, .cover-wrap { min-height: 410px; }
-
-  *::-ms-backdrop, .cover-wrap.small { height: 193px; min-height: auto }
-
-  *::-ms-backdrop, .paragraph--hero .cover-wrap { min-height: 350px; }
-
-  *::-ms-backdrop, .paragraph--hero-small .cover-wrap { min-height: 206px; height: auto }
 }
 
 // anon homepage hero
@@ -114,7 +79,7 @@
   display: block;
 }
 
-.cover .page-title {
+.page-title {
   font-weight: 700;
   text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
   text-align: center;
@@ -122,16 +87,6 @@
   padding-top: 2rem;
   padding-bottom: 1em;
   width: 80%;
-
-  [dir='rtl'] & {
-    text-align: right;
-  }
-
-  .path-search & {
-    [dir='rtl'] & {
-      text-align: center;
-    }
-  }
 
   @include for-tablet-portrait-up {
     max-width: 900px;
@@ -164,19 +119,10 @@
   display: flex;
   justify-content: flex-end;
 
-  [dir='rtl'] & {
-    justify-content: flex-start;
-  }
-
   @include for-tablet-landscape-up {
     padding-left: 1rem;
     flex: 0 0 25%;
     max-width: 25%;
-
-    [dir='rtl'] & {
-      padding-left: 0;
-      padding-right: 1rem;
-    }
 
   }
 }
@@ -233,6 +179,8 @@
 
 
 }
+
+
 
 .hero-footer-icon {
   fill: white;
@@ -296,37 +244,7 @@
     line-height: 38px;
     cursor: pointer;
     text-align: center;
-
-    &:focus-visible,
-    &:focus {
-      outline: -webkit-focus-ring-color auto 1px;
-    }
 	}
-
-  .form-submit {
-    padding: 0;
-    border-bottom-left-radius: 0 !important;
-    border-top-left-radius: 0 !important;
-    background-color: #fff;
-    font-size: 0;
-
-    &:before {
-      content: '';
-      display: block;
-      width: 38px;
-      height: 38px;
-      mask: url("../images/icons/icon-search.svg");
-      -webkit-mask-repeat: no-repeat;
-      mask-position: center;
-      background-color: var(--primary-color);
-      transform: scale(1);
-      transition: transform .2s linear;
-    }
-
-    &:hover:before {
-      transform: scale(1.1);
-    }
-  }
 
   .search-icon {
     line-height: 38px;

@@ -4,11 +4,7 @@ blockquote {
 }
 
 strong {
-  font-weight: $font-weight-strong;
-}
-
-:lang(ar) {
-  font-family: "Almarai", "montserrat", sans-serif;
+	font-weight: $font-weight-strong;
 }
 
 @include text-emphasis-variant('.text-primary', $brand-primary);

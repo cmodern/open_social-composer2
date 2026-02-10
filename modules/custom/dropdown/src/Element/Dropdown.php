@@ -2,17 +2,17 @@
 
 namespace Drupal\dropdown\Element;
 
+use Drupal\Core\Render\Element\FormElement;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html as HtmlUtility;
 use Drupal\Core\Render\Element\CompositeFormElementTrait;
-use Drupal\Core\Render\Element\FormElementBase;
 
 /**
  * Provides an dropdown element.
  *
  * @RenderElement("dropdown")
  */
-class Dropdown extends FormElementBase {
+class Dropdown extends FormElement {
 
   use CompositeFormElementTrait;
 
@@ -38,7 +38,7 @@ class Dropdown extends FormElementBase {
    * Prepare the render array for the template.
    */
   public static function preRenderDropdown($element) {
-    // @todo Attach $element['#attached']['library'][] = 'dropdown';
+    // @TODO Attach $element['#attached']['library'][] = 'dropdown';
     return $element;
   }
 
@@ -71,11 +71,11 @@ class Dropdown extends FormElementBase {
           '#return_value' => $value,
           // Use default or FALSE. A value of FALSE means that the radio button
           // is not 'checked'.
-          '#default_value' => $element['#default_value'] ?? FALSE,
+          '#default_value' => isset($element['#default_value']) ? $element['#default_value'] : FALSE,
           '#attributes' => $element['#attributes'],
           '#parents' => $element['#parents'],
           '#id' => HtmlUtility::getUniqueId('edit-' . implode('-', $parents_for_id)),
-          '#ajax' => $element['#ajax'] ?? NULL,
+          '#ajax' => isset($element['#ajax']) ? $element['#ajax'] : NULL,
           // Errors should only be shown on the parent radios element.
           '#error_no_message' => TRUE,
           '#weight' => $weight,
@@ -107,7 +107,7 @@ class Dropdown extends FormElementBase {
       // FormBuilder::handleInputElement() converting the NULL to an empty
       // string, so that code can distinguish between nothing selected and the
       // selection of a radio button whose value is an empty string.
-      $value = $element['#default_value'] ?? NULL;
+      $value = isset($element['#default_value']) ? $element['#default_value'] : NULL;
       if (!isset($value)) {
         $element['#has_garbage_value'] = TRUE;
       }

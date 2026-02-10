@@ -6,13 +6,12 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\file\Entity\File;
 use Drupal\social_font\Entity\Font;
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialblue_form_system_theme_settings_alter(&$form, FormStateInterface &$form_state, $form_id = NULL): void {
+function socialblue_form_system_theme_settings_alter(&$form, FormStateInterface &$form_state, $form_id = NULL) {
   // Work-around for a core bug affecting admin themes. See issue #943212.
   if (isset($form_id)) {
     return;
@@ -28,7 +27,7 @@ function socialblue_form_system_theme_settings_alter(&$form, FormStateInterface 
 
   // If the default theme is either socialblue or socialsaas then extend
   // the form in the appearance section.
-  if (array_key_exists('socialbase', \Drupal::service('theme.manager')->getActiveTheme()->getBaseThemeExtensions())) {
+  if (array_key_exists('socialbase', \Drupal::service('theme.manager')->getActiveTheme()->getBaseThemes())) {
     if ($active_theme == $system_theme_settings) {
       $config = \Drupal::config($theme . '.settings');
 
@@ -99,34 +98,16 @@ function socialblue_form_system_theme_settings_alter(&$form, FormStateInterface 
           'file_validate_extensions' => ['gif png jpg jpeg'],
         ],
       ];
-      // Ensure we save the file permanently.
-      $form['#submit'][] = 'socialblue_save_email_logo';
-
-      $form['os_hero_settings'] = [
-        '#type' => 'details',
-        '#group' => 'open_social_settings',
-        '#title' => t('Hero'),
-        '#weight' => 30,
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
-      ];
-
-      $form['os_hero_settings']['hero_gradient_opacity'] = [
-        '#type' => 'range',
-        '#title' => t('Hero gradient'),
-        '#default_value' => $config->get('hero_gradient_opacity'),
-        '#description' => t('Define the percentage of darkness of the hero gradient from 0 to 100.'),
-        '#min' => 0,
-        '#max' => 100,
-      ];
 
       // Font tab.
       $fonts = [];
       if (\Drupal::service('module_handler')->moduleExists('social_font')) {
+
         /** @var \Drupal\social_font\Entity\Font $font_entities */
         foreach (Font::loadMultiple() as $font_entities) {
           $fonts[$font_entities->id()] = $font_entities->get('name')->value;
         }
+
       }
 
       $form['os_font_settings']['font_primary'] = [
@@ -134,135 +115,11 @@ function socialblue_form_system_theme_settings_alter(&$form, FormStateInterface 
         '#title' => t('Font'),
         '#options' => $fonts,
         '#default_value' => $config->get('font_primary'),
-        '#description' => t('The font family to use.'),
+        '#description' => t("The font family to use."),
       ];
 
-      $form['os_style_settings'] = [
-        '#type' => 'details',
-        '#group' => 'open_social_settings',
-        '#title' => t('Style'),
-        '#weight' => 40,
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
-        '#access' => \Drupal::currentUser()->hasPermission('administer improved theme settings'),
-      ];
-
-      $form['os_style_settings']['style'] = [
-        '#type' => 'select',
-        '#title' => t('Style'),
-        '#options' => [
-          '' => t('Default'),
-          'sky' => t('Sky (New)'),
-        ],
-        '#default_value' => $config->get('style'),
-      ];
-
-      $form['os_style_settings']['content_entity_form_style'] = [
-        '#type' => 'select',
-        '#title' => t('Render Content Entity forms in Open Social style'),
-        '#description' => t('Allows you to render the Content Entity Forms in Open Social style. This means we remove a lot of Drupal look and feel and logic.
-        Buttons on the create content are changed from Save to Create. The advanced details, e.g. the vertical tabs added in Drupal core
-        are not rendered anymore, instead we use a collapsible fieldset.
-        Fields like revision, URL Redirect are unset. The preview button is removed and more.'),
-        '#options' => [
-          'drupal' => t('Default Drupal'),
-          'open_social' => t('Open Social'),
-        ],
-        '#default_value' => $config->get('content_entity_form_style') ?? 'open_social',
-      ];
-
-      $form['os_header_settings'] = [
-        '#type' => 'details',
-        '#group' => 'open_social_settings',
-        '#title' => t('Header style'),
-        '#weight' => 50,
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
-      ];
-
-      $form['os_header_settings']['header_style'] = [
-        '#type' => 'radios',
-        '#title' => t('Header style'),
-        '#default_value' => $config->get('header_style') ?? 'one_line',
-        '#options' => [
-          'one_line' => t('One line'),
-          'two_lines' => t('Two lines'),
-        ],
-      ];
-
-      // When GIN is our admin theme, update the GIN colors.
-      if (\Drupal::configFactory()->get('system.theme')->get('admin') === 'gin') {
-        $form['#submit'][] = 'socialblue_update_gin_color_settings';
-      }
     }
 
   }
 
-}
-
-/**
- * Updates the gin color settings from socialblue it's config.
- *
- * This ensures the brand color also applies to GIN.
- *
- * @param array $form
- *   The submitted form structure.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The state of the submitted form.
- *
- * @throws \Drupal\Core\Entity\EntityStorageException
- */
-function socialblue_update_gin_color_settings(array $form, FormStateInterface $form_state): void {
-  // Grab the default socialblue colors, these are set if the color settings
-  // aren't overridden yet.
-  $default_colors = \Drupal::configFactory()->getEditable('socialblue.settings')->getRawData();
-  // Unfortunately the color module doesnt add the color details to the
-  // $form_state. So we need to grab it from the config once overridden.
-  // luckily color does set their submit function as first, so we can
-  // safely assume the config uses the updated colors.
-  $socialblue_colors = \Drupal::configFactory()->getEditable('color.theme.socialblue')->getRawData();
-
-  // The brand colors are first of all coming from the overridden color
-  // settings. But if that is not set, we will grab them from the
-  // default Social Blue settings.
-  $brand_primary = !empty($socialblue_colors) ? $socialblue_colors['palette']['brand-primary'] : $default_colors['color_primary'];
-  $brand_secondary = !empty($socialblue_colors) ? $socialblue_colors['palette']['brand-secondary'] : $default_colors['color_secondary'];
-
-  // See if we can update GIN settings with our brand colors.
-  if (isset($brand_primary, $brand_secondary)) {
-    $config = \Drupal::configFactory()->getEditable('gin.settings');
-    if (!empty($config->getRawData())) {
-      $gin_config = $config->getRawData();
-      // Override preset colors as custom so we can fill in the hex colors.
-      $gin_config['preset_accent_color'] = 'custom';
-      $gin_config['preset_focus_color'] = 'custom';
-      // Update the accent and focus with our branded colors.
-      $gin_config['accent_color'] = $brand_primary;
-      $gin_config['focus_color'] = $brand_secondary;
-      $config->setData($gin_config);
-      $config->save();
-    }
-  }
-}
-
-/**
- * Marks the e-mail logo file as permanent.
- *
- * This ensures the image is not cleaned up by Drupal's temporary file cleaning.
- *
- * @param array $form
- *   The submitted form structure.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The state of the submitted form.
- *
- * @throws \Drupal\Core\Entity\EntityStorageException
- */
-function socialblue_save_email_logo(array $form, FormStateInterface $form_state): void {
-  $email_logo = $form_state->getValue('email_logo');
-  // If an e-mail logo was uploaded then we mark the uploaded file as permanent.
-  if (!empty($email_logo)) {
-    $file = File::load($email_logo[0]);
-    $file->setPermanent();
-    $file->save();
-  }
 }

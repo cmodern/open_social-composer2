@@ -15,45 +15,23 @@
  * - attributes: HTML attributes for the wrapper.
  * - profile: The profile object.
  * - url: The profile URL.
- * - avatar_attributes: HTML attributes for the link with an avatar.
- * - link_attributes: HTML attributes for the link with a username.
  *
  * @ingroup themeable
  */
 #}
 
-{{ attach_library('socialbase/teaser')}}
 
-<div class="teaser--small">
-  <div class="teaser--small__media teaser--small__media--profile">
-    <a href="{{ profile_home }}" {{ avatar_attributes }} title="{% trans %} profile avatar {% endtrans %}">
+<div class="card__block card__block--list">
+
+  <a href="{{ profile_stream_url }}" class="card__text list-item">
+    <span class="list-item__avatar">
       {{ content.field_profile_image }}
-    </a>
-  </div>
+    </span>
 
-  <div class="teaser--small__details small">
-    <div class="card__text teaser--small__title">
-      <a href="{{ profile_home }}" {{ link_attributes }} title="{% trans %} profile information {% endtrans %}">
-        {{ profile_name }}
-        {{ profile_name_extra }}
-      </a>
-    </div>
+    <span class="list-item__text">
+      {{ profile_name }}
+    </span>
 
-    {% if content.field_profile_organization_reference %}
-      <div class="teaser--small__meta">
-        {{ '@function @ <span class="notranslate">@organization</span>'|t({'@function': content.field_profile_function|render, '@organization': content.field_profile_organization_reference|render}) }}
-      </div>
-    {% else %}
-      {% if content.field_profile_function|render or content.field_profile_organization|render %}
-        <div class="teaser--small__meta">
-          {% if content.field_profile_organization|render %}
-            {{ '@function @ <span class="notranslate">@organization</span>'|t({'@function': content.field_profile_function|render, '@organization': content.field_profile_organization|render}) }}
-          {% else %}
-            {{ content.field_profile_function }}
-          {% endif %}
-        </div>
-      {% endif %}
-    {% endif %}
-  </div>
+  </a>
 
 </div>

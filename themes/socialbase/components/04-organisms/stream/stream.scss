@@ -30,11 +30,7 @@
   position: relative;
 
   &:first-of-type {
-    z-index: 4; //prevents post visibility dropdown from showing under next card in stream
-  }
-
-  .pull-right {
-    z-index: 2;
+    z-index: 2; //prevents post visibility dropdown from showing under next card in stream
   }
 
 }
@@ -121,7 +117,6 @@
   .comment__avatar {
     margin-right: 8px;
     width: 44px;
-    height: 44px;
     flex-shrink: 0;
 
     @include for-tablet-portrait-up {
@@ -133,7 +128,7 @@
 }
 
 
-.teaser.teaser--stream {
+.teaser--stream {
   margin-top: ($card-spacer-x/2);
   margin-right: -$card-spacer-x;
   margin-bottom: ($card-spacer-x/2);
@@ -157,26 +152,4 @@
 
   }
 
-}
-
-.post-unpublished {
-  img {
-    opacity: 0.5;
-  }
-  .badge-default {
-    background-color: $gray-light;
-    color: white;
-    margin-left: 5px;
-    font-size: 100%;
-  }
-  * {
-    color: #9b9b9b;
-  }
-}
-
-.footer-post {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
 }

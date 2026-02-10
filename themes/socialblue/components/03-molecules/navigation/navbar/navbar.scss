@@ -1,26 +1,22 @@
 @import "settings";
 
 .nav > li {
-  > a,
-  > span {
+
+  > a:hover,
+  > a:focus {
+    background-color: $nav-link-hover-bg;
+  }
+
+  &.disabled > a {
+    color: $nav-disabled-link-color;
+
     &:hover,
     &:focus {
-      background-color: $nav-link-hover-bg;
+      color: $nav-disabled-link-hover-color;
     }
+
   }
 
-  &.disabled {
-    > a,
-    > span,
-    > button {
-      color: $nav-disabled-link-color;
-
-      &:hover,
-      &:focus {
-        color: $nav-disabled-link-hover-color;
-      }
-    }
-  }
 }
 
 // Default navbar
@@ -28,9 +24,7 @@
   background-color: $navbar-default-bg;
 
   .navbar-nav {
-    > li > a,
-    > li > button,
-    > li > span {
+    > li > a {
       color: $navbar-default-link-color;
       fill: $navbar-default-link-color;
 
@@ -43,23 +37,17 @@
     }
 
     > .active > a,
-    > .active > button,
-    > .active > span,
+    > .active > a:hover,
+    > .active > a:focus,
     > li > a.is-active,
-    > li > button.is-active,
-    > li > span.is-active {
-      &,
-      &:hover,
-      &:focus {
-        color: $navbar-default-link-active-color;
-        fill: $navbar-default-link-active-color;
-        background-color: $navbar-default-link-active-bg;
-      }
+    > li > a.is-active:hover,
+    > li > a.is-active:focus {
+      color: $navbar-default-link-active-color;
+      fill: $navbar-default-link-active-color;
+      background-color: $navbar-default-link-active-bg;
     }
 
-    > .disabled > a,
-    > .disabled > button,
-    > .disabled > span {
+    > .disabled > a {
       &,
       &:hover,
       &:focus {
@@ -68,10 +56,6 @@
         background-color: $navbar-default-link-disabled-bg;
       }
     }
-
-    &.main {
-      margin-right: 5px;
-    }
   }
 
   // Links within the dropdown menu
@@ -79,9 +63,7 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 
-    > li > a,
-    > li > button,
-    > li > span {
+    > li > a {
 
       &:hover,
       &:focus {
@@ -119,9 +101,7 @@
   // Dropdown menu items
   .navbar-nav {
     // Remove background color from open dropdown
-    > .open > a,
-    > .open > button,
-    > .open > span {
+    > .open > a {
       &,
       &:hover,
       &:focus {
@@ -133,9 +113,7 @@
     @include for-phone-only {
       // Dropdowns get custom display when collapsed
       .open .dropdown-menu {
-        > li > a,
-        > li > button,
-        > li > span {
+        > li > a {
           color: $navbar-default-link-color;
           &:hover,
           &:focus {
@@ -143,9 +121,7 @@
             background-color: $navbar-default-link-hover-bg;
           }
         }
-        > .active > a,
-        > .active > button,
-        > .active > span {
+        > .active > a {
           &,
           &:hover,
           &:focus {
@@ -153,9 +129,7 @@
             background-color: $navbar-default-link-active-bg;
           }
         }
-        > .disabled > a,
-        > .disabled > button,
-        > .disabled > span {
+        > .disabled > a {
           &,
           &:hover,
           &:focus {
@@ -170,26 +144,19 @@
 }
 
 @include for-tablet-landscape-down {
-  .navbar-collapse .dropdown-menu {
-    li {
-      a,
-      button,
-      span:not(.caret) {
-        color: #ffffff;
+  .navbar-collapse .dropdown-menu li a {
+    color: #ffffff;
 
-        &:hover,
-        &:focus {
-          background-color: $brand-secondary;
-        }
-      }
+    &:hover,
+    &:focus {
+      background-color: $brand-secondary;
     }
+
   }
 
   .navbar-default .navbar-nav .open .dropdown-menu {
 
-    > li > a,
-    > li > button,
-    > li > span {
+    > li > a {
       color: $dropdown-link-color;
       &:hover,
       &:focus {
@@ -197,9 +164,7 @@
         background-color: $dropdown-link-hover-bg;
       }
     }
-    > .active > a,
-    > .active > button,
-    > .active > span {
+    > .active > a {
       &,
       &:hover,
       &:focus {
@@ -207,9 +172,7 @@
         background-color: $dropdown-link-active-bg;
       }
     }
-    > .disabled > a,
-    > .disabled > button,
-    > .disabled > span {
+    > .disabled > a {
       &,
       &:hover,
       &:focus {
@@ -274,25 +237,19 @@
 
   .navbar-nav {
 
-    a, button, span:not(.caret) {
+    a {
       color: #fff;
     }
 
-    li.active a, li.active button {
+    li.active a {
       border-bottom-color: #fff;
     }
 
-    li:not(.active) {
-      button,
-      a,
-      span:not(.caret) {
-        &:hover,
-        &:focus {
-          outline: none;
-          background-color: rgba(0,0,0,0.3);
-          border-bottom-color: rgba(0,0,0,0.3);
-        }
-      }
+    li:not(.active) a:hover,
+    li:not(.active) a:focus {
+      outline: none;
+      background-color: rgba(0,0,0,0.3);
+      border-bottom-color: rgba(0,0,0,0.3);
     }
   }
 }
@@ -301,33 +258,4 @@
 // -------------------------
 .navbar-scrollable:after {
   background: linear-gradient(to right, rgba($brand-secondary,0), rgba($brand-secondary,1));
-}
-
-// Navbar brand if you use header multi line setting.
-.header-top {
-  > .container {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .navbar-header {
-    padding: 2rem 1rem;
-
-    @include for-tablet-landscape-down {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-  }
-
-  .navbar-header {
-    margin-right: auto;
-  }
-}
-
-.header-top,
-.navbar-second-line {
-  .navbar-brand {
-    justify-content: flex-start;
-  }
 }

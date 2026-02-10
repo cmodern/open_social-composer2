@@ -2,9 +2,9 @@
 
 namespace Drupal\social_event;
 
-use Drupal\Core\Link;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Routing\LinkGeneratorTrait;
 use Drupal\Core\Url;
 
 /**
@@ -13,12 +13,12 @@ use Drupal\Core\Url;
  * @ingroup social_event
  */
 class EventEnrollmentListBuilder extends EntityListBuilder {
+  use LinkGeneratorTrait;
 
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header = [];
     $header['id'] = $this->t('Event enrollment ID');
     $header['name'] = $this->t('Name');
     return $header + parent::buildHeader();
@@ -28,17 +28,16 @@ class EventEnrollmentListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $row = [];
-    /** @var \Drupal\social_event\Entity\EventEnrollment $entity */
+    /* @var $entity \Drupal\social_event\Entity\EventEnrollment */
     $row['id'] = $entity->id();
-    $label = $entity->label();
-    if (!empty($label)) {
-      $row['name'] = Link::fromTextAndUrl($label, new Url(
+    $row['name'] = $this->l(
+      $entity->label(),
+      new Url(
         'entity.event_enrollment.edit_form', [
           'event_enrollment' => $entity->id(),
         ]
-      ));
-    }
+      )
+    );
     return $row + parent::buildRow($entity);
   }
 

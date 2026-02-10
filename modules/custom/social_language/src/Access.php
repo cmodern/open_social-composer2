@@ -7,7 +7,6 @@ use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Routing\Access\AccessInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Class Access.
@@ -42,30 +41,15 @@ class Access implements AccessInterface {
    *   The account to check access for.
    * @param string $permission
    *   (optional) The permission.
-   *
-   * @codingStandardsIgnoreStart until https://www.drupal.org/project/coder/issues/3013953 is fixed
-   * @return \Drupal\Core\Access\AccessResult
-   *   Whether to grant or deny access.
-   * @codingStandardsIgnoreEnd
    */
   public function access(RouteMatchInterface $route_match, AccountInterface $account, $permission = NULL) {
     if (count($this->languageManager->getLanguages()) > 1) {
-      // If the permission is null the service was not called,
-      // and we should get it from the route object.
-      if (is_null($permission)) {
-        // Get route object.
-        $route = $route_match->getRouteObject();
-        assert($route instanceof Route);
-
-        // Get defined permission on _social_language_access.
-        $permission = $route->getRequirements()['_social_language_access'];
-      }
-
-      if (is_string($permission)) {
+      if (!empty($permission)) {
         return AccessResult::allowedIfHasPermission($account, $permission);
       }
-
-      return AccessResult::neutral();
+      else {
+        return AccessResult::allowed();
+      }
     }
 
     return AccessResult::forbidden();

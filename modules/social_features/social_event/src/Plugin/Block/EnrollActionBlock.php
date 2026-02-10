@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\group\Entity\GroupRelationship;
+use Drupal\group\Entity\GroupContent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -83,7 +83,7 @@ class EnrollActionBlock extends BlockBase implements ContainerFactoryPluginInter
     if (in_array($route_name, $routes_to_check)) {
       $node = $this->routeMatch->getParameter('node');
       if (!is_null($node) && !is_object($node)) {
-        $node = \Drupal::service('entity_type.manager')->getStorage('node')->load($node);
+        $node = node_load($node);
       }
 
       if (is_object($node) && $node->getType() === 'event') {
@@ -97,7 +97,7 @@ class EnrollActionBlock extends BlockBase implements ContainerFactoryPluginInter
           }
         }
         else {
-          // @todo Always show the block when the user is already enrolled.
+          // @TODO Always show the block when the user is already enrolled.
           return AccessResult::allowed();
         }
       }
@@ -138,15 +138,15 @@ class EnrollActionBlock extends BlockBase implements ContainerFactoryPluginInter
    */
   public function getGroups($node) {
 
-    $group_relationships = GroupRelationship::loadByEntity($node);
+    $groupcontents = GroupContent::loadByEntity($node);
 
     $groups = [];
     // Only react if it is actually posted inside a group.
-    if (!empty($group_relationships)) {
-      foreach ($group_relationships as $group_relationship) {
-        /** @var \Drupal\group\Entity\GroupRelationship $group_relationship */
-        $group = $group_relationship->getGroup();
-        /** @var \Drupal\group\Entity\Group $group*/
+    if (!empty($groupcontents)) {
+      foreach ($groupcontents as $groupcontent) {
+        /* @var \Drupal\group\Entity\GroupContent $groupcontent */
+        $group = $groupcontent->getGroup();
+        /* @var \Drupal\group\Entity\Group $group*/
         $groups[] = $group;
       }
     }

@@ -1,7 +1,7 @@
 label {
   display: inline-block;
   max-width: 100%;
-  margin-bottom: .5rem;
+  margin-bottom: 5px;
 }
 
 .control-label {
@@ -24,7 +24,7 @@ label {
   width: 30px;
   height: 30px;
   padding: 3px;
-  fill: #343434;
+  fill: #4d4d4d;
 }
 
 .control-label--above {
@@ -33,7 +33,7 @@ label {
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   position: relative;
 }
 
@@ -67,11 +67,6 @@ label {
       flex-shrink: 0;
 }
 
-[dir='rtl'] .form-group-inline .btn {
-  margin-left: 0;
-  margin-right: 8px;
-}
-
 .form-group-inline--right {
   -webkit-box-pack: end;
       -ms-flex-pack: end;
@@ -88,24 +83,6 @@ label {
   display: none;
 }
 
-.form-group.checkboxes--nested {
-  outline: red;
-}
-
-.form-group.checkboxes--nested > .form-checkboxes,
-.form-group.checkboxes--nested > .form-group {
-  margin-left: 25px;
-  margin-bottom: .5em;
-}
-
-.form-group.checkboxes--nested .checkboxes__label {
-  margin-bottom: 0;
-}
-
-.checkboxes--nested .checkboxes--nested__child + label {
-  margin-left: 25px;
-}
-
 span.form-required {
   margin: 0 3px;
 }
@@ -118,12 +95,9 @@ span.form-required {
 }
 
 .radio .help-block {
+  padding-left: 25px;
   max-width: none;
   margin-top: 0;
-}
-
-.help-block > a {
-  font-weight: 700;
 }
 
 .form-actions .btn {
@@ -172,12 +146,6 @@ span.form-required {
           order: 10;
 }
 
-[dir='rtl'] .form--default .form-actions .btn-group--primary, [dir='rtl']
-.form--default .form-actions .btn-primary {
-  margin-left: 0;
-  margin-right: auto;
-}
-
 .form-item--error-message {
   margin-top: 10px;
   position: relative;
@@ -191,6 +159,7 @@ span.form-required {
   float: none;
   position: absolute;
   right: 0;
+  top: 0;
   line-height: 16px;
   padding: 0.25rem 0.75rem;
 }
@@ -212,105 +181,6 @@ span.form-required {
 
 .has-error .form-inline {
   margin-bottom: 0;
-}
-
-.field--label-inline .field--label {
-  font-weight: 500;
-  display: inline-block;
-}
-
-.field--label-inline .field--label:after {
-  content: ':';
-}
-
-.field--label-inline .field--label + .field--item {
-  display: inline-block;
-}
-
-.field--label-inline .field--label + .field--item a {
-  font-weight: 400;
-}
-
-.node-event-form #edit-timezone-indication .btn,
-.node-event-edit-form #edit-timezone-indication .btn {
-  cursor: auto;
-}
-
-fieldset.card legend.card__title {
-  width: 100%;
-  top: 1.5rem;
-  margin-bottom: 1.25rem;
-  padding-top: .75rem;
-  padding-bottom: .75rem;
-}
-
-legend.control-label {
-  margin-bottom: 5px;
-}
-
-.form-wrapper .card__block {
-  padding-bottom: 1rem;
-}
-
-details summary {
-  position: relative;
-}
-
-details summary svg.icon-summary-arrow {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  right: 1.25rem;
-  margin-right: 0;
-  top: .75rem;
-}
-
-[dir='rtl'] details summary svg.icon-summary-arrow {
-  right: auto;
-  left: 1.25rem;
-}
-
-details summary:focus, details summary.btn:focus {
-  outline: #0f64ce solid 2px;
-}
-
-details[open] summary {
-  border-bottom: 1px solid #e6e6e6;
-}
-
-details[open] summary svg.icon-summary-arrow {
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
-}
-
-select {
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-}
-
-.social-user-login-form > .form-item > .card__block > .form-item + .help-block {
-  margin-top: calc(-1.5rem + 5px);
-}
-
-.social-user-login-form > .form-item > .card__block > .help-block {
-  margin-bottom: 1.5rem;
-}
-
-.social-user-login-form a,
-.social-user-password-form a,
-.user-register-form a {
-  text-decoration: underline;
-  -webkit-text-decoration-color: var(--link-color);
-          text-decoration-color: var(--link-color);
-}
-
-.social-user-login-form a:hover, .social-user-login-form a:focus,
-.social-user-password-form a:hover,
-.social-user-password-form a:focus,
-.user-register-form a:hover,
-.user-register-form a:focus {
-  color: var(--link-color);
 }
 
 @media (min-width: 600px) {
@@ -339,11 +209,5 @@ select {
   .form-inline .control-label {
     margin-bottom: 0;
     vertical-align: middle;
-  }
-}
-
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  select:focus {
-    font-size: 1rem;
   }
 }

@@ -12,7 +12,7 @@ use Drupal\user\Entity\User;
  *
  * @EmailFrequency(
  *   id = "none",
- *   name = @Translation("Never"),
+ *   name = @Translation("- None -"),
  *   weight = 0,
  *   interval = 0
  * )
@@ -22,6 +22,6 @@ class None extends EmailFrequencyBase {
   /**
    * {@inheritdoc}
    */
-  public function processItem(Activity $activity, Message $message, User $target, $body_text = NULL) {}
+  public function processItem(Activity $activity, Message $message, User $target) {}
 
 }

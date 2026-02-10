@@ -47,14 +47,13 @@
 #}
 {{ attach_library('socialbase/offcanvas')}}
 
-<div{{ attributes }} data-class="exposed-filter-block">
+<div{{ attributes }}>
   <div class="btn--offcanvas-trigger">
-    <a href="#block-filter" class="btn btn-default btn-raised" title="{{ 'Click to open filter'|t }}">
-      <svg class="btn-icon" aria-hidden="true">
-        <title>{% trans %} Open filter {% endtrans %}</title>
+    <a href="#block-filter" class="btn btn-default btn-raised ">
+      <svg class="btn-icon">
         <use xlink:href="#icon-filter_list"></use>
       </svg>
-      {{ label }}
+      {% trans %}Filter{% endtrans %}
     </a>
   </div>
   <div id="block-filter" class="off-canvas off-canvas-right off-canvas-xs-only">
@@ -62,14 +61,14 @@
 
     {{ title_prefix }}
     {% if label %}
-      <h2 {{ title_attributes.addClass('complementary-title', 'no-margin') }}>{{ label }}</h2>
+      <header{{ title_attributes.addClass('complementary-title') }}>{{ label }}</header>
     {% endif %}
     {{ title_suffix }}
 
       <div class="offcanvas-tools">
-        <a href="#" class="btn btn-icon-toggle pull-right" title="{{ 'Click to close search box'|t }}">
-          <svg class="pull-left btn-icon icon-black" aria-hidden="true">
-            <title>{% trans %} Close filter {% endtrans %}</title>
+        <a href="#" class="btn btn-icon-toggle pull-right">
+          <svg class="pull-left btn-icon icon-black">
+            <title> Close</title>
             <use xlink:href="#icon-close"></use>
           </svg>
         </a>

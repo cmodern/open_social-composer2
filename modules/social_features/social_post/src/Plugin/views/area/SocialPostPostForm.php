@@ -10,7 +10,7 @@ use Drupal\Core\Block\BlockManagerInterface;
 /**
  * Provides an area handler which renders a block entity in a certain view mode.
  *
- * @todo Replace with code from views_block_area when module is ported.
+ * TODO Replace with code from views_block_area when module is ported.
  *
  * @ingroup views_area_handlers
  *
@@ -88,7 +88,8 @@ class SocialPostPostForm extends AreaPluginBase {
     foreach ($definitions as $plugin_id => $definition) {
       // Context aware plugins are not currently supported.
       // Core and component plugins can be context-aware
-      // https://www.drupal.org/node/1938688.
+      // https://www.drupal.org/node/1938688
+      // @see \Drupal\ctools\Plugin\Block\EntityView
       if (isset($definition['context'])) {
         continue;
       }
@@ -143,18 +144,16 @@ class SocialPostPostForm extends AreaPluginBase {
     $block_instance = $block_manager->createInstance($this->options['block_id'], []);
 
     $plugin_definition = $block_instance->getPluginDefinition();
-    // Adding a default value to avoid error when it is empty.
-    $plugin_definition_id = $plugin_definition['id'] ?? '';
 
     // Don't return broken block plugin instances.
-    if ($plugin_definition_id == 'broken') {
+    if ($plugin_definition['id'] == 'broken') {
       return NULL;
     }
 
     // Don't return broken block content instances.
-    if ($plugin_definition_id == 'block_content') {
+    if ($plugin_definition['id'] == 'block_content') {
       $uuid = $block_instance->getDerivativeId();
-      if (!\Drupal::service('entity.repository')->loadEntityByUuid('block_content', $uuid)) {
+      if (!\Drupal::entityManager()->loadEntityByUuid('block_content', $uuid)) {
         return NULL;
       }
     }

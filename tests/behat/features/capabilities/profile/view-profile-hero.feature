@@ -1,4 +1,4 @@
-@api
+@account @profile @stability @AN @perfect @api @DS-739 @stability-3
 Feature: Profile information
   Benefit: In order to know which user I am looking at
   Role: LU

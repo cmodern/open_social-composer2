@@ -37,46 +37,6 @@
       justify-content: flex-end;
       position: relative;
       margin-bottom: 1rem;
-
-      &.hidden {
-        display: block !important;
-        height: 0;
-        margin-bottom: 0 !important;
-
-        .form-file {
-          display: none;
-        }
-
-        .form-submit {
-          position: absolute;
-          z-index: 10;
-
-          @include for-phone-only {
-            width: 29px;
-            height: 29px;
-            top: 3px;
-            right: 3px;
-
-            .ajax-throbber {
-              top: 4px;
-              left: 4px;
-            }
-          }
-
-          @include for-tablet-portrait-up {
-            position: relative;
-            top: -2px;
-            left: 150px;
-            right: auto;
-
-            [dir='rtl'] & {
-              left: auto;
-              right: -35px;
-            }
-          }
-        }
-
-      }
     }
 
     @include for-tablet-portrait-up {
@@ -102,24 +62,13 @@
 
   .btn-primary {
     flex: 0 1 auto;
-    margin-left: .5rem;
+    margin-left: 0.5rem;
     align-self: flex-end;
-
-    [dir='rtl'] & {
-      margin-left: 0;
-      margin-right: .5rem;
-    }
 
     @include for-tablet-portrait-up {
       flex-grow: 0;
     }
 
-  }
-
-  .page-node-type-album & {
-    #edit-cancel {
-      margin-left: .5rem;
-    }
   }
 
 }

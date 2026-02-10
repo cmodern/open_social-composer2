@@ -18,11 +18,11 @@ class FormElement extends BaseFormElement {
   /**
    * {@inheritdoc}
    */
-  public function preprocessElement(Element $element, Variables $variables): void {
+  public function preprocessElement(Element $element, Variables $variables) {
 
     // Check if form element is part of
     // email_notifications and add class to label.
-    if ($element->hasProperty('parents') && in_array('email_notifications', $element->getProperty('parents'))) {
+    if (in_array('email_notifications', $element['#parents'])) {
       $variables['label']['#attributes']['class'][] = 'control-label--wide';
     }
 

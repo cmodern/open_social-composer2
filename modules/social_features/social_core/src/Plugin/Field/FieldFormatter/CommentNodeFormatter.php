@@ -10,7 +10,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\comment\CommentManagerInterface;
 use Drupal\comment\CommentInterface;
 use Drupal\Core\Link;
-use Drupal\group\Entity\GroupRelationship;
+use Drupal\group\Entity\GroupContent;
 
 /**
  * Provides a node comment formatter.
@@ -53,13 +53,13 @@ class CommentNodeFormatter extends CommentDefaultFormatter {
 
     // Exclude entities without the set id.
     if (!empty($entity->id())) {
-      $group_contents = GroupRelationship::loadByEntity($entity);
+      $group_contents = GroupContent::loadByEntity($entity);
     }
 
     if (!empty($group_contents)) {
       // Add cache contexts.
-      $elements['#cache']['contexts'][] = 'route.group';
-      $elements['#cache']['contexts'][] = 'user.group_permissions';
+      $elements['#cache']['contexts'][] = 'group.type';
+      $elements['#cache']['contexts'][] = 'group_membership';
 
       $account = \Drupal::currentUser();
       $renderer = \Drupal::service('renderer');
@@ -76,7 +76,7 @@ class CommentNodeFormatter extends CommentDefaultFormatter {
 
     $comments_per_page = $this->getSetting('num_comments');
 
-    if ($access_comments_in_group && $status !== CommentItemInterface::HIDDEN && empty($entity->in_preview) &&
+    if ($access_comments_in_group && $status != CommentItemInterface::HIDDEN && empty($entity->in_preview) &&
       // Comments are added to the search results and search index by
       // comment_node_update_index() instead of by this formatter, so don't
       // return anything if the view mode is search_index or search_result.
@@ -94,21 +94,13 @@ class CommentNodeFormatter extends CommentDefaultFormatter {
         $output['comments'] = [];
 
         if ($comment_count || $this->currentUser->hasPermission('administer comments')) {
-          $comment_settings = $this->getFieldSettings();
-          $output['comments'] = [
-            '#lazy_builder' => [
-              'social_comment.lazy_renderer:renderComments',
-              [
-                $items->getEntity()->getEntityTypeId(),
-                $items->getEntity()->id(),
-                $comment_settings['default_mode'],
-                $items->getName(),
-                $comment_settings['per_page'],
-                $this->getSetting('pager_id'),
-              ],
-            ],
-            '#create_placeholder' => TRUE,
-          ];
+          $mode = $comment_settings['default_mode'];
+          $comments = $this->loadThread($entity, $field_name, $mode, $comments_per_page, FALSE);
+          if ($comments) {
+            $build = $this->viewBuilder->viewMultiple($comments);
+            $output['comments'] += $build;
+          }
+
         }
 
         // Prepare the show all comments link.
@@ -126,7 +118,7 @@ class CommentNodeFormatter extends CommentDefaultFormatter {
         ];
 
         // Set path to node.
-        $link_url = $entity->toUrl('canonical');
+        $link_url = $entity->urlInfo('canonical');
 
         // Attach the attributes.
         $link_url->setOptions($more_link_options);
@@ -202,8 +194,8 @@ class CommentNodeFormatter extends CommentDefaultFormatter {
    * @see Drupal\comment\CommentStorage::loadThead()
    */
   public function loadThread(EntityInterface $entity, $field_name, $mode, $comments_per_page = 0, $pager_id = 0) {
-    // @todo Refactor this to use CommentDefaultFormatter->loadThread with dependency injection instead.
-    $query = \Drupal::database()->select('comment_field_data', 'c');
+    // @TODO: Refactor this to use CommentDefaultFormatter->loadThread with dependency injection instead.
+    $query = db_select('comment_field_data', 'c');
     $query->addField('c', 'cid');
     $query
       ->condition('c.entity_id', $entity->id())
@@ -240,7 +232,7 @@ class CommentNodeFormatter extends CommentDefaultFormatter {
 
     $comments = [];
     if ($cids) {
-      $comments = $this->storage->loadMultiple($cids);
+      $comments = entity_load_multiple('comment', $cids);
     }
 
     return $comments;

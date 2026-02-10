@@ -6,14 +6,11 @@
   font-size: 75%;
   font-weight: 500;
   line-height: 1;
+  text-align: center;
+  white-space: nowrap;
   vertical-align: baseline;
   min-width: 10px;
   max-width: 100%;
-}
-
-[dir='rtl'] .badge {
-  margin-right: 0;
-  margin-left: 3px;
 }
 
 .badge:empty {
@@ -55,8 +52,8 @@ a .badge {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .badge__icon {
@@ -68,11 +65,6 @@ a .badge {
 .badge__icon ~ .badge__label {
   padding-left: 2px;
   font-weight: lighter;
-}
-
-[dir='rtl'] .badge__icon ~ .badge__label {
-  padding-right: 2px;
-  padding-left: 0;
 }
 
 .badge__icon ~ .badge__label:first-of-type {

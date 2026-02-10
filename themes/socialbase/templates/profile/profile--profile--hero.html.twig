@@ -30,8 +30,7 @@
 {% if profile_edit_url %}
   <div class="hero-action-button">
     <a href="{{ profile_edit_url }}" title="{% trans %}Edit profile information{% endtrans %}" class="btn btn-raised btn-default btn-floating">
-      <svg class="icon-medium" aria-hidden="true">
-        <title>{% trans %}Edit profile information{% endtrans %}</title>
+      <svg class="icon-medium">
         <use xlink:href="#icon-edit"></use>
       </svg>
     </a>
@@ -43,7 +42,7 @@
     <header>
       {{ content.field_profile_image }}
       <h1 class="page-title">
-        {{ profile_name }} {{ profile_name_extra }}
+        {{ profile_name }}
       </h1>
     </header>
 

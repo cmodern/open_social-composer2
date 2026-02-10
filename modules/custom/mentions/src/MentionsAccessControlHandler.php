@@ -21,7 +21,7 @@ class MentionsAccessControlHandler extends EntityAccessControlHandler {
     /** @var \Drupal\social_event\EventEnrollmentInterface $entity */
     switch ($operation) {
       case 'view':
-        // @todo Add some permissions.
+        // @TODO: Add some permissions.
         return AccessResult::allowed();
     }
 

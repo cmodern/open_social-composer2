@@ -16,6 +16,7 @@ description: ''
 tag: ''
 base_table: profile
 base_field: profile_id
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -34,14 +35,14 @@ display:
         type: views_query
         options:
           disable_sql_rewrite: false
-          distinct: true
+          distinct: false
           replica: false
           query_comment: ''
           query_tags: {  }
       exposed_form:
         type: basic
         options:
-          submit_button: Filter
+          submit_button: Apply
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'

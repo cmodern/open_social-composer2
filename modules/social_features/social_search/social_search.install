@@ -5,9 +5,23 @@
  * Install, update and uninstall functions for the social_search module.
  */
 
+use Drupal\block\Entity\Block;
+use Drupal\Core\Site\Settings;
+use Drupal\views\Entity\View;
 use Drupal\search_api\Entity\Index;
-use Drupal\search_api\Entity\Server;
-use Drupal\user\RoleInterface;
+use Drupal\user\Entity\Role;
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function social_search_update_dependencies() {
+  // Necessary because we delete a view with geolocation filter.
+  // Needs to be done before system_update_8200 and social_group_update_8005.
+  $dependencies['social_group'][8005] = [
+    'social_search' => 8102,
+  ];
+  return $dependencies;
+}
 
 /**
  * Implements hook_install().
@@ -15,173 +29,271 @@ use Drupal\user\RoleInterface;
  * Perform actions related to the installation of social_search.
  */
 function social_search_install() {
-  // Grant the default permissions for this feature.
-  user_role_grant_permissions(
-    RoleInterface::ANONYMOUS_ID,
-    [
-      'access content search',
-      'access group search',
-    ]
-  );
-  user_role_grant_permissions(
-    RoleInterface::AUTHENTICATED_ID,
-    [
-      'access content search',
-      'access group search',
-    ]
-  );
-  user_role_grant_permissions(
-    'verified',
-    [
-      'access users search',
-    ]
-  );
-  user_role_grant_permissions(
-    'contentmanager',
-    [
-      'access users search',
-    ]
-  );
-  user_role_grant_permissions(
-    'sitemanager',
-    [
-      'access users search',
-    ]
-  );
+
+  // Set some default permissions.
+  _social_search_set_permissions();
 }
 
 /**
- * Implements hook_update_dependencies().
+ * Function to set permissions.
  */
-function social_search_update_dependencies(): array {
-  // Ensure configurations updates runs after the group migration has completed,
-  // but before the group types are removed.
-  $dependencies['social_search'][13002] = [
-    'social_group' => 13000,
-  ];
-  $dependencies['social_group'][13001] = [
-    'social_search' => 13002,
+function _social_search_set_permissions() {
+  $roles = Role::loadMultiple();
+
+  /** @var \Drupal\user\Entity\Role $role */
+  foreach ($roles as $role) {
+    if ($role->id() === 'administrator') {
+      continue;
+    }
+
+    $permissions = _social_search_get_permissions($role->id());
+    user_role_grant_permissions($role->id(), $permissions);
+  }
+}
+
+/**
+ * Return the permissions per role.
+ *
+ * @param string $role
+ *   The role to get the permissions for.
+ *
+ * @return array
+ *   A list of permissions.
+ */
+function _social_search_get_permissions($role) {
+  // Anonymous.
+  $permissions['anonymous'] = [
+    'access content search',
   ];
 
-  return $dependencies;
+  // Authenticated.
+  $permissions['authenticated'] = array_merge($permissions['anonymous'], [
+    'access users search',
+    'access group search',
+  ]);
+
+  // Content manager.
+  $permissions['contentmanager'] = array_merge($permissions['authenticated'], []);
+
+  // Site manager.
+  $permissions['sitemanager'] = array_merge($permissions['contentmanager'], []);
+
+  if (isset($permissions[$role])) {
+    return $permissions[$role];
+  }
+  return [];
 }
 
 /**
- * Implements hook_update_last_removed().
+ * Install new submodule from search_api, to fix our exposed filters.
+ *
+ * See https://www.drupal.org/node/2777483.
  */
-function social_search_update_last_removed() : int {
-  return 11404;
+function social_search_update_8101(array &$sandbox) {
+
+  $modules = [
+    'search_api_views_taxonomy',
+  ];
+  \Drupal::service('module_installer')->install($modules);
+
 }
 
 /**
- * Migrate to SOLR for our search back-end.
+ * Remove deprecated bloks and views from Social Search module.
  */
-function social_search_update_13000() : void {
-  \Drupal::service('module_installer')->install(["search_api_solr"]);
+function social_search_update_8102(array &$sandbox) {
 
-  // Create the server if it doesn't exist.
-  if (Server::load('social_solr') === NULL) {
-    $new_server = Server::create([
-      'langcode' => 'en',
-      'status' => TRUE,
-      'dependencies' => [
-        'module' => [
-          'search_api_solr',
-        ],
-      ],
-      'id' => 'social_solr',
-      'name' => 'Social SOLR',
-      'description' => '',
-      'backend' => 'search_api_solr',
-      'backend_config' => [
-        'connector' => 'standard',
-        'connector_config' => [
-          'scheme' => 'http',
-          'host' => 'solr',
-          'port' => 8983,
-          'path' => '/',
-          'core' => 'drupal',
-          'timeout' => 5,
-          'index_timeout' => 5,
-          'optimize_timeout' => 10,
-          'finalize_timeout' => 30,
-          'commit_within' => 1000,
-          'solr_version' => '',
-          'http_method' => 'AUTO',
-          'jmx' => FALSE,
-          'solr_install_dir' => '/opt/solr',
-        ],
-        'disabled_field_types' => [],
-        'retrieve_data' => FALSE,
-        'highlight_data' => FALSE,
-        'skip_schema_check' => FALSE,
-        'server_prefix' => '',
-        'domain' => 'generic',
-        'optimize' => FALSE,
-        'site_hash' => FALSE,
-      ],
-    ]);
-    $new_server->save();
+  // Remove exposed filter blocks from Social Search Views.
+  $block_ids = [
+    'search_content_block_title',
+    'search_users_block_title',
+    'searchgroupsblock',
+  ];
+  foreach ($block_ids as $block_id) {
+    $block = Block::load($block_id);
+    if ($block instanceof Block) {
+      $block->delete();
+    }
+  }
 
-    // We want to migrate all indices that exist to the new search server.
-    // These are all, content, groups, and users for the distribution but might
-    // be others for SaaS extensions or custom work.
-    foreach (Index::loadMultiple() as $index) {
-      $index->setServer($new_server)->save();
+  // Delete Search Groups (proximity) Views.
+  $view = View::load('search_groups_proximity');
+  if ($view) {
+    $view->delete();
+  }
+
+}
+
+/**
+ * Trigger a search_api re-index.
+ */
+function social_search_update_8103() {
+  $indexes = [
+    'social_all',
+    'social_groups',
+  ];
+
+  foreach ($indexes as $index_id) {
+    $index = Index::load($index_id);
+    if ($index->status()) {
+      $index->clear();
+      $index->reindex();
     }
   }
 }
 
 /**
- * Clean up database search back-end.
+ * Trigger a search_api re-index for social_all.
  */
-function social_search_update_13001() : void {
-  // This is done as a separate hook so that contrib has the possibility of
-  // placing any custom work in between the migration and the clean-up. e.g. to
-  // do any custom work we're not aware of.
-  Server::load("social_database")?->delete();
-
-  \Drupal::service('module_installer')->uninstall(["search_api_db"], FALSE);
+function social_search_update_8104() {
+  $index = Index::load('social_all');
+  if ($index->status()) {
+    $index->clear();
+    $index->reindex();
+  }
 }
 
 /**
- * Remove deprecated group types.
+ * Trigger a search_api re-index for indexes 'all' and 'users'.
  */
-function social_search_update_13002(): ?string {
-  // Allow platforms to opt out of the group migration, for example if they want
-  // to build it themselves and take more scenario's into account than common
-  // Open Social installations will have.
-  if (\Drupal::state()->get('social_group_group_type_migration_opt_out', FALSE)) {
-    \Drupal::logger('social_group')->info('Platform has opted out of group migration.');
-    return NULL;
+function social_search_update_8105() {
+  $indexes = [
+    'social_all',
+    'social_users',
+  ];
+
+  foreach ($indexes as $index_id) {
+    $index = Index::load($index_id);
+    if ($index->status()) {
+      $index->clear();
+      $index->reindex();
+    }
+  }
+}
+
+/**
+ * Revert the Social Search feature so the 'Skip user 1' processor is used.
+ */
+function social_search_update_8106() {
+  // Import the Social Search feature.
+  \Drupal::service('features.manager')->import(['social_search']);
+
+  /** @var \Drupal\search_api\Entity\Index $index */
+  $index = Index::load('social_users');
+
+  // Reindex the user index to ensure for the 'Skip user 1' is also taken care
+  // of for updates.
+  if ($index !== NULL && $index->status()) {
+    $index->clear();
+    $index->reindex();
+  }
+}
+
+/**
+ * Set all existing profiles as default to fix search indexing.
+ */
+function social_search_update_8107(&$sandbox) {
+  if (!isset($sandbox['progress'])) {
+    // This must be the first run. Initialize the sandbox.
+    $sandbox['progress'] = 0;
+    $sandbox['profiles_updated'] = 0;
+
+    // We check for any profiles that do not have is_default set.
+    $sandbox['pids'] = array_values(\Drupal::entityQuery('profile')
+      ->notExists('is_default')
+      ->execute());
+
+    $sandbox['profile_count'] = count($sandbox['pids']);
+
+    \Drupal::logger('sdgc_search')->info('Checking profile status for @count profiles', ['@count' => $sandbox['profile_count']]);
   }
 
-  /** @var \Drupal\update_helper\Updater $updateHelper */
-  $updateHelper = \Drupal::service('update_helper.updater');
+  $batch_size = Settings::get('entity_update_batch_size', 50);
 
-  // Execute configuration update definitions with logging of success.
-  $updateHelper->executeUpdate('social_search', __FUNCTION__);
+  // Try to do 50 each cycle. Never do more than are available.
+  for ($target = $sandbox['progress'] + $batch_size; $sandbox['progress'] < $target && $sandbox['progress'] < $sandbox['profile_count']; $sandbox['progress']++) {
+    $pid = $sandbox['pids'][$sandbox['progress']];
+    $profileStorage = \Drupal::entityTypeManager()->getStorage('profile');
 
-  // Output logged messages to related channel of update execution.
-  return $updateHelper->logger()->output();
+    // Check if the user has a profile already.
+    /** @var \Drupal\profile\Entity\Profile $profile */
+    $profile = $profileStorage->load($pid);
+    if ($profile) {
+      try {
+        $profile->setDefault(TRUE);
+        $profile->save();
+        $sandbox['profiles_updated']++;
+      }
+      catch (Exception $e) {
+        \Drupal::logger('sdgc_search')
+          ->error('Could not update profile for @profile_id', ['@profile_id' => $pid]);
+      }
+    }
+  }
+
+  $sandbox['#finished'] = empty($sandbox['profile_count']) ? 1 : ($sandbox['progress'] / $sandbox['profile_count']);
+
+  // We ran through all of them.
+  if ($sandbox['#finished'] === 1) {
+    \Drupal::logger('social_profile')
+      ->info('Updated profiles for @count profiles', [
+        '@count' => $sandbox['profiles_updated'],
+      ]);
+
+    // If any profiles were updated we might also need to disable and enable the
+    // user search index.
+    if ($sandbox['profiles_updated']) {
+      /** @var \Drupal\search_api\Entity\Index $index */
+      $index = Index::load('social_users');
+
+      // If currently enabled we will first disabled and enable the index.
+      if ($index !== NULL && $index->status()) {
+        $index->disable()->save();
+        $index->enable()->save();
+
+        \Drupal::logger('social_profile')
+          ->info('Disabled and enabled the user search index');
+
+        // Clear and reindex.
+        $index->clear();
+        $index->reindex();
+
+        \Drupal::logger('social_profile')
+          ->info('Reindexed the user search index');
+      }
+    }
+  }
 }
 
 /**
- * Enable a new search api processor "social_search_tagging_query" to indexes.
+ * Uninstall depricated submodule from search_api.
+ *
+ * See https://www.drupal.org/project/search_api/issues/2917399
  */
-function social_search_update_13003(): string {
-  /** @var \Drupal\update_helper\Updater $updateHelper */
-  $updateHelper = \Drupal::service('update_helper.updater');
-  $updateHelper->executeUpdate('social_search', __FUNCTION__);
-  return $updateHelper->logger()->output();
+function social_search_update_8108(array &$sandbox) {
+  $modules = [
+    'search_api_views_taxonomy',
+  ];
+  \Drupal::service('module_installer')->uninstall($modules);
 }
 
 /**
- * Enable a new search api processor "social_search_tagging_query" to indexes.
+ * Update social_all and social_users indices.
  */
-function social_search_update_13004(): string {
-  /** @var \Drupal\update_helper\Updater $updateHelper */
-  $updateHelper = \Drupal::service('update_helper.updater');
-  $updateHelper->executeUpdate('social_search', __FUNCTION__);
-  return $updateHelper->logger()->output();
+function social_search_update_8109() {
+  // First revert the feature.
+  \Drupal::service('features.manager')->import(['social_search']);
+
+  $indexes = [
+    'social_all',
+    'social_users',
+  ];
+
+  foreach ($indexes as $index_id) {
+    $index = Index::load($index_id);
+    if ($index->status()) {
+      $index->clear();
+      $index->reindex();
+    }
+  }
 }

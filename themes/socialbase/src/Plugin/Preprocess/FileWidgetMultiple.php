@@ -16,7 +16,7 @@ class FileWidgetMultiple extends PreprocessBase {
   /**
    * {@inheritdoc}
    */
-  public function preprocess(array &$variables, $hook, array $info): void {
+  public function preprocess(array &$variables, $hook, array $info) {
     parent::preprocess($variables, $hook, $info);
 
     // Remove duplicated ajax wrapper for topic/events files field,

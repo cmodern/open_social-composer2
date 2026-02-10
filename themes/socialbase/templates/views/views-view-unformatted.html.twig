@@ -20,9 +20,6 @@
 {% if title %}
   <h3>{{ title }}</h3>
 {% endif %}
-
-{% block rows %}
-  {% for row in rows %}
-    {{ row.content }}
-  {% endfor %}
-{% endblock %}
+{% for row in rows %}
+  {{ row.content }}
+{% endfor %}

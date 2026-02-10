@@ -1,8 +1,4 @@
 @media (max-width: 599px) {
-  .mentions-input .ui-autocomplete {
-    max-height: 125px;
-    overflow-y: auto;
-  }
   .main-container {
     overflow: auto;
   }

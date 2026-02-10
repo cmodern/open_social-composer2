@@ -108,7 +108,7 @@
       };
 
       MentionsInput.prototype.handleInput = function() {
-        var match, position, query, trigger, value;
+        var match1, match2, position, query, trigger, value;
         position = this.element.caret("pos");
         value = this.element.val().substring(0, position);
         this.refreshMentions(this.cache.value.compiled, this.compile(this.element.val()));
@@ -117,15 +117,20 @@
           compiled: this.compile(this.element.val())
         };
         this.updateValues();
-        trigger = this.mentions.settings.trigger;
-        match = new RegExp("[" + trigger + "]([^" + trigger + "]{" + this.mentions.settings.length.join(",") + "})$").exec(value);
-        if (!match) {
+        match1 = /(\S+)$/g.exec(value);
+        if (!match1) {
           this.element.mentionsAutocomplete("close");
           return;
         }
-        this.start = match.index;
-        this.end = this.start + match[0].length;
-        query = match[1];
+        trigger = this.mentions.settings.trigger;
+        match2 = new RegExp("(?:^|\s)[" + trigger + "]([^" + trigger + "]{" + this.mentions.settings.length.join(",") + "})$").exec(match1[0]);
+        if (!match2) {
+          this.element.mentionsAutocomplete("close");
+          return;
+        }
+        this.start = match1.index;
+        this.end = this.start + match2[0].length;
+        query = match2[1];
         if (this.timer) {
           window.clearTimeout(this.timer);
         }
@@ -302,29 +307,18 @@
           })(this),
           appendTo: this.element.parent(),
           open: function(event, ui) {
-            var offset, position, top, bodyHeight;
+            var offset, position, top;
             position = $(editor.document.$.body).caret("position", {
               iframe: editor.window.$.frameElement
             });
             offset = $(editor.document.$.body).caret("offset", {
               iframe: editor.window.$.frameElement
             });
-            bodyHeight = $('.cke_contents').height();
             top = 5 + position.height + position.top + $(editor.ui.space("top").$).outerHeight(true) + offset.height;
-
-            function menshinBlockPosition(X, Y) {
-              element.data("ui-mentionsAutocomplete").menu.element.css({
-                left: X,
-                top: Y
-              });
-            }
-
-            if(top >= bodyHeight) {
-              menshinBlockPosition(0, bodyHeight + 45);
-            } else {
-              menshinBlockPosition(0, top);
-            }
-
+            element.data("ui-mentionsAutocomplete").menu.element.css({
+              left: 0,
+              top: top
+            });
             if (mentions.settings.autocomplete.open) {
               return mentions.settings.autocomplete.open.call(this, event, ui);
             }
@@ -338,11 +332,6 @@
             return _this.handleInput();
           };
         })(this));
-        this.editor.document.on("keyup", (function(_this) {
-          return function() {
-            return _this.handleInput();
-          };
-        })(this));
         return $(this.editor.window.$.document.body).on("click", (function(_this) {
           return function() {
             return _this.element.mentionsAutocomplete("close");
@@ -351,7 +340,7 @@
       };
 
       MentionsCKEditor.prototype.handleInput = function() {
-        var match, node, position, query, selection, trigger, value;
+        var match1, match2, node, position, query, selection, trigger, value;
         this.refreshMentions();
         this.updateValues();
         selection = this.editor.window.$.getSelection();
@@ -359,18 +348,23 @@
         value = node.textContent;
         position = selection.focusOffset;
         value = value.substring(0, position);
+        match1 = /(\S+)$/g.exec(value);
         if (this.timer) {
           window.clearTimeout(this.timer);
         }
-        trigger = this.mentions.settings.trigger;
-        match = new RegExp("[" + trigger + "]([^" + trigger + "]{" + this.mentions.settings.length.join(",") + "})$").exec(value);
-        if (!match) {
+        if (!match1) {
           this.element.mentionsAutocomplete("close");
           return;
         }
-        this.start = match.index;
-        this.end = this.start + match[0].length;
-        query = match[1];
+        trigger = this.mentions.settings.trigger;
+        match2 = new RegExp("(?:^|\s)[" + trigger + "]([^" + trigger + "]{" + this.mentions.settings.length.join(",") + "})$").exec(match1[0]);
+        if (!match2) {
+          this.element.mentionsAutocomplete("close");
+          return;
+        }
+        this.start = match1.index;
+        this.end = this.start + match2[0].length;
+        query = match2[1];
         return this.timer = window.setTimeout((function(_this) {
           return function() {
             return _this.mentions.fetchData(query, function(response) {
@@ -386,8 +380,7 @@
       MentionsCKEditor.prototype.createHiddenField = function() {
         this.hidden = $("<input />", {
           type: "hidden",
-          name: this.element.attr("name"),
-          value: this.element.text()
+          name: this.element.attr("name")
         });
         return this.element.after(this.hidden).removeAttr("name");
       };
@@ -455,16 +448,15 @@
       };
 
       MentionsCKEditor.prototype.getValue = function() {
-        var container, j, len, markup, mention, ref, reg;
-        container = this.editor.getData();
+        var $container, j, len, markup, mention, ref;
+        $container = $(this.editor.document.$.body.cloneNode(true));
         ref = this.cache.mentions;
         for (j = 0, len = ref.length; j < len; j++) {
           mention = ref[j];
           markup = this.mentions.settings.markup(mention.item);
-          reg = new RegExp("<mention id=\"" + mention.item._id + "\">[^>]+>");
-          container = container.replace(reg, markup);
+          $("mention#" + mention.item._id, $container).before(markup).remove();
         }
-        return container;
+        return $container.html();
       };
 
       MentionsCKEditor.prototype.setValue = function(value) {
@@ -533,3 +525,4 @@
 
 }).call(this);
 
+//# sourceMappingURL=jquery.mentions.js.map

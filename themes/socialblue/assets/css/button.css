@@ -7,17 +7,17 @@
 }
 
 .btn-default {
-  color: #343434;
+  color: #4d4d4d;
   background-color: #ffffff;
   border-color: #adadad;
-  fill: #343434;
+  fill: #4d4d4d;
 }
 
 .btn-default:focus, .btn-default.focus, .btn-default:hover, .btn-default:active, .btn-default.active,
 .open > .btn-default.dropdown-toggle {
   background-color: #e6e6e6;
   border-color: #8e8e8e;
-  color: #343434;
+  color: #4d4d4d;
 }
 
 .btn-default.disabled:hover, .btn-default.disabled:focus, .btn-default.disabled.focus, .btn-default[disabled]:hover, .btn-default[disabled]:focus, .btn-default[disabled].focus,
@@ -121,55 +121,14 @@ fieldset[disabled] .btn-flat.focus {
 
 .btn-flat:hover, .btn-flat:focus,
 .open .dropdown-toggle .btn-flat {
-  color: inherit;
-  background-color: #ffffff;
-  border-color: #adadad;
-  fill: inherit;
+  border-color: transparent;
   color: #1a8dbe;
   fill: #1a8dbe;
 }
 
-.btn-flat:hover:focus, .btn-flat:hover.focus, .btn-flat:hover:hover, .btn-flat:hover:active, .btn-flat:hover.active,
-.open > .btn-flat:hover.dropdown-toggle, .btn-flat:focus:focus, .btn-flat:focus.focus, .btn-flat:focus:hover, .btn-flat:focus:active, .btn-flat:focus.active,
-.open > .btn-flat:focus.dropdown-toggle,
-.open .dropdown-toggle .btn-flat:focus,
-.open .dropdown-toggle .btn-flat.focus,
-.open .dropdown-toggle .btn-flat:hover,
-.open .dropdown-toggle .btn-flat:active,
-.open .dropdown-toggle .btn-flat.active,
-.open >
-.open .dropdown-toggle .btn-flat.dropdown-toggle {
-  background-color: #e6e6e6;
-  border-color: #8e8e8e;
-  color: inherit;
-}
-
-.btn-flat:hover.disabled:hover, .btn-flat:hover.disabled:focus, .btn-flat:hover.disabled.focus, .btn-flat:hover[disabled]:hover, .btn-flat:hover[disabled]:focus, .btn-flat:hover[disabled].focus,
-fieldset[disabled] .btn-flat:hover:hover,
-fieldset[disabled] .btn-flat:hover:focus,
-fieldset[disabled] .btn-flat:hover.focus, .btn-flat:focus.disabled:hover, .btn-flat:focus.disabled:focus, .btn-flat:focus.disabled.focus, .btn-flat:focus[disabled]:hover, .btn-flat:focus[disabled]:focus, .btn-flat:focus[disabled].focus,
-fieldset[disabled] .btn-flat:focus:hover,
-fieldset[disabled] .btn-flat:focus:focus,
-fieldset[disabled] .btn-flat:focus.focus,
-.open .dropdown-toggle .btn-flat.disabled:hover,
-.open .dropdown-toggle .btn-flat.disabled:focus,
-.open .dropdown-toggle .btn-flat.disabled.focus,
-.open .dropdown-toggle .btn-flat[disabled]:hover,
-.open .dropdown-toggle .btn-flat[disabled]:focus,
-.open .dropdown-toggle .btn-flat[disabled].focus,
-fieldset[disabled]
-.open .dropdown-toggle .btn-flat:hover,
-fieldset[disabled]
-.open .dropdown-toggle .btn-flat:focus,
-fieldset[disabled]
-.open .dropdown-toggle .btn-flat.focus {
-  background-color: #ffffff;
-  border-color: #adadad;
-}
-
 .btn-flat:hover .icon-inline, .btn-flat:focus .icon-inline,
 .open .dropdown-toggle .btn-flat .icon-inline {
-  fill: #343434;
+  fill: #4d4d4d;
 }
 
 .btn-flat:active, .btn-flat.active {
@@ -258,29 +217,26 @@ fieldset[disabled] .btn--linkedin.focus {
   border-color: #0077b5;
 }
 
-.btn.btn--google {
-  -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
-          box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
-  color: rgba(0, 0, 0, 0.54);
-  background: url("../../components/02-atoms/button/icons/google_signin_buttons/google-sign-in.svg") no-repeat 9px center;
+.btn--google {
+  color: #fff;
+  background-color: #d34836;
+  border-color: #d34836;
+  fill: #fff;
 }
 
-.btn.btn--google:hover, .btn.btn--google:focus {
-  outline: 4px solid rgba(66, 133, 244, 0.3);
+.btn--google:focus, .btn--google.focus, .btn--google:hover, .btn--google:active, .btn--google.active,
+.open > .btn--google.dropdown-toggle {
+  background-color: #b03626;
+  border-color: #a73425;
+  color: #fff;
 }
 
-.btn.btn--google:active {
-  background-color: #eee;
-}
-
-.btn.btn--google:disabled, .btn.btn--google[disabled] {
-  color: rgba(0, 0, 0, 0.4);
-  background-color: rgba(0, 0, 0, 0.08);
-  background-image: url("../../components/02-atoms/button/icons/google_signin_buttons/google-sign-in-disabled.svg");
-}
-
-.btn.btn--google:disabled:hover, .btn.btn--google:disabled:focus, .btn.btn--google[disabled]:hover, .btn.btn--google[disabled]:focus, .btn.btn--google:active:hover, .btn.btn--google:active:focus {
-  outline: none;
+.btn--google.disabled:hover, .btn--google.disabled:focus, .btn--google.disabled.focus, .btn--google[disabled]:hover, .btn--google[disabled]:focus, .btn--google[disabled].focus,
+fieldset[disabled] .btn--google:hover,
+fieldset[disabled] .btn--google:focus,
+fieldset[disabled] .btn--google.focus {
+  background-color: #d34836;
+  border-color: #d34836;
 }
 
 .btn--twitter {
@@ -311,30 +267,4 @@ fieldset[disabled] .btn--twitter.focus {
 
 .btn-xs {
   border-radius: 5px;
-}
-
-.shariff-button {
-  border-radius: 10px;
-}
-
-@media (max-width: 599px) {
-  .social-auth-buttons > .card__block {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
-  }
-  .social-auth-buttons > .card__block .btn {
-    -webkit-box-ordinal-group: 2;
-        -ms-flex-order: 1;
-            order: 1;
-  }
-  .social-auth-buttons > .card__block .btn.btn--google {
-    -webkit-box-ordinal-group: 1;
-        -ms-flex-order: 0;
-            order: 0;
-  }
 }

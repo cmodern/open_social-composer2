@@ -2,31 +2,71 @@
 
 namespace Drupal\social_demo;
 
-use Drupal\Core\Entity\EntityBase;
+use Drupal\Core\Entity\Entity;
 use Drupal\flag\Entity\Flagging;
+use Drupal\user\UserStorageInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\node\NodeInterface;
-use Drupal\group\Entity\GroupRelationship;
+use Drupal\group\Entity\GroupContent;
+use Drush\Log\LogLevel;
 
 /**
- * Abstract class for creating demo nodes.
+ * Class DemoNode.
  *
  * @package Drupal\social_demo
  */
 abstract class DemoNode extends DemoContent {
 
   /**
+   * The user storage.
+   *
+   * @var \Drupal\user\UserStorageInterface
+   */
+  protected $userStorage;
+
+  /**
+   * The entity storage.
+   *
+   * @var \Drupal\Core\entity\EntityStorageInterface
+   */
+  protected $groupStorage;
+
+  /**
    * {@inheritdoc}
    */
-  public function createContent($generate = FALSE, $max = NULL) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, DemoContentParserInterface $parser, UserStorageInterface $user_storage, EntityStorageInterface $group_storage) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->parser = $parser;
+    $this->groupStorage = $group_storage;
+    $this->userStorage = $user_storage;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('social_demo.yaml_parser'),
+      $container->get('entity.manager')->getStorage('user'),
+      $container->get('entity.manager')->getStorage('group')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function createContent() {
     $data = $this->fetchData();
-    if ($generate === TRUE) {
-      $data = $this->scrambleData($data, $max);
-    }
 
     foreach ($data as $uuid => $item) {
       // Must have uuid and same key value.
       if ($uuid !== $item['uuid']) {
-        $this->loggerChannelFactory->get('social_demo')->error("Node with uuid: {$uuid} has a different uuid in content.");
+        drush_log(dt("Node with uuid: {$uuid} has a different uuid in content."), LogLevel::ERROR);
         continue;
       }
 
@@ -36,7 +76,7 @@ abstract class DemoNode extends DemoContent {
       ]);
 
       if (reset($nodes)) {
-        $this->loggerChannelFactory->get('social_demo')->warning("Node with uuid: {$uuid} already exists.");
+        drush_log(dt("Node with uuid: {$uuid} already exists."), LogLevel::WARNING);
         continue;
       }
 
@@ -44,7 +84,7 @@ abstract class DemoNode extends DemoContent {
       $account = $this->loadByUuid('user', $item['uid']);
 
       if (!$account) {
-        $this->loggerChannelFactory->get('social_demo')->error("Account with uuid: {$item['uid']} doesn't exists.");
+        drush_log(dt("Account with uuid: {$item['uid']} doesn't exists."), LogLevel::ERROR);
         continue;
       }
 
@@ -66,7 +106,7 @@ abstract class DemoNode extends DemoContent {
         $this->content[$entity->id()] = $entity;
 
         if (!empty($item['group'])) {
-          $this->createGroupRelationship($entity, $item['group']);
+          $this->createGroupContent($entity, $item['group']);
         }
 
         if (isset($item['followed_by'])) {
@@ -128,7 +168,7 @@ abstract class DemoNode extends DemoContent {
    * @param string $uuid
    *   UUID of a group.
    */
-  public function createGroupRelationship(NodeInterface $entity, $uuid) {
+  public function createGroupContent(NodeInterface $entity, $uuid) {
     // Load the group.
     $groups = $this->groupStorage->loadByProperties([
       'uuid' => $uuid,
@@ -136,14 +176,11 @@ abstract class DemoNode extends DemoContent {
 
     if ($groups) {
       $group = current($groups);
-      // Get the group relation plugin.
+      // Get the group content plugin.
       $plugin_id = 'group_node:' . $entity->bundle();
-      $relation_type_id = \Drupal::entityTypeManager()
-        ->getStorage('group_content_type')
-        ->getRelationshipTypeId($group->getGroupType()->id(), $plugin_id);
-
-      $group_content = GroupRelationship::create([
-        'type' => $relation_type_id,
+      $plugin = $group->getGroupType()->getContentPlugin($plugin_id);
+      $group_content = GroupContent::create([
+        'type' => $plugin->getContentTypeConfigId(),
         'gid' => $group->id(),
         'entity_id' => $entity->id(),
       ]);
@@ -154,12 +191,12 @@ abstract class DemoNode extends DemoContent {
   /**
    * The function that checks and creates a follow on an entity.
    *
-   * @param \Drupal\Core\Entity\EntityBase $entity
+   * @param \Drupal\Core\Entity\Entity $entity
    *   The related entity.
    * @param array $uuids
    *   The array containing uuids.
    */
-  public function createFollow(EntityBase $entity, array $uuids) {
+  public function createFollow(Entity $entity, array $uuids) {
 
     foreach ($uuids as $uuid) {
       // Load the user(s) by the given uuid(s).
@@ -188,30 +225,6 @@ abstract class DemoNode extends DemoContent {
       }
     }
 
-  }
-
-  /**
-   * Scramble it.
-   *
-   * @param array $data
-   *   The data array to scramble.
-   * @param int|null $max
-   *   How many items to generate.
-   */
-  public function scrambleData(array $data, $max = NULL) {
-    $new_data = [];
-    for ($i = 0; $i < $max; $i++) {
-      // Get a random item from the array.
-      $old_uuid = array_rand($data);
-      $item = $data[$old_uuid];
-      $uuid = 'ScrambledDemo_' . time() . '_' . $i;
-      $item['uuid'] = $uuid;
-      $item['title'] = $uuid;
-      $item['body'] = $uuid;
-      $item['created'] = '-' . random_int(1, 2 * 365) . ' day|' . random_int(0, 23) . ':' . random_int(0, 59);
-      $new_data[$uuid] = $item;
-    }
-    return $new_data;
   }
 
 }

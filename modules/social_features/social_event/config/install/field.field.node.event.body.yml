@@ -10,7 +10,7 @@ id: node.event.body
 field_name: body
 entity_type: node
 bundle: event
-label: Description
+label: Body
 description: ''
 required: true
 translatable: true
@@ -18,5 +18,4 @@ default_value: {  }
 default_value_callback: ''
 settings:
   display_summary: false
-  required_summary: false
 field_type: text_with_summary

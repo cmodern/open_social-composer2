@@ -2,15 +2,15 @@
 
 {% set attributes = attributes.addClass('btn--comment-submit') %}
 
-{% block input %}
-  {% apply spaceless %}
+{% spaceless %}
+  {% block input %}
     <button{{ attributes.addClass(classes) }}>
       <span class="label">{{ label }}</span>
-      <svg class="btn-icon" aria-hidden="true">
-        <title>{% trans %} Send comment {% endtrans %}</title>
+      <svg class="btn-icon">
         <use xlink:href="#icon-send"></use>
       </svg>
 
     </button>{{ children }}
-  {% endapply %}
-{% endblock %}
+
+  {% endblock %}
+{% endspaceless %}

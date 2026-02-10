@@ -26,27 +26,20 @@
  */
 #}
 {{ attach_library('socialbase/comment')}}
-{{ attach_library('socialbase/pagination') }}
 
 {# extra condition to make sure the card is not shown when there are no comments and comments are closed #}
-{% if (comment_count > 0) or (comment_form and comment_open) %}
+{% if comments or comment_form %}
 
-  <a id="section-comments"></a>
-  <section{{ attributes }}>
+  <section{{ attributes.setAttribute('id', 'section-comments') }}>
 
     {% if not label_hidden %}
       {{ title_prefix }}
-      {# extra condition to add the count when Ajax is used see src/Plugin/Preprocess/Field.php #}
-      {% if comment_count is not empty and comment_count > 0 %}
-        <h4{{ title_attributes.addClass('section-title') }}>{{ label }} ({{ comment_count }})</h4>
-      {% else %}
-        <h4{{ title_attributes.addClass('section-title') }}>{{ label }}</h4>
-      {% endif %}
+      <h4{{ title_attributes.addClass('section-title') }}>{{ label }}</h4>
       {{ title_suffix }}
     {% endif %}
 
     <div class="card">
-      <div class="card__block card__comment_section">
+      <div class="card__block">
 
         {{ comments }}
 

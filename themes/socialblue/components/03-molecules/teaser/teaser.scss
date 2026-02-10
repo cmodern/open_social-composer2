@@ -6,11 +6,6 @@
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
     background: $gray-lighter;
-
-    [dir='rtl'] & {
-      border-top-left-radius: initial;
-      border-bottom-left-radius: initial;
-    }
   }
 
 }
@@ -28,51 +23,4 @@
 
 .teaser__teaser-type-icon {
   fill: white;
-}
-
-.teaser__label {
-  >  * {
-    margin-right: .5rem;
-    margin-bottom: .5rem;
-  }
-}
-
-.teaser {
-  // Remove 'padding-left' from teaser badge if teaser badge(first-child) does not use 'background-color'.
-  .teaser__badge {
-    &:first-child {
-      padding-left: 0;
-
-      &.badge-default,
-      &.badge-primary,
-      &.badge-secondary,
-      &.badge-accent,
-      &.badge-success,
-      &.badge-info,
-      &.badge-warning,
-      &.badge-danger,
-      &.badge-active {
-        padding-left: 1em;
-      }
-    }
-  }
-
-  .badge__label {
-    color: $default-color;
-  }
-
-  // Follow user button.
-  .flag-follow-user {
-    position: relative;
-
-    .js-flag-message {
-      display: none;
-    }
-
-    .ajax-throbber {
-      position: absolute;
-      top: 4px;
-      right: 10px;
-    }
-  }
 }

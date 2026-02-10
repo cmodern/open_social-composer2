@@ -9,7 +9,6 @@ dependencies:
     - field.field.node.event.field_event_comments
     - field.field.node.event.field_event_date
     - field.field.node.event.field_event_date_end
-    - field.field.node.event.field_event_enroll
     - field.field.node.event.field_event_image
     - field.field.node.event.field_event_location
     - field.field.node.event.field_files
@@ -86,11 +85,8 @@ content:
 hidden:
   body: true
   field_event_comments: true
-  field_event_enroll: true
   field_files: true
-  field_hide_enrollments: true
-  groups: true
   like_and_dislike: true
-  search_api_excerpt: true
-  field_event_all_day: true
-  field_event_send_confirmation: true
+  groups: true
+  groups_type_closed_group: true
+  groups_type_open_group: true

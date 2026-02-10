@@ -11,54 +11,49 @@
   height: 0;
   margin-left: 2px;
   vertical-align: middle;
-  border-top: $caret-width-large dashed;
-  border-top: $caret-width-large solid \9
+  border-top: $caret-width-base dashed;
+  border-top: $caret-width-base solid \9
 ; // IE8
-  border-right: $caret-width-large solid transparent;
-  border-left: $caret-width-large solid transparent;
+  border-right: $caret-width-base solid transparent;
+  border-left: $caret-width-base solid transparent;
 }
 
 // The dropdown wrapper (div)
 .dropup,
 .dropdown {
   position: relative;
-
-  @include for-phone-only {
-    &.has-alert > a:before {
-      content: '';
-      position: absolute;
-      top: 11px;
-      right: 7px;
-      width: 12px;
-      height: 12px;
-      background-color: $gray-light;
-      border-radius: 50%;
+  &.has-alert {
+    > a {
+      @include for-phone-only {
+        &:before {
+          content: '';
+          position: absolute;
+          top: 11px;
+          right: 7px;
+          width: 12px;
+          height: 12px;
+          background-color: $gray-light;
+          border-radius: 50%;
+        }
+      }
     }
   }
+}
 
-  // There are now items that don't have their own top level icon so these
-  // should show notifications in the user menu also on desktop.
-  &.has-alert.has-alert--desktop > a:before {
-    content: '';
-    position: absolute;
-    top: 11px;
-    right: 7px;
-    width: 12px;
-    height: 12px;
-    background-color: $gray-light;
-    border-radius: 50%;
-  }
+// Prevent the focus on the dropdown toggle when closing dropdowns
+.dropdown-toggle:focus {
+  outline: 0;
 }
 
 // The dropdown menu (ul)
 .dropdown-menu {
   position: absolute;
-  top: 0;
+  top: 100%;
   left: 0;
   z-index: $zindex-dropdown;
   display: none; // none by default, but block on "open" of the menu
   float: left;
-  min-width: 185px;
+  min-width: 160px;
   max-width: 500px;
   padding: 5px 0;
   margin: 2px 0 0; // override default ul
@@ -68,14 +63,6 @@
   background-color: $dropdown-bg;
   @include z-depth-4;
   background-clip: padding-box;
-
-  @include for-tablet-landscape-up {
-    top: 100%;
-  }
-
-  [dir='rtl'] & {
-    text-align: right; // Ensures proper alignment if parent has it changed (e.g., modal footer)
-  }
 
   // Aligns the dropdown menu to right
   //
@@ -107,54 +94,26 @@
 
   // Links within the dropdown menu
 
-  li {
-    > a,
-    > span {
-      padding: 8px 10px;
-      display: block;
-      clear: both;
-      line-height: $line-height-base;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: $gray;
+  li > a {
+    padding: 8px 10px;
+    display: block;
+    clear: both;
+    line-height: $line-height-base;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $gray;
 
-      &:hover {
-        background-color: $gray-lightest;
-      }
+    &:hover {
+      background-color: $gray-lightest;
+    }
 
-      @include for-tablet-portrait-up {
-        padding: 4px 10px 4px 15px;
-      }
+    @include for-tablet-portrait-up {
+      padding: 4px 10px 4px 15px;
     }
 
   }
 
-}
-
-// DropDown Menu styles inside the table.
-.table-responsive {
-  tr {
-    td:last-child {
-      .dropdown-menu {
-        left: auto;
-        right: 0;
-      }
-    }
-  }
-}
-
-// Dropdown menu with the popover behavior.
-.dropdown-menu.dropdown-popover {
-  max-width: 187px;
-
-  li {
-    a {
-      font-size: 1rem;
-      line-height: 24px;
-      font-weight: 500;
-    }
-  }
 }
 
 // Hover/Focus state
@@ -179,17 +138,15 @@
 //
 // Gray out text and ensure the hover/focus state remains gray
 
-.dropdown-menu > .disabled {
-  > a,
-  > span {
-    // Nuke hover/focus effects
-    &:hover,
-    &:focus {
-      text-decoration: none;
-      background-color: transparent;
-      background-image: none; // Remove CSS gradient
-      cursor: $cursor-disabled;
-    }
+.dropdown-menu > .disabled > a {
+
+  // Nuke hover/focus effects
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    background-color: transparent;
+    background-image: none; // Remove CSS gradient
+    cursor: $cursor-disabled;
   }
 }
 
@@ -198,6 +155,11 @@
   // Show the menu
   > .dropdown-menu {
     display: block;
+  }
+
+  // Remove the outline when :focus is triggered
+  > a {
+    outline: 0;
   }
 }
 
@@ -208,11 +170,6 @@
 .dropdown-menu-right {
   left: auto; // Reset the default from `.dropdown-menu`
   right: 0;
-
-  [dir='rtl'] & {
-    right: auto;
-    left: 0;
-  }
 }
 
 // With v3, we enabled auto-flipping if you have a dropdown within a right
@@ -250,11 +207,6 @@
 .pull-right > .dropdown-menu {
   right: 0;
   left: auto;
-
-  [dir='rtl'] & {
-    right: auto;
-    left: 0;
-  }
 }
 
 // Allow for dropdowns to go bottom up (aka, dropup-menu)
@@ -289,11 +241,6 @@
     .dropdown-menu {
       right: 0;
       left: auto;
-
-      [dir='rtl'] & {
-        right: auto;
-        left: 0;
-      }
     }
     // Necessary for overrides of the default right aligned menu.
     // Will remove come v4 in all likelihood.
@@ -384,49 +331,5 @@
 
   p {
     margin-bottom: 0;
-  }
-}
-
-// Dropdown without js.
-html:not(.js) {
-
-  .dropdown:focus .dropdown-menu,
-  .dropdown:hover .dropdown-menu,
-  .comment__actions:hover .dropdown-menu,
-  .comment__actions:hover .dropdown-menu,
-  .dropdown-menu:hover {
-    display: block;
-  }
-
-  .dropdown {
-    cursor: pointer;
-
-    &:focus {
-      outline: none;
-    }
-
-    .dropdown-toggle {
-      pointer-events: none;
-      z-index: -1;
-    }
-  }
-}
-
-/* IE11 */
-@media (min-width: 600px) and (-ms-high-contrast:none) {
-  *::-ms-backdrop, .dropdown-menu .media-body { padding-right: 17px; }
-}
-
-// Behaviors arrow on the dropdown menu
-.dropdown,
-.enroll-action-form,
-.hero-footer__cta {
-  .caret {
-    transition: transform 0.1s;
-  }
-
-  &.open .caret,
-  .open .caret {
-    transform: rotate(180deg);
   }
 }

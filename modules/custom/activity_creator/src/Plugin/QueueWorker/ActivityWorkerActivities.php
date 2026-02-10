@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   cron = {"time" = 60}
  * )
  *
- * @todo Change the weight to make sure it runs after the logger
+ * @TODO Change the weight to make sure it runs after the logger
  * is this possible? See Cron.php::processQueues() and getDefinitions().
  *
  * This QueueWorker is responsible for creating Activity entities and will
@@ -54,7 +54,7 @@ class ActivityWorkerActivities extends ActivityWorkerBase implements ContainerFa
   /**
    * {@inheritdoc}
    *
-   * @todo Can one item have multiple destinations; if not: split.
+   * @TODO Can one item have multiple destinations; if not: split.
    */
   public function processItem($data) {
     // Let the factory work.

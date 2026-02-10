@@ -1,6 +1,7 @@
-admin.people:
-  css:
-    theme:
-      assets/css/views-exposed-form--admin-people.css: {}
+user_form_protection:
+  version: VERSION
   js:
-    assets/js/views-exposed-form--admin-people.js: {}
+    js/user-form-protection.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

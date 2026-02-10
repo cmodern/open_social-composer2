@@ -1,12 +1,6 @@
-alternative_frontpage.menu:
+alternative_frontpage.settings:
   title: 'Alternative Frontpage Settings'
-  route_name: entity.alternative_frontpage.collection
+  route_name: alternative_frontpage.settings
   description: 'Set an alternative frontpage for authenticated users.'
   parent: system.admin_config_system
   weight: 99
-alternative_frontpage.social_core.dashboard.configuration.settings:
-  title: 'Alternative Frontpage Settings'
-  parent: social_core.dashboard.configuration
-  description: 'Choose the desired frontpage for the site. You can set an alternative frontpage for logged-in users.'
-  route_name: entity.alternative_frontpage.collection
-  weight: -99

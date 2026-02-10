@@ -296,9 +296,5 @@
     }
   };
 
-  Drupal.behaviors.photoSwipe = {
-    attach: function (context, settings) {
-      initPhotoSwipeFromDOM('.photoswipe-gallery');
-    }
-  };
+  initPhotoSwipeFromDOM('.photoswipe-gallery');
 })(jQuery);

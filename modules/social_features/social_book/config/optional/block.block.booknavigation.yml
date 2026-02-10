@@ -19,8 +19,8 @@ settings:
   label_display: visible
   block_mode: 'book pages'
 visibility:
-  entity_bundle:node:
-    id: 'entity_bundle:node'
+  node_type:
+    id: node_type
     bundles:
       book: book
     negate: false

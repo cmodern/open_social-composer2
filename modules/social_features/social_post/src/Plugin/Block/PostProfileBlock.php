@@ -2,19 +2,14 @@
 
 namespace Drupal\social_post\Plugin\Block;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\Core\Routing\CurrentRouteMatch;
-use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\social_group\CurrentGroupService;
+use Drupal\Core\Extension\ModuleHandler;
 
 /**
  * Provides a 'PostProfileBlock' block.
  *
  * @Block(
- *   id = "post_profile_block",
- *   admin_label = @Translation("Post on profile of others block"),
+ *  id = "post_profile_block",
+ *  admin_label = @Translation("Post on profile of others block"),
  * )
  */
 class PostProfileBlock extends PostBlock {
@@ -22,40 +17,21 @@ class PostProfileBlock extends PostBlock {
   /**
    * {@inheritdoc}
    */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    EntityTypeManagerInterface $entity_type_manager,
-    AccountProxyInterface $current_user,
-    FormBuilderInterface $form_builder,
-    ModuleHandlerInterface $module_handler,
-    CurrentRouteMatch $route_match,
-    CurrentGroupService $current_group_service,
-  ) {
-    parent::__construct(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $entity_type_manager,
-      $current_user,
-      $form_builder,
-      $module_handler,
-      $route_match,
-      $current_group_service,
-    );
-
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, $entityTypeManager, $currentUser, $formBuilder, ModuleHandler $moduleHandler) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entityTypeManager, $currentUser, $formBuilder, $moduleHandler);
     $this->entityType = 'post';
     $this->bundle = 'post';
     $this->formDisplay = 'profile';
+    $this->currentUser = $currentUser;
 
     // Check if current user is the same as the profile.
     // In this case use the default form display.
-    $account = $this->routeMatch->getParameter('user');
     $uid = $this->currentUser->id();
-    if (isset($account) && ($account === $uid || (is_object($account) && $uid === $account->id()))) {
+    $account_profile = \Drupal::routeMatch()->getParameter('user');
+    if (isset($account_profile) && ($account_profile === $uid || (is_object($account_profile) && $uid === $account_profile->id()))) {
       $this->formDisplay = 'default';
     }
+
   }
 
 }

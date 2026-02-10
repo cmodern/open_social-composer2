@@ -7,22 +7,13 @@
 }
 
 .card__title {
-  color: #555555;
+  color: #777;
   font-weight: 500;
-}
-
-.card__title svg {
-  display: inline-block;
-  vertical-align: middle;
-  width: 19px;
-  height: 19px;
-  margin-right: 7px;
+  text-transform: uppercase;
 }
 
 .region--complementary .card__title,
-.region--complementary .card__actionbar,
-.paragraph--block .secondary-col .card__title,
-.paragraph--block .secondary-col .card__actionbar {
+.region--complementary .card__actionbar {
   text-align: center;
 }
 
@@ -47,9 +38,4 @@
 
 .card__link:hover {
   color: #1a8dbe;
-}
-
-.card.block-data-policy .card__title,
-.card.block-data-policy .card__block {
-  width: 100%;
 }

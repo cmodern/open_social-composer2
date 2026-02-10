@@ -1,4 +1,4 @@
-@api
+@account @profile @stability @AN @perfect @DS-701 @api @stability-1
 Feature: I want to have a profile
   Benefit: In order to present myself to other people
   Role: LU
@@ -12,7 +12,6 @@ Feature: I want to have a profile
     And I am logged in as "Edit Profile"
     And I am on "/user"
     And I click "Edit profile information"
-
     When I fill in the following:
       | First name | Edit |
       | Last name  | Profile |
@@ -21,18 +20,15 @@ Feature: I want to have a profile
       | Phone number | 911 |
     And I select "UA" from "Country"
     And I wait for AJAX to finish
-
     Then I should see "City"
-
     And I fill in the following:
          | City | Lviv |
          | Street address | Fedkovycha 60a |
          | Postal code | 79000 |
-    And I select "Lvivska oblast" from "Region"
+         | Oblast | Lviv oblast |
     And I fill in the "edit-field-profile-self-introduction-0-value" WYSIWYG editor with "Self intro text."
     And I press "Save"
-
-    And I should see "Edit"
+    Then I should see "Edit"
     And I should see "Profile"
 #    And I should see "GoalGorilla"
 #    And I should see "Behat test"
@@ -40,5 +36,5 @@ Feature: I want to have a profile
     And I should see "Fedkovycha 60a"
     And I should see "79000"
     And I should see "Lviv"
-    And I should see "Lvivska oblast"
+    And I should see "Lviv oblast"
     And I should see "Self intro text"

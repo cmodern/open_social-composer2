@@ -457,7 +457,7 @@
   margin-bottom: 0.75rem;
 }
 
-.color-preview a:not(.btn) {
+.color-preview a {
   background-color: transparent;
   text-decoration: none;
   font-weight: 500;

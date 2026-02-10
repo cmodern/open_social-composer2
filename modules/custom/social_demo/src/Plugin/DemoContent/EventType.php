@@ -3,6 +3,7 @@
 namespace Drupal\social_demo\Plugin\DemoContent;
 
 use Drupal\social_demo\DemoTaxonomyTerm;
+use Drush\Log\LogLevel;
 
 /**
  * EventType Plugin for demo content.
@@ -19,13 +20,13 @@ class EventType extends DemoTaxonomyTerm {
   /**
    * {@inheritdoc}
    */
-  public function createContent($generate = FALSE, $max = NULL) {
+  public function createContent() {
     // Check if event types are enabled.
     if (!\Drupal::moduleHandler()->moduleExists('social_event_type')) {
       return;
     }
 
-    return parent::createContent($generate, $max);
+    return parent::createContent();
   }
 
   /**
@@ -34,7 +35,7 @@ class EventType extends DemoTaxonomyTerm {
   public function count() {
     // Check if event types are enabled.
     if (!\Drupal::moduleHandler()->moduleExists('social_event_type')) {
-      $this->loggerChannelFactory->get('social_demo')->warning('The social event type module is not enabled.');
+      drush_log(dt('The social event type module is not enabled.'), LogLevel::WARNING);
       return FALSE;
     }
 

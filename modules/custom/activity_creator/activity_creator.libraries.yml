@@ -4,4 +4,4 @@ activity_creator.notifications:
   dependencies:
     - core/drupal.ajax
     - core/jquery
-    - core/once
+    - core/jquery.once

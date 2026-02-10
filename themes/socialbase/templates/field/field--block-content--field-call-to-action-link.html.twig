@@ -37,9 +37,6 @@
  * @see template_preprocess_field()
  */
 #}
-
-<div {{ attributes.addClass("hero-cta-wrapper") }}>
-  {% for item in items %}
-    {{ item.content }}
-  {% endfor %}
-</div>
+{% for item in items %}
+  {{ item.content }}
+{% endfor %}

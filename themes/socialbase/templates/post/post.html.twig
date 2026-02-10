@@ -17,21 +17,11 @@
 #}
 
 {{ attach_library('socialbase/comment') }}
-{{ attach_library('socialbase/post') }}
-{{ attach_library('socialbase/page-node')}}
-
-{%
-  set classes = [
-  'media',
-  not published ? 'post-unpublished',
-]
-%}
-
 <div class="card">
   <div class="card__block">
 
     <div class="media-wrapper">
-      <div {{ attributes.addClass(classes) }}>
+      <div class="media">
         <div class="media-left avatar">
           {% if author_picture %}
             {{ author_picture }}
@@ -42,33 +32,17 @@
             {% if content.user_id %}
               {{ content.user_id }}
             {% endif %}
-            <div class="post-date">
-              {{ date }}
-              {% if visibility_icon and visibility_label %}
-                <svg class="margin-left-s icon-visibility">
-                  <title>{% trans %} Visibility {% endtrans %}</title>
-                  <use xlink:href="#icon-{{ visibility_icon }}"></use>
-                </svg>
-                <strong>{{ visibility_label }}</strong>
-              {% endif %}
-              {% if not published %}
-                <span class="badge badge-default badge--pill">
-                  {% trans %} unpublished {% endtrans %}
-                </span>
-              {% endif %}
-            </div>
+            <div class="post-date">{{ date }}</div>
           </div>
         </div>
       </div>
-      {% if content.links %}
-          {{ content.links }}
-      {% endif %}
-    </div>
+
+      {{ content.links }}
+  </div>
+
     <div class="margin-top-s iframe-container">
 
-        <div class="body-text">
-            {{ content|without('links', 'field_post_comments', 'like_and_dislike', 'field_post_image', 'user_id') }}
-        </div>
+      {{ content|without('links', 'field_post_comments', 'like_and_dislike', 'field_post_image', 'user_id') }}
 
       {% if content.field_post_image|render %}
         <p>{{ content.field_post_image }}</p>
@@ -78,8 +52,11 @@
       {{ content.like_and_dislike }}
     </div>
 
-    {% if content.field_post_comments %}
+
+    {% if logged_in %}
+      <div class="card__nested-section">
         {{ content.field_post_comments }}
+      </div>
     {% endif %}
 
   </div>

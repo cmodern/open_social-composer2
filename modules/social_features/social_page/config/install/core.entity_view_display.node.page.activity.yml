@@ -43,9 +43,12 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
+  addtoany: true
   body: true
   field_content_visibility: true
   field_files: true
   flag_follow_content: true
   groups: true
-  search_api_excerpt: true
+  groups_type_closed_group: true
+  groups_type_open_group: true
+  groups_type_public_group: true

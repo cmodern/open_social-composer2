@@ -2,12 +2,9 @@
 
 namespace Drupal\social_topic\Controller;
 
-use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -73,7 +70,7 @@ class SocialTopicController extends ControllerBase {
   public function latestTopicsPageTitle() {
     $title = $this->t('All topics');
 
-    // @todo This might change depending on the view exposed filter settings.
+    // TODO This might change depending on the view exposed filter settings.
     $topic_type_id = $this->requestStack->getCurrentRequest()->get('field_topic_type_target_id');
     $term = NULL;
     if ($topic_type_id !== NULL) {
@@ -81,7 +78,7 @@ class SocialTopicController extends ControllerBase {
       if (is_numeric($topic_type_id)) {
         $term = $this->entityTypeManager->getStorage('taxonomy_term')->load($topic_type_id);
 
-        if ($term->access('view') && $term->bundle() === 'topic_types') {
+        if ($term->access('view') && $term->getVocabularyId() === 'topic_types') {
           $term_title = $term->getName();
           $title = $this->t('Topics of type @type', ['@type' => $term_title]);
         }
@@ -91,53 +88,6 @@ class SocialTopicController extends ControllerBase {
     $this->moduleHandler->alter('topic_type_title', $title, $term);
 
     return $title;
-  }
-
-  /**
-   * Function that checks access on the my topic pages.
-   *
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The account we need to check access for.
-   *
-   * @return \Drupal\Core\Access\AccessResult
-   *   If access is allowed.
-   */
-  public function myTopicAccess(AccountInterface $account) {
-    // Fetch user from url.
-    $user = $this->requestStack->getCurrentRequest()->get('user');
-
-    // If we don't have a user in the request, assume it's my own profile.
-    if (is_null($user)) {
-      // Usecase is the user menu, which is generated on all LU pages.
-      $user = User::load($account->id());
-    }
-
-    // If not a user then just return neutral.
-    if (!$user instanceof User) {
-      $user = User::load($user);
-
-      if (!$user instanceof User) {
-        return AccessResult::neutral();
-      }
-    }
-
-    // Own profile?
-    if ($user->id() === $account->id()) {
-      return AccessResult::allowedIfHasPermission($account, 'view topics on my profile');
-    }
-    return AccessResult::allowedIfHasPermission($account, 'view topics on other profiles');
-  }
-
-  /**
-   * Redirects users to their topics page.
-   *
-   * @return \Symfony\Component\HttpFoundation\RedirectResponse
-   *   Returns a redirect to the topics of the currently logged in user.
-   */
-  public function redirectMyTopics() {
-    return $this->redirect('view.topics.page_profile', [
-      'user' => $this->currentUser()->id(),
-    ]);
   }
 
 }

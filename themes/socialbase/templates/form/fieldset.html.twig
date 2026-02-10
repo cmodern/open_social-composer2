@@ -24,17 +24,11 @@
 #}
 {%
   set classes = [
-    'fieldset',
     form_group ? 'form-group',
-    'js-form-item',
-    'form-item',
-    'js-form-wrapper',
-    'form-wrapper',
+    not form_group ? 'js-form-wrapper',
+    not form_group ? 'form-wrapper',
   ]
 %}
-
-{{ attach_library('socialbase/popover')}}
-
 <fieldset{{ attributes.addClass(classes) }}>
   {%
     set label_classes = [
@@ -45,23 +39,15 @@
     ]
   %}
   {#  Always wrap fieldset legends in a SPAN for CSS positioning. #}
-  <legend{{ legend.attributes.addClass(label_classes) }}>
+  <label{{ legend.attributes.addClass(label_classes) }}>
     <span{{ legend_span.attributes }}>{{ legend.title }}</span>
+  </label>
 
-    {%- if required -%}
-      <span class="form-required">*</span>
-    {%- endif -%}
+  {%- if required -%}
+    <span class="form-required">*</span>
+  {%- endif -%}
 
-    {% if popover is not empty %}
-      {{ popover }}
-    {% endif %}
-  </legend>
-
-  {% if description.content %}
-    <div{{ description.attributes.addClass('help-block') }}>{{ description.content }}</div>
-  {% endif %}
-
-  <div{{content_attributes.addClass('fieldset-wrapper')}}>
+  <div class="fieldset-wrapper">
     {% if prefix %}
       <span class="field-prefix">{{ prefix }}</span>
     {% endif %}
@@ -73,15 +59,13 @@
 
   {% if errors %}
     <div class="form-item--error-message alert alert-danger alert-sm alert-dismissible form-control-radius">
+      <a href="#" role="button" class="close" data-dismiss="alert" aria-label="{{ 'Close'|t }}"><span aria-hidden="true">&times;</span></a>
       {{ errors }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="{{ "Close"|t }}">
-        <span aria-hidden="true">×</span>
-      </button>
     </div>
   {% endif %}
 
-{#  {% if description_display !== 'before' and description.content %}#}
-{#    <div{{ description.attributes.addClass('help-block') }}>{{ description.content }}</div>#}
-{#  {% endif %}#}
+  {% if description.content %}
+    <div{{ description.attributes.addClass('help-block') }}>{{ description.content }}</div>
+  {% endif %}
 
 </fieldset>

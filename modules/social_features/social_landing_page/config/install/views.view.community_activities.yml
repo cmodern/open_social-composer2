@@ -1,11 +1,12 @@
 langcode: en
 status: true
 dependencies:
+  config:
+    - block.block.postblock
   module:
     - activity_creator
     - activity_viewer
     - options
-    - social_post
 id: community_activities
 label: 'Community activities'
 module: views
@@ -13,6 +14,7 @@ description: ''
 tag: social_landing_page
 base_table: activity_field_data
 base_field: id
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -37,7 +39,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Filter
+          submit_button: Apply
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -45,23 +47,10 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       pager:
-        type: mini
+        type: some
         options:
           items_per_page: 5
           offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: ‹‹
-            next: ››
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
-            offset: false
-            offset_label: Offset
       style:
         type: default
       row:
@@ -216,7 +205,20 @@ display:
           entity_field: created
           plugin_id: date
       title: 'Community activities'
-      header: {  }
+      header:
+        entity_block:
+          id: entity_block
+          table: views
+          field: entity_block
+          relationship: none
+          group_type: group
+          admin_label: header_postblock
+          empty: true
+          tokenize: false
+          target: postblock
+          view_mode: default
+          bypass_access: false
+          plugin_id: entity
       defaults:
         header: false
       footer: {  }
@@ -224,7 +226,7 @@ display:
       relationships: {  }
       arguments: {  }
       display_extenders: {  }
-      css_class: 'stream-landing stream'
+      css_class: stream-landing
       filter_groups:
         operator: AND
         groups:
@@ -232,12 +234,11 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-      - 'languages:language_interface'
-      - url.query_args
+        - 'languages:language_interface'
       tags:
-      - 'config:core.entity_view_display.activity.activity.default'
-      - 'config:core.entity_view_display.activity.activity.notification'
-      - 'config:core.entity_view_display.activity.activity.notification_archive'
+        - 'config:core.entity_view_display.activity.activity.default'
+        - 'config:core.entity_view_display.activity.activity.notification'
+        - 'config:core.entity_view_display.activity.activity.notification_archive'
   block_stream_landing:
     display_plugin: block
     id: block_stream_landing
@@ -246,36 +247,6 @@ display:
     display_options:
       display_extenders: {  }
       display_description: ''
-    cache_metadata:
-      max-age: -1
-      contexts:
-      - 'languages:language_interface'
-      - url.query_args
-      tags:
-        - 'config:core.entity_view_display.activity.activity.default'
-        - 'config:core.entity_view_display.activity.activity.notification'
-        - 'config:core.entity_view_display.activity.activity.notification_archive'
-  block_stream_landing_with_post:
-    display_plugin: block
-    id: block_stream_landing_with_post
-    display_title: 'Community activities block'
-    position: 3
-    display_options:
-      display_extenders: {  }
-      display_description: ''
-      header:
-        post_form:
-          id: post_form
-          table: views
-          field: post_form
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          block_id: post_block
-          plugin_id: social_post_post_form
-      defaults:
-        header: false
     cache_metadata:
       max-age: -1
       contexts:

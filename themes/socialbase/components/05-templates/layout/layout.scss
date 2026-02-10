@@ -61,8 +61,7 @@
   margin-right: auto;
 
   @include for-tablet-landscape-up {
-    max-width: calc(1200px - 2rem);
-    padding: 0 1rem
+    max-width: 1200px;
   }
 }
 
@@ -73,33 +72,29 @@
 }
 
 .main-container {
+  overflow: hidden;
   min-height: 100%;
   min-height: calc(100vh - 50px);
   padding-top: 50px;
   padding-bottom: 100px;
   position: relative;
+  z-index: 0;
   width: 100%;
 }
 
 .region--title {
-  position: relative;
   flex-basis: 100%;
   max-width: 100%;
-  z-index: 1;
 
   @include for-tablet-landscape-up {
     margin-top: 1rem;
   }
 }
 
-.region--content {
-  position: relative;
-}
-
 .region--content-top,
 .region--content-bottom,
 .region--hero,
-.region--secondary-navigation{
+.region--secondary-navigation {
   @extend .container;
 }
 
@@ -127,11 +122,6 @@
 
     @include for-desktop-up {
       padding-left: 0;
-
-      [dir='rtl'] & {
-        padding-right: 0;
-        padding-left: 1rem;
-      }
     }
 
   }
@@ -143,7 +133,6 @@
   padding-right: 1em;
   flex-basis: 100%;
   max-width: 100%;
-  z-index: 5;
 
   @include for-tablet-landscape-up {
     margin-top: 1rem;
@@ -154,11 +143,6 @@
 
   @include for-desktop-up {
     padding-right: 0;
-
-    [dir='rtl'] & {
-      padding-right: 1em;
-      padding-left: 0;
-    }
   }
 
 }
@@ -182,21 +166,11 @@
 
     .region--content {
       padding-left: 0;
-
-      [dir='rtl'] & {
-        padding-left: 1rem;
-        padding-right: 0;
-      }
     }
 
     .region--sidebar-first,
     .region--sidebar-second {
       padding-right: 0;
-
-      [dir='rtl'] & {
-        padding-right: 1rem;
-        padding-left: 0;
-      }
     }
 
   }
@@ -223,20 +197,10 @@
 
     .region--content {
       padding-left: 0;
-
-      [dir='rtl'] & {
-        padding-left: 1rem;
-        padding-right: 0;
-      }
     }
 
     .region--sidebar-second {
       padding-right: 0;
-
-      [dir='rtl'] & {
-        padding-right: 1rem;
-        padding-left: 0;
-      }
     }
 
   }
@@ -254,11 +218,10 @@
   }
 }
 
+@include for-tablet-landscape-up {
 
-.region--complementary-top {
-  margin-top: 1rem;
-
-  @include for-tablet-landscape-up {
+  .region--complementary-top {
     margin-top: 0;
   }
+
 }

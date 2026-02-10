@@ -36,7 +36,7 @@
 {%
   set error_classes = [
     display_id == 'page' ? 'alert alert-info',
-    display_id != 'page' ? 'small card__block dropdown-header',
+    display_id != 'page' ? 'small card__block',
   ]
 %}
 
@@ -45,9 +45,7 @@
     {{ title_prefix }}
     {{ title }}
     {{ title_suffix }}
-    {% if not empty %}
-        {{ rows }}
-    {% endif %}
+    {{ rows }}
 
     {% if empty %}
       <div{{ content_attributes.addClass(error_classes) }}" role="alert">
@@ -60,3 +58,4 @@
 
 {{ pager }}
 {{ more }}
+

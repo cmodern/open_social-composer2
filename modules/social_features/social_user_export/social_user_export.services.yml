@@ -1,9 +1,5 @@
 services:
-  plugin.manager.user_export_plugin:
-    class: Drupal\social_user_export\Plugin\UserExportPluginManager
-    arguments:
-      - '@container.namespaces'
-      - '@cache.discovery'
-      - '@module_handler'
-      - '@theme_handler'
-      - '@config.factory'
+  social_user_export.overrider:
+    class: \Drupal\social_user_export\SocialUserExportOverrides
+    tags:
+      - {name: config.factory.override, priority: 5}

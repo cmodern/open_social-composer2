@@ -2,19 +2,17 @@
 
 namespace Drupal\social_demo;
 
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\profile\Entity\ProfileInterface;
 use Drupal\profile\ProfileStorageInterface;
 use Drupal\file\FileStorageInterface;
-use Drupal\user\UserStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\profile\Entity\ProfileType;
 use Drupal\taxonomy\TermStorageInterface;
+use Drush\Log\LogLevel;
 
 /**
- * Creates users.
+ * Class DemoUser.
  *
  * @package Drupal\social_demo
  */
@@ -28,32 +26,29 @@ abstract class DemoUser extends DemoContent {
   protected $profileStorage;
 
   /**
+   * The file storage.
+   *
+   * @var \Drupal\file\FileStorageInterface
+   */
+  protected $fileStorage;
+
+  /**
+   * The taxonomy term storage.
+   *
+   * @var \Drupal\taxonomy\TermStorageInterface
+   */
+  protected $termStorage;
+
+  /**
    * DemoUser constructor.
    */
-  public function __construct(
-    array $configuration,
-    $plugin_id,
-    $plugin_definition,
-    DemoContentParserInterface $parser,
-    UserStorageInterface $user_storage,
-    EntityStorageInterface $group_storage,
-    FileStorageInterface $file_storage,
-    TermStorageInterface $term_storage,
-    LoggerChannelFactoryInterface $logger_channel_factory,
-    ProfileStorageInterface $profile_storage,
-  ) {
-    parent::__construct(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $parser,
-      $user_storage,
-      $group_storage,
-      $file_storage,
-      $term_storage,
-      $logger_channel_factory
-    );
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, DemoContentParserInterface $parser, ProfileStorageInterface $profile_storage, FileStorageInterface $file_storage, TermStorageInterface $term_storage) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->parser = $parser;
     $this->profileStorage = $profile_storage;
+    $this->fileStorage = $file_storage;
+    $this->termStorage = $term_storage;
   }
 
   /**
@@ -65,28 +60,22 @@ abstract class DemoUser extends DemoContent {
       $plugin_id,
       $plugin_definition,
       $container->get('social_demo.yaml_parser'),
-      $container->get('entity_type.manager')->getStorage('user'),
-      $container->get('entity_type.manager')->getStorage('group'),
-      $container->get('entity_type.manager')->getStorage('file'),
-      $container->get('entity_type.manager')->getStorage('taxonomy_term'),
-      $container->get('logger.factory'),
-      $container->get('entity_type.manager')->getStorage('profile'),
+      $container->get('entity.manager')->getStorage('profile'),
+      $container->get('entity.manager')->getStorage('file'),
+      $container->get('entity.manager')->getStorage('taxonomy_term')
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function createContent($generate = FALSE, $max = NULL) {
+  public function createContent() {
     $data = $this->fetchData();
-    if ($generate === TRUE) {
-      $data = $this->scrambleData($data, $max);
-    }
 
     foreach ($data as $uuid => $item) {
       // Must have uuid and same key value.
       if ($uuid !== $item['uuid']) {
-        $this->loggerChannelFactory->get('social_demo')->error("User with uuid: {$uuid} has a different uuid in content.");
+        drush_log(dt("User with uuid: {$uuid} has a different uuid in content."), LogLevel::ERROR);
         continue;
       }
 
@@ -96,18 +85,18 @@ abstract class DemoUser extends DemoContent {
       ]);
 
       if ($accounts) {
-        $this->loggerChannelFactory->get('social_demo')->warning("User with uuid: {$uuid} already exists.");
+        drush_log(dt("User with uuid: {$uuid} already exists."), LogLevel::WARNING);
         continue;
       }
 
       // Load image by uuid and set to a profile.
-      if (!empty($item['image'])) {
-        $item['image'] = $this->prepareImage($item['image'], $item['image_alt']);
+      if (!empty($item['picture'])) {
+        $item['picture'] = $this->preparePicture($item['picture']);
       }
       else {
         // Set "null" to exclude errors during saving
-        // (in cases when image will equal to "false").
-        $item['image'] = NULL;
+        // (in cases when picture will equal to "false").
+        $item['picture'] = NULL;
       }
 
       if (!empty($item['expertise'])) {
@@ -173,6 +162,32 @@ abstract class DemoUser extends DemoContent {
   }
 
   /**
+   * Prepares data about an image of a profile.
+   *
+   * @param string $picture
+   *   The picture by uuid.
+   *
+   * @return array
+   *   Returns an array.
+   */
+  protected function preparePicture($picture) {
+    $value = NULL;
+    $files = $this->fileStorage->loadByProperties([
+      'uuid' => $picture,
+    ]);
+
+    if ($files) {
+      $value = [
+        [
+          'target_id' => current($files)->id(),
+        ],
+      ];
+    }
+
+    return $value;
+  }
+
+  /**
    * Returns taxonomy terms for UUIDs.
    *
    * @param array $values
@@ -209,7 +224,7 @@ abstract class DemoUser extends DemoContent {
    *   The profile field item.
    */
   protected function fillProfile(ProfileInterface $profile, array $item) {
-    $profile->field_profile_image = $item['image'];
+    $profile->field_profile_image = $item['picture'];
     $profile->field_profile_first_name = $item['first_name'];
     $profile->field_profile_last_name = $item['last_name'];
     $profile->field_profile_organization = $item['organization'];
@@ -219,33 +234,6 @@ abstract class DemoUser extends DemoContent {
     $profile->field_profile_address = $item['address'];
     $profile->field_profile_expertise = $item['expertise'];
     $profile->field_profile_interests = $item['interests'];
-  }
-
-  /**
-   * Scramble it.
-   *
-   * @param array $data
-   *   The data array to scramble.
-   * @param int|null $max
-   *   How many items to generate.
-   */
-  public function scrambleData(array $data, $max = NULL) {
-    $new_data = [];
-    for ($i = 0; $i < $max; $i++) {
-      // Get a random item from the array.
-      $old_uuid = array_rand($data);
-      $item = $data[$old_uuid];
-      $uuid = 'ScrambledDemo_' . time() . '_' . $i;
-      $item['uuid'] = $uuid;
-      $item['name'] = $uuid;
-      $item['first_name'] = 'First';
-      $item['last_name'] = 'Last Name';
-      $item['self_introduction'] = $uuid;
-      $item['mail'] = $uuid . '@example.com';
-      $item['created'] = '-' . random_int(1, 2 * 365) . ' day|' . random_int(0, 23) . ':' . random_int(0, 59);
-      $new_data[$uuid] = $item;
-    }
-    return $new_data;
   }
 
 }

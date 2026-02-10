@@ -17,6 +17,7 @@ description: ''
 tag: ''
 base_table: node_field_data
 base_field: nid
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -135,9 +136,6 @@ display:
           entity_field: type
           plugin_id: bundle
           group: 1
-          expose:
-            operator_limit_selection: false
-            operator_list: {  }
         field_topic_type_target_id:
           id: field_topic_type_target_id
           table: node__field_topic_type
@@ -164,8 +162,6 @@ display:
               anonymous: '0'
               administrator: '0'
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -210,8 +206,6 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -227,46 +221,42 @@ display:
           plugin_id: boolean
           entity_type: node
           entity_field: status
-        default_langcode:
+        nid:
+          id: nid
+          table: node_access
+          field: nid
+          relationship: none
+          group_type: group
           admin_label: ''
-          entity_field: default_langcode
-          entity_type: node
+          operator: '='
+          value: ''
+          group: 1
+          exposed: false
           expose:
-            description: ''
-            identifier: ''
-            label: ''
-            multiple: false
-            operator: ''
             operator_id: ''
-            operator_limit_selection: false
-            operator_list: {  }
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
             remember: false
+            multiple: false
             remember_roles:
               authenticated: authenticated
-            required: false
-            use_operator: false
-          exposed: false
-          field: default_langcode
-          group: 1
+          is_grouped: false
           group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
             default_group: All
             default_group_multiple: {  }
-            description: ''
             group_items: {  }
-            identifier: ''
-            label: ''
-            multiple: false
-            optional: true
-            remember: false
-            widget: select
-          group_type: group
-          id: default_langcode
-          is_grouped: false
-          operator: '='
-          plugin_id: boolean
-          relationship: none
-          table: node_field_data
-          value: '1'
+          plugin_id: node_access
       sorts:
         created:
           id: created
@@ -279,7 +269,6 @@ display:
           exposed: true
           expose:
             label: 'Sort by publish date'
-            field_identifier: created
           granularity: second
           entity_type: node
           entity_field: created
@@ -356,6 +345,7 @@ display:
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
         - user
+        - 'user.node_grants:view'
         - user.permissions
       tags: {  }
   block_user_topics:
@@ -441,9 +431,6 @@ display:
           entity_field: type
           plugin_id: bundle
           group: 1
-          expose:
-            operator_limit_selection: false
-            operator_list: {  }
         status:
           id: status
           table: node_field_data
@@ -467,8 +454,6 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -484,46 +469,42 @@ display:
           entity_type: node
           entity_field: status
           plugin_id: boolean
-        default_langcode:
+        nid:
+          id: nid
+          table: node_access
+          field: nid
+          relationship: none
+          group_type: group
           admin_label: ''
-          entity_field: default_langcode
-          entity_type: node
+          operator: '='
+          value: ''
+          group: 1
+          exposed: false
           expose:
-            description: ''
-            identifier: ''
-            label: ''
-            multiple: false
-            operator: ''
             operator_id: ''
-            operator_limit_selection: false
-            operator_list: {  }
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            identifier: ''
+            required: false
             remember: false
+            multiple: false
             remember_roles:
               authenticated: authenticated
-            required: false
-            use_operator: false
-          exposed: false
-          field: default_langcode
-          group: 1
+          is_grouped: false
           group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
             default_group: All
             default_group_multiple: {  }
-            description: ''
             group_items: {  }
-            identifier: ''
-            label: ''
-            multiple: false
-            optional: true
-            remember: false
-            widget: select
-          group_type: group
-          id: default_langcode
-          is_grouped: false
-          operator: '='
-          plugin_id: boolean
-          relationship: none
-          table: node_field_data
-          value: '1'
+          plugin_id: node_access
       filter_groups:
         operator: AND
         groups:
@@ -547,13 +528,13 @@ display:
       use_more: true
       use_more_always: true
       use_more_text: 'All topics'
-      rendering_language: '***LANGUAGE_language_interface***'
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_content'
         - 'languages:language_interface'
         - url
+        - 'user.node_grants:view'
         - user.permissions
       tags: {  }
   page_profile:
@@ -579,7 +560,6 @@ display:
         description: ''
         weight: 0
       exposed_block: true
-      rendering_language: '***LANGUAGE_language_interface***'
     cache_metadata:
       max-age: -1
       contexts:
@@ -590,5 +570,6 @@ display:
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
         - user
+        - 'user.node_grants:view'
         - user.permissions
       tags: {  }

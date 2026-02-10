@@ -1,9 +1,6 @@
 langcode: en
 status: true
-dependencies:
-  enforced:
-    module:
-    - social_tagging
+dependencies: {  }
 name: 'Content tags'
 vid: social_tagging
 description: 'Categories and terms used to tag content'

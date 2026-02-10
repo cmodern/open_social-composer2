@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @Block(
  *   id = "profile_hero_block",
  *   admin_label = @Translation("Profile hero block"),
- *   context_definitions = {
+ *   context = {
  *     "user" = @ContextDefinition("entity:user")
  *   }
  * )

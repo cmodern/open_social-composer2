@@ -74,14 +74,7 @@
 .pagination {
 
   .pager__item--previous,
-  .pager__item--next {
-    display: inline-block;
-
-    a {
-      background: white;
-    }
-  }
-
+  .pager__item--next,
   .pager__item.active {
     display: inline-block;
   }

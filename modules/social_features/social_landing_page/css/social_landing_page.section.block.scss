@@ -1,14 +1,3 @@
-@mixin title {
-  flex: 0 0 100%;
-  padding: 0 1rem;
-  margin-bottom: 1rem;
-  color: #555;
-  font-weight: 500;
-  @media (min-width: 900px) {
-    padding-left: 20px;
-  }
-}
-
 .paragraph--block {
   .paragraph--section & {
     background-color: #fff;
@@ -18,9 +7,16 @@
     }
     @media(min-width: 1200px) {
       padding: 50px 0;
+      margin-left: calc(-100vw / 2 + #{1200px} / 2);
+      margin-right: calc(-100vw / 2 + #{1200px} / 2);
     }
     .title {
-      @include title;
+      flex: 0 0 100%;
+      padding: 0 1rem;
+      margin-bottom: 1rem;
+      @media (min-width: 900px) {
+        padding-left: 20px;
+      }
     }
   }
 }
@@ -32,8 +28,8 @@
   max-width: 100%;
 
   @media (min-width: 900px) {
-    flex: 0 0 calc(100%/1.5);
-    max-width: calc(100%/1.5);
+    flex: 0 0 (100%/1.5);
+    max-width: (100%/1.5);
     order: 1;
   }
 
@@ -68,9 +64,9 @@
   @media (min-width: 900px) {
     //margin-top: 1rem;
     margin-top: 59px; //height of primary column block title
-    flex: 0 1 calc(100%/3);
+    flex: 0 1 (100%/3);
     order: 2;
-    max-width: calc(100%/3);
+    max-width: (100%/3);
   }
 
   @media (min-width: 1200px) {
@@ -81,17 +77,4 @@
     margin-bottom: 0.75rem;
   }
 
-}
-
-[class*='block-views-blockcommunity-activities-block-stream-landing'],
-[class*='block-views-blockactivity-stream-block-stream-homepage'] {
-  &.card {
-    all: revert;
-  }
-
-  .card__title,
-  .section-title.section-title-stream {
-    @include title;
-    font-size: 1rem;
-  }
 }

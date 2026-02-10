@@ -16,6 +16,7 @@ description: ''
 tag: ''
 base_table: votingapi_vote
 base_field: id
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -24,8 +25,9 @@ display:
     position: 0
     display_options:
       access:
-        type: who_liked_access
-        options: { }
+        type: perm
+        options:
+          perm: 'view any profile profile'
       cache:
         type: tag
         options: {  }
@@ -40,7 +42,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Filter
+          submit_button: Apply
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -274,8 +276,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''

@@ -47,7 +47,7 @@
   @include for-tablet-landscape-down {
     position: absolute;
     right: 1rem;
-    top: 1rem;
+    top: 0;
   }
 
 }
@@ -74,8 +74,8 @@
     .complementary-title {
       vertical-align: middle;
       font-weight: 500;
-      font-size: 1rem;
-      line-height: 1.625rem;
+      text-transform: uppercase;
+      font-size: 0.875rem;
       text-align: center;
     }
   }
@@ -94,7 +94,6 @@
 
 .offcanvas-body {
 	margin-top: 30px;
-  padding-bottom: 90px;
 
   @include for-tablet-landscape-up {
     margin-top: 0;

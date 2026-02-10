@@ -30,21 +30,16 @@
  */
 #}
 
-<section{{ attributes.addClass('card card--list card--views__sidebar') }}>
-  {{ title_prefix }}
+<section{{ attributes.addClass('card card--list') }}>
   <h4 class="card__title">
-    {{ label }}
-
+    {{ title_prefix }} {{ label }} {{ title_suffix }}
     {% if subtitle %}
     <div class="card__subtitle">
         {{ subtitle }}
     </div>
     {% endif %}
   </h4>
-  {{ title_suffix }}
-
   {{ content }}
-
   <footer class="card__actionbar">
     {% if view_all_path %}
     <a href="{{ view_all_path }}" class="btn btn-flat">

@@ -3,7 +3,7 @@
 namespace Drupal\social_demo;
 
 /**
- * Interface for Demo content parser.
+ * Interface DemoContentParserInterface.
  *
  * @package Drupal\social_demo
  */

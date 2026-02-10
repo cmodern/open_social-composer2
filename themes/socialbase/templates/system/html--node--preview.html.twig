@@ -11,11 +11,9 @@
     <js-placeholder token="{{ placeholder_token|raw }}">
   </head>
   <body{{ attributes.addClass('page-preview') }}>
-    <div id="skip-link">
-      <a href="#main-content" class="sr-only-focusable">
-        {{ 'Skip to main content'|t }}
-      </a>
-    </div>
+    <a href="#main-content" class="sr-only sr-only-focusable">
+      {{ 'Skip to main content'|t }}
+    </a>
     {{ page_top }}
     {{ page }}
     {{ page_bottom }}

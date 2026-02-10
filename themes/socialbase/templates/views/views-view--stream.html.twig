@@ -54,6 +54,10 @@
     </div>
   {% endif %}
 
+  {% if pager %}
+    {{ pager }}
+  {% endif %}
+
   {% if more %}
     {{ more }}
   {% endif %}
@@ -64,7 +68,3 @@
   {% endif %}
 
 </ul>
-
-{% if pager %}
-  {{ pager }}
-{% endif %}

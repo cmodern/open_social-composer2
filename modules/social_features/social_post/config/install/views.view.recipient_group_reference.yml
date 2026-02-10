@@ -10,6 +10,7 @@ description: 'A view to be used by machines only to limit the group selection fo
 tag: ''
 base_table: groups_field_data
 base_field: id
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -34,7 +35,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Filter
+          submit_button: Apply
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'

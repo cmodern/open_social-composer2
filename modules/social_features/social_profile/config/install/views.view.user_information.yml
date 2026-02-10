@@ -13,6 +13,7 @@ description: ''
 tag: ''
 base_table: profile
 base_field: profile_id
+core: 8.x
 display:
   default:
     display_plugin: default
@@ -23,7 +24,7 @@ display:
       access:
         type: perm
         options:
-          perm: 'view own profile profile'
+          perm: 'view any profile profile'
       cache:
         type: tag
         options: {  }
@@ -38,7 +39,7 @@ display:
       exposed_form:
         type: basic
         options:
-          submit_button: Filter
+          submit_button: Apply
           reset_button: false
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
@@ -120,9 +121,6 @@ display:
           entity_type: profile
           entity_field: type
           plugin_id: bundle
-          expose:
-            operator_limit_selection: false
-            operator_list: {  }
       sorts: {  }
       title: Information
       header: {  }

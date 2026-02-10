@@ -8,8 +8,7 @@
    */
   Drupal.behaviors.initNavbarSearch = {
     attach: function (context, settings) {
-      $('.navbar__open-search-block').on('click', function (e) {
-        e.preventDefault();
+      $('.navbar__open-search-block').on('click', function () {
         $('body').addClass('mode-search');
         $('.search-take-over .form-text').focus();
       });

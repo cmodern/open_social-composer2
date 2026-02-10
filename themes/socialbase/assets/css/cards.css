@@ -1,19 +1,16 @@
 .card {
   -webkit-box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
-  box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
+          box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  margin-bottom: 1.25rem;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-bottom: 0.75rem;
   background-clip: padding-box;
-  -webkit-box-flex: 1;
-  -ms-flex-positive: 1;
-  flex-grow: 1;
 }
 
 .card__title {
@@ -22,11 +19,7 @@
   margin: 0;
   padding: 15px 1.25rem 0;
   line-height: 1;
-  font-size: 1rem;
-}
-
-summary.card__title {
-  padding-bottom: 15px;
+  font-size: 0.875rem;
 }
 
 .card__subtitle {
@@ -42,13 +35,17 @@ summary.card__title {
 .card__block {
   position: relative;
   -webkit-box-flex: 1;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
   padding: 1.25rem;
 }
 
 .card__block + .card__block {
   padding-top: 0;
+}
+
+.card__block--table {
+  padding: 1.25rem 0;
 }
 
 .card__block--list:not(:first-child) {
@@ -62,10 +59,6 @@ summary.card__title {
 .card__body {
   position: relative;
   padding: 1.25rem;
-}
-
-[dir='rtl'] .card__body {
-  text-align: right;
 }
 
 .card__body .twitter-tweet,
@@ -89,11 +82,10 @@ summary.card__title {
   margin-top: -1.25rem;
   padding: 1.25rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
-.card__actionbar:before,
-.card__actionbar:after {
+.card__actionbar:before, .card__actionbar:after {
   content: " ";
   display: table;
 }
@@ -108,12 +100,7 @@ summary.card__title {
   float: right;
   -webkit-transition: color .3s ease;
   transition: color .3s ease;
-}
-
-[dir='rtl'] .card__link {
-  float: left;
-  margin-left: 0;
-  margin-right: 24px;
+  text-transform: uppercase;
 }
 
 .card__text {
@@ -122,23 +109,6 @@ summary.card__title {
 
 .card__text:last-child {
   margin-bottom: 0;
-}
-
-.leaflet-popup-content .card__block {
-  padding: 0;
-}
-
-.card--stream .card__block .card__nested-section {
-  padding-top: 0.625rem;
-}
-
-.block-views-blockgroup-managers-block-list-managers .card > .card__title,
-.block-views-blockgroup-managers-block-list-managers.card > .card__title,
-.view-group-information .card > .card__title,
-.view-group-information.card > .card__title,
-.block-social-group-tags-block .card > .card__title,
-.block-social-group-tags-block.card > .card__title {
-  text-align: center;
 }
 
 @media (min-width: 900px) {

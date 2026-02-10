@@ -1,50 +1,50 @@
-@api
+@api @event @stability @perfect @community @upcoming @overview @block @LU @critical @DS-1056 @stability-2
 Feature: See upcoming events in the community
   Benefit: In order to know which events I can join
-  Role: As a Verified
+  Role: LU
   Goal/desire: I want to see upcoming events of the community on the homepages
 
-  Scenario: Successfully show my upcoming events as a Verified
+  Scenario: Successfully show my upcoming events as a LU
 #    TODO: Test visibility settings (Public, Community)
 
     Given I am on the homepage
-    And I should not see "Behat Event 1"
+    Then I should not see "Behat Event 1"
     And I should not see "Behat Event 2"
 
-    And event content:
+    Given event content:
       | title         | field_event_date | status | field_content_visibility |
       | Behat Event 1 | +10 minutes      | 1      | public                   |
       | Behat Event 2 | +20 minutes      | 1      | public                   |
 
-    And I am on the homepage
+    Given I am on the homepage
 
+    Then I should see "Upcoming events"
+    And I should see "Behat Event 1"
+    And I should see "Behat Event 2"
+
+    When I am at "community-events"
+    Then I should see "All events"
+    And I should see "Behat Event 1"
+    And I should see "Behat Event 2"
     And I should see "Upcoming events"
+
+    Given I am logged in as an "authenticated user"
+    Then I should see "Behat Event 1"
+    And I should see "Behat Event 2"
+
+    When I click "All Upcoming events"
+    Then I should see "All events"
     And I should see "Behat Event 1"
     And I should see "Behat Event 2"
 
-    And I am at "community-events"
-    And I should see "All events"
-    And I should see "Behat Event 1"
-    And I should see "Behat Event 2"
-    And I should see "Ongoing and upcoming events"
-
-    And I am logged in as an "verified"
-    And I should see "Behat Event 1"
-    And I should see "Behat Event 2"
-
-    And I click "All Upcoming events"
-    And I should see "All events"
-    And I should see "Behat Event 1"
-    And I should see "Behat Event 2"
-
-    And I click radio button "Ongoing and upcoming events"
+    When I click radio button "Upcoming events"
     And I press "Filter"
     And "Behat Event 1" should precede "Behat Event 2" for the query ".teaser__title"
 
-    And event content:
+    Given event content:
       | title         | field_event_date | status | field_content_visibility |
       | Behat Event 1 | -10 minutes      | 1      | public                   |
       | Behat Event 2 | -20 minutes      | 1      | public                   |
 
-    And I click radio button "Past events"
+    When I click radio button "Events that have started or are finished"
     And "Behat Event 1" should precede "Behat Event 2" for the query ".teaser__title"

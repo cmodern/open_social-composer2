@@ -1,10 +1,11 @@
 name: 'Social Sharing'
 description: 'Provides sharing of content to social media.'
 type: module
-core_version_requirement: ^9 || ^10
+core: 8.x
 dependencies:
-  - drupal:shariff
+  - addtoany:addtoany
   - drupal:block
   - drupal:node
+  - drupal:system
   - drupal:views
 package: Social

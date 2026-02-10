@@ -1,6 +1,5 @@
 .alert {
-  position: relative;
-  padding: 0.75rem 2.75rem 0.75rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   margin-bottom: 24px;
   border: 1px solid transparent;
 }
@@ -20,22 +19,10 @@
 }
 
 .alert-dismissible .close {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  position: absolute;
-  top: 50%;
-  right: 0.75rem;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
-  width: 2rem;
-  height: 3.125rem;
+  position: relative;
+  top: -0.75rem;
+  right: -1.25rem;
+  padding: 0.75rem 1.25rem;
   color: inherit;
 }
 

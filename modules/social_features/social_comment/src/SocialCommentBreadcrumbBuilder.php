@@ -2,11 +2,9 @@
 
 namespace Drupal\social_comment;
 
-use Drupal\comment\CommentInterface;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Breadcrumb\Breadcrumb;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -28,13 +26,10 @@ class SocialCommentBreadcrumbBuilder implements BreadcrumbBuilderInterface {
   /**
    * Constructs the SocialCommentBreadcrumbBuilder.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_manager
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function __construct(EntityTypeManagerInterface $entity_manager) {
+  public function __construct(EntityManagerInterface $entity_manager) {
     $this->storage = $entity_manager->getStorage('comment');
   }
 
@@ -63,9 +58,7 @@ class SocialCommentBreadcrumbBuilder implements BreadcrumbBuilderInterface {
       case 'comment.reply':
         $page_title = $this->t('Reply to Comment');
         $pid = $route_match->getParameter('pid');
-        if ($pid) {
-          $comment = $this->storage->load($pid);
-        }
+        $comment = $this->storage->load($pid);
         break;
 
       case 'entity.comment.edit_form':
@@ -83,22 +76,14 @@ class SocialCommentBreadcrumbBuilder implements BreadcrumbBuilderInterface {
     }
 
     // Add Entity path to Breadcrumb for Reply.
-    if ($route_match->getParameter('entity') &&
-      $route_match->getParameter('entity') instanceof EntityInterface) {
-      /** @var \Drupal\Core\Entity\EntityInterface $entity */
+    if ($route_match->getParameter('entity')) {
       $entity = $route_match->getParameter('entity');
-      $label = $entity->label();
-      if (!empty($label)) {
-        $breadcrumb->addLink(new Link($label, $entity->toUrl()));
-      }
+      $breadcrumb->addLink(new Link($entity->label(), $entity->urlInfo()));
       $breadcrumb->addCacheableDependency($entity);
     }
 
     // Add Caching.
-    if (
-      isset($comment) &&
-      $comment instanceof CommentInterface
-    ) {
+    if ($comment) {
       $breadcrumb->addCacheableDependency($comment);
     }
 

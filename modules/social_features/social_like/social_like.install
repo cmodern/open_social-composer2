@@ -5,7 +5,7 @@
  * Install, update and uninstall functions for the social_like module.
  */
 
-use Drupal\user\RoleInterface;
+use Drupal\user\Entity\Role;
 
 /**
  * Implements hook_install().
@@ -13,141 +13,95 @@ use Drupal\user\RoleInterface;
  * Perform actions related to the installation of social_like.
  */
 function social_like_install() {
-  _social_like_set_defaults();
-  // Grant the default permissions for this feature.
-  user_role_grant_permissions(
-    RoleInterface::ANONYMOUS_ID,
-    [
-      'view like widget',
-    ]
-  );
-  user_role_grant_permissions(
-    RoleInterface::AUTHENTICATED_ID,
-    [
-      'view like widget',
-    ]
-  );
-  user_role_grant_permissions(
-    'verified',
-    [
-      'add or remove like votes on post of post',
-      'add or remove like votes on photo of post',
-      'add or remove like votes on comment of comment',
-      'add or remove like votes on post_comment of comment',
-      'add or remove like votes on topic of node',
-      'add or remove like votes on event of node',
-    ]
-  );
-  user_role_grant_permissions(
-    'contentmanager',
-    [
-      'add or remove like votes on post of post',
-      'add or remove like votes on photo of post',
-      'add or remove like votes on comment of comment',
-      'add or remove like votes on post_comment of comment',
-      'add or remove like votes on topic of node',
-      'add or remove like votes on event of node',
-    ]
-  );
-  user_role_grant_permissions(
-    'sitemanager',
-    [
-      'add or remove like votes on post of post',
-      'add or remove like votes on photo of post',
-      'add or remove like votes on comment of comment',
-      'add or remove like votes on post_comment of comment',
-      'add or remove like votes on topic of node',
-      'add or remove like votes on event of node',
-    ]
-  );
+
+  // Set some default permissions.
+  _social_like_set_permissions();
 }
 
 /**
- * Set default config.
+ * Re-set permissions for viewing the like widget.
  */
-function _social_like_set_defaults() {
-  // Add like and dislike settings.
-  /** @var \Drupal\Core\Config\Config|\Drupal\Core\Config\ImmutableConfig $config */
-  $container = \Drupal::getContainer()->get('config.factory');
-  $config = $container->getEditable('like_and_dislike.settings');
-  $config->set('hide_vote_widget', FALSE)->save();
-  $config->set(
-    'enabled_types',
-    [
-      'comment' => [
-        'comment',
-        'post_comment',
-      ],
-      'node' => [
-        'topic',
-        'event',
-      ],
-      'post' => [
-        'post',
-      ],
-    ]
-  )->save();
-  // Add voting api settings.
-  $config = $container->getEditable('like_and_dislike.settings');
-  $config->set('delete_everywhere', FALSE)->save();
+function social_like_update_8001() {
+  // Set some default permissions.
+  _social_like_set_permissions();
 }
 
 /**
- * Implements hook_update_last_removed().
+ * Re-set permissions for viewing the like widget.
  */
-function social_like_update_last_removed() : int {
-  return 11402;
+function social_like_update_8002() {
+  // Revoke permission for AN like widget.
+  user_role_revoke_permissions('anonymous', ['view like widget']);
 }
 
 /**
- * Change 'check_vote_init' variable as true.
+ * Disable bootstrap modal.
  */
-function social_like_update_13001(): string {
-  /** @var \Drupal\update_helper\Updater $updater */
-  $updater = \Drupal::service('update_helper.updater');
-
-  // Execute configuration update definitions with logging of success.
-  $updater->executeUpdate('social_like', 'social_like_update_13001');
-
-  // Output logged messages to related channel of update execution.
-  return $updater->logger()->output();
+function social_like_update_8003() {
+  // Bootstrap modal breaks jquery.dialog, so turn it off.
+  $settings = \Drupal::configFactory()->getEditable('socialbase.settings');
+  $settings->set('modal_enabled', 0)->save();
 }
 
 /**
- * Change control access from who liked view page.
+ * Install views_infinite_scroll module.
  */
-function social_like_update_13002(): string {
-  /** @var \Drupal\update_helper\Updater $updateHelper */
-  $updateHelper = \Drupal::service('update_helper.updater');
-
-  // Execute configuration update definitions with logging of success.
-  $updateHelper->executeUpdate('social_like', __FUNCTION__);
-
-  // Output logged messages to related channel of update execution.
-  return $updateHelper->logger()->output();
+function social_like_update_8004() {
+  $modules = ['views_infinite_scroll'];
+  \Drupal::service('module_installer')->install($modules);
 }
 
 /**
- * Grant permissions to roles for adding or removing like votes.
- *
- * @see \Drupal\social_like\Plugin\views\access\WhoLikedAccess
+ * Enable deleting likes from a database when a user is deleted.
  */
-function social_like_update_13003(): void {
-  $permissions = [
+function social_like_update_8005() {
+  \Drupal::configFactory()->getEditable('votingapi.settings')
+    ->set('delete_everywhere', TRUE)
+    ->save();
+}
+
+/**
+ * Function to set permissions.
+ */
+function _social_like_set_permissions() {
+  $roles = Role::loadMultiple();
+
+  /** @var \Drupal\user\Entity\Role $role */
+  foreach ($roles as $role) {
+    if ($role->id() === 'administrator') {
+      continue;
+    }
+
+    $permissions = _social_like_get_permissions($role->id());
+    user_role_grant_permissions($role->id(), $permissions);
+  }
+}
+
+/**
+ * Build the permissions.
+ */
+function _social_like_get_permissions($role) {
+  // Anonymous.
+  $permissions['anonymous'] = ['view like widget'];
+
+  // Authenticated.
+  $permissions['authenticated'] = array_merge($permissions['anonymous'], [
     'add or remove like votes on post',
-    'add or remove like votes on photo of post',
-  ];
+    'add or remove like votes on comment of comment',
+    'add or remove like votes on post_comment of comment',
+    'add or remove like votes on topic of node',
+    'add or remove like votes on event of node',
+  ]);
 
-  user_role_grant_permissions(
-    'verified',
-    $permissions,
-  );
-  user_role_grant_permissions(
-    'contentmanager',
-    $permissions,
-  );
-  user_role_grant_permissions(
-    'sitemanager',
-    $permissions
-  );
+  // Content manager.
+  $permissions['contentmanager'] = array_merge($permissions['authenticated'], []);
+
+  // Site manager.
+  $permissions['sitemanager'] = array_merge($permissions['contentmanager'], []);
+
+  if (isset($permissions[$role])) {
+    return $permissions[$role];
+  }
+
+  return [];
 }

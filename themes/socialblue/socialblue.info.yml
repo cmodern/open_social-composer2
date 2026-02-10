@@ -5,7 +5,7 @@ type: theme
 
 base theme: socialbase
 
-core_version_requirement: ^8.8 || ^9 || ^10
+core: 8.x
 
 libraries:
   - socialblue/brand
@@ -29,8 +29,6 @@ libraries-extend:
   socialbase/spinner:
     - socialblue/spinner
   # Extend molecules
-  socialbase/block--informblock:
-    - socialblue/block--informblock
   socialbase/breadcrumb:
     - socialblue/breadcrumb
   socialbase/dropdown:
@@ -43,6 +41,12 @@ libraries-extend:
     - socialblue/form--input-groups
   socialbase/like:
     - socialblue/like
+  # attach the datepicker stylesheet to all date fields
+  core/drupal.date:
+    - socialblue/form--datepicker
+  # extend the core datepicker with a stylesheet
+  core/jquery.ui.datepicker:
+    - socialblue/form--timepicker
   socialbase/form--password:
     - socialblue/form--password
   socialbase/pagination:
@@ -76,16 +80,11 @@ libraries-extend:
     - socialblue/offcanvas
   socialbase/stream:
     - socialblue/stream
-  socialbase/layout:
-    - socialblue/layout
   socialbase/page-node:
     - socialblue/page-node
 
 ckeditor_stylesheets:
   - assets/css/ckeditor.css
-
-# Special stylesheets for CKEditor5 to use while editing.
-ckeditor5-stylesheets: false
 
 # This section is used by the contrib module, Component Libraries. It allows you
 # to reference .twig files in your components/ directory.
@@ -105,10 +104,12 @@ component-libraries:
   templates:
     paths:
       - components/05-templates
+  pages:
+    paths:
+      - components/06-pages
 
 regions:
   hidden: Hidden
-  header_top: Header top
   header: Header
   breadcrumb: Breadcrumb
   hero: Hero

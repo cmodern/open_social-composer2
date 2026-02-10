@@ -3,16 +3,15 @@
 namespace Drupal\activity_basics\Plugin\ActivityContext;
 
 use Drupal\activity_creator\Plugin\ActivityContextBase;
-use Drupal\comment\CommentInterface;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\group\Entity\GroupRelationship;
+use Drupal\group\Entity\GroupContent;
+use Drupal\activity_creator\ActivityFactory;
 
 /**
  * Provides a 'ProfileActivityContext' activity context.
  *
  * @ActivityContext(
- *   id = "profile_activity_context",
- *   label = @Translation("Profile activity context"),
+ *  id = "profile_activity_context",
+ *  label = @Translation("Profile activity context"),
  * )
  */
 class ProfileActivityContext extends ActivityContextBase {
@@ -20,12 +19,12 @@ class ProfileActivityContext extends ActivityContextBase {
   /**
    * {@inheritdoc}
    */
-  public function getRecipients(array $data, int $last_id, int $limit): array {
+  public function getRecipients(array $data, $last_uid, $limit) {
     $recipients = [];
 
     // We only know the context if there is a related object.
     if (isset($data['related_object']) && !empty($data['related_object'])) {
-      $referenced_entity = $this->activityFactory->getActivityRelatedEntity($data);
+      $referenced_entity = ActivityFactory::getActivityRelatedEntity($data);
 
       if ($referenced_entity['target_type'] === 'post') {
         $recipients += $this->getRecipientsFromPost($referenced_entity);
@@ -38,11 +37,9 @@ class ProfileActivityContext extends ActivityContextBase {
   /**
    * {@inheritdoc}
    */
-  public function isValidEntity(EntityInterface $entity): bool {
+  public function isValidEntity($entity) {
     // Special cases for comments.
-    if ($entity instanceof CommentInterface) {
-      $comment_owner_id = $entity->getOwnerId();
-
+    if ($entity->getEntityTypeId() === 'comment') {
       // Returns the entity to which the comment is attached.
       $entity = $entity->getCommentedEntity();
     }
@@ -51,24 +48,18 @@ class ProfileActivityContext extends ActivityContextBase {
       return FALSE;
     }
 
-    // Check if the content is placed in a group (regardless of content type).
-    if (GroupRelationship::loadByEntity($entity)) {
+    // Check if it's placed in a group (regardless off content type).
+    if (GroupContent::loadByEntity($entity)) {
       return FALSE;
     }
-
     if ($entity->getEntityTypeId() === 'post') {
-      if (!$entity->field_recipient_group->isEmpty()) {
+      if (!empty($entity->get('field_recipient_group')->getValue())) {
         return FALSE;
       }
-      elseif (!$entity->field_recipient_user->isEmpty()) {
-        if (isset($comment_owner_id)) {
-          return $comment_owner_id !== $entity->field_recipient_user->target_id;
-        }
-
+      elseif (!empty($entity->get('field_recipient_user')->getValue())) {
         return TRUE;
       }
     }
-
     return FALSE;
   }
 

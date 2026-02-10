@@ -1,5 +1,3 @@
-@import 'settings';
-
 // Card
 //
 // The card is a very basic element that we see a lot in Open social.
@@ -48,18 +46,15 @@
 //
 // Style guide: atoms.card.nest-section
 
+@import 'settings';
 
 .card {
   @include z-depth-2;
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-bottom: $card-spacer-x;
+  margin-bottom: $card-spacer-y;
   background-clip: padding-box;
-
-  // IE Fix: Default flex values for <IE11 is `flex: 0 0 auto` while other
-  // browsers and the spec says `flex: 0 1 auto`. We make it compliant here.
-  flex-grow: 1;
 }
 
 .card__title {
@@ -68,12 +63,7 @@
   margin: 0;
   padding: 15px $card-spacer-x 0;
   line-height: 1;
-  font-size: 1rem;
-}
-
-// The card title on the summary collapse block.
-summary.card__title {
-  padding-bottom: 15px;
+  font-size: 0.875rem;
 }
 
 .card__subtitle {
@@ -98,6 +88,11 @@ summary.card__title {
   & + .card__block {
     padding-top: 0;
   }
+
+}
+
+.card__block--table {
+  padding: $card-spacer-x 0;
 }
 
 .card__block--list:not(:first-child) {
@@ -112,10 +107,6 @@ summary.card__title {
 .card__body {
   position: relative;
   padding: $card-spacer-x;
-
-  [dir='rtl'] & {
-    text-align: right;
-  }
 
   @include for-tablet-landscape-up {
     padding: $card-spacer-xl;
@@ -144,7 +135,7 @@ summary.card__title {
   margin-top: -$card-spacer-x;
   padding: $card-spacer-x;
   position: relative;
-  z-index: 1;
+  z-index:2;
 }
 
 .card__link {
@@ -152,12 +143,7 @@ summary.card__title {
   margin-left: 24px;
   float: right;
   transition: color .3s ease;
-
-  [dir='rtl'] & {
-    float: left;
-    margin-left: 0;
-    margin-right: 24px;
-  }
+  text-transform: uppercase;
 }
 
 .card__text {
@@ -167,24 +153,4 @@ summary.card__title {
     margin-bottom: 0;
   }
 
-}
-
-.leaflet-popup-content .card__block {
-  padding: 0;
-}
-
-.card--stream .card__block .card__nested-section {
-  padding-top: ($card-spacer-x/2);
-}
-
-// Info tab on the group page.
-.block-views-blockgroup-managers-block-list-managers,
-.view-group-information,
-.block-social-group-tags-block {
-  .card,
-  &.card {
-    > .card__title {
-      text-align: center;
-    }
-  }
 }

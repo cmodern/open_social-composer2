@@ -2,11 +2,7 @@
 
 namespace Drupal\activity_logger\Plugin\QueueWorker;
 
-use Drupal\activity_creator\Plugin\ActivityActionManager;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\node\Entity\Node;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * A report worker.
@@ -19,46 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * This QueueWorker is responsible for creating message items from the queue
  */
-class MessageQueueCreator extends MessageQueueBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The action manager.
-   *
-   * @var \Drupal\activity_creator\Plugin\ActivityActionManager
-   */
-  protected $actionManager;
-
-  /**
-   * MessageQueueCreator constructor.
-   *
-   * @param array $configuration
-   *   The configuration.
-   * @param string $plugin_id
-   *   The plugin id.
-   * @param array $plugin_definition
-   *   The plugin definition.
-   * @param \Drupal\Core\Queue\QueueFactory $queue
-   *   The queue.
-   * @param \Drupal\activity_creator\Plugin\ActivityActionManager $actionManager
-   *   The action manager.
-   */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, QueueFactory $queue, ActivityActionManager $actionManager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $queue);
-    $this->actionManager = $actionManager;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('queue'),
-      $container->get('plugin.manager.activity_action.processor')
-    );
-  }
+class MessageQueueCreator extends MessageQueueBase {
 
   /**
    * {@inheritdoc}
@@ -78,14 +35,14 @@ class MessageQueueCreator extends MessageQueueBase implements ContainerFactoryPl
         // Wait for 100 milliseconds.
         // We don't want to flood the DB with unprocessable queue items.
         usleep(100000);
-        $this->createQueueItem('activity_logger_message', $data);
+        $queue = \Drupal::queue('activity_logger_message');
+        $queue->createItem($data);
       }
       else {
-        // Trigger the create action for entities.
-        if ($this->actionManager->hasDefinition('create_entitiy_action')) {
-          $create_action = $this->actionManager->createInstance('create_entitiy_action');
-          $create_action->createMessage($entity);
-        }
+        $activity_logger_factory = \Drupal::service('plugin.manager.activity_action.processor');
+        // Trigger the create action for enttites.
+        $create_action = $activity_logger_factory->createInstance('create_entitiy_action');
+        $create_action->createMessage($entity);
       }
     }
   }

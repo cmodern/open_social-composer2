@@ -20,10 +20,6 @@
 }
 
 .stream-item:first-of-type {
-  z-index: 4;
-}
-
-.stream-item .pull-right {
   z-index: 2;
 }
 
@@ -90,12 +86,11 @@
 .card--stream .comment__avatar {
   margin-right: 8px;
   width: 44px;
-  height: 44px;
   -ms-flex-negative: 0;
       flex-shrink: 0;
 }
 
-.teaser.teaser--stream {
+.teaser--stream {
   margin-top: 0.625rem;
   margin-right: -1.25rem;
   margin-bottom: 0.625rem;
@@ -103,37 +98,8 @@
   background: #e6e6e6;
 }
 
-.teaser.teaser--stream:last-child {
+.teaser--stream:last-child {
   margin-bottom: -1.25rem;
-}
-
-.post-unpublished img {
-  opacity: 0.5;
-}
-
-.post-unpublished .badge-default {
-  background-color: #777777;
-  color: white;
-  margin-left: 5px;
-  font-size: 100%;
-}
-
-.post-unpublished * {
-  color: #9b9b9b;
-}
-
-.footer-post {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
 }
 
 @media (min-width: 600px) {
@@ -164,10 +130,10 @@
   .card--stream .comment__avatar {
     margin-right: 12px;
   }
-  .teaser.teaser--stream {
+  .teaser--stream {
     height: 200px;
   }
-  .teaser.teaser--stream .teaser__image {
+  .teaser--stream .teaser__image {
     height: 200px;
     -webkit-box-flex: 0;
         -ms-flex: 0 0 200px;

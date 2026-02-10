@@ -1,3 +1,0 @@
-__global_actions:
-  import_configs:
-    - field.storage.group_content.field_affiliation_function

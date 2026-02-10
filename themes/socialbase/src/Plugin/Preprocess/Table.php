@@ -17,7 +17,7 @@ class Table extends BaseTable {
   /**
    * {@inheritdoc}
    */
-  public function preprocessVariables(Variables $variables): void {
+  public function preprocessVariables(Variables $variables) {
     if (isset($variables['attributes']['id']) && strpos($variables['attributes']['id'], 'edit-field-files') !== FALSE) {
       $variables['attributes']['class'][] = 'tablesaw';
       $variables['attributes']['data-tablesaw-mode'] = 'stack';

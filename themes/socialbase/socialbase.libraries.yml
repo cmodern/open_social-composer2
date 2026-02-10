@@ -9,7 +9,7 @@ base:
   dependencies:
     - core/drupal
     - core/jquery
-    - core/once
+    - core/jquery.once
 
 print:
   css:
@@ -31,11 +31,6 @@ badge:
     component:
       assets/css/badge.css: {}
 
-big-pipe-skeleton:
-  css:
-    theme:
-      assets/css/big-pipe-skeleton.css: {}
-
 button:
   css:
     component:
@@ -55,9 +50,6 @@ form-controls:
     assets/js/autosize.init.min.js: { minified: true }
   dependencies:
     - core/drupal.form
-    - core/drupal
-    - core/jquery
-    - core/once
 
 fitframe:
   css:
@@ -80,13 +72,6 @@ block--introtext:
     component:
       assets/css/block--introtext.css: {}
 
-block--informblock:
-  css:
-    component:
-      assets/css/block--informblock.css: {}
-  js:
-    assets/js/informblock.min.js: { minified: true }
-
 breadcrumb:
   css:
     component:
@@ -103,9 +88,6 @@ dropdown:
       assets/css/dropdown.css: {}
   js:
     /libraries/bootstrap/js/dropdown.js: {}
-    assets/js/dropdown.min.js: {}
-  dependencies:
-    - core/once
 
 file:
   css:
@@ -123,6 +105,15 @@ form--autocomplete:
       assets/css/ajax.css: {}
       assets/css/autocomplete.css: {}
 
+form--datepicker:
+  css:
+    component:
+      assets/css/datepicker.css: {}
+  js:
+    assets/js/date-picker-init.min.js: { minified: true }
+  dependencies:
+    - core/modernizr
+
 form--input-groups:
   css:
     component:
@@ -133,15 +124,18 @@ form--password:
     component:
       assets/css/password.css: {}
 
-form--social-auth-buttons:
+form--timepicker:
+  remote: https://github.com/jonthornton/jquery-timepicker
+  version: "1.11.4"
+  license:
+    name: MIT
+    url: https://raw.githubusercontent.com/jonthornton/jquery-timepicker/master/README.md
+    gpl-compatible: true
   css:
     component:
-      assets/css/social-auth-buttons.css: {}
-
-form--toolbar:
-  css:
-    component:
-      assets/css/form-toolbar.css: {}
+      assets/css/timepicker.css: {}
+  js:
+    /libraries/timepicker/jquery.timepicker.min.js: { minified: true }
 
 imagecrop:
   css:
@@ -190,22 +184,11 @@ navbar:
     assets/js/navbar-collapse.min.js: { minified: true }
     assets/js/navbar-resize.min.js: { minified: true }
     assets/js/navbar-search.min.js: { minified: true }
-    assets/js/navbar-main-menu.min.js: { minified: true }
-  dependencies:
-    - core/drupal
-    - core/jquery
-    - core/once
-    - core/drupal.debounce
 
 pagination:
   css:
     component:
       assets/css/pagination.css: {}
-
-photoswipe-gallery:
-  css:
-    component:
-      assets/css/photoswipe-gallery.css: {}
 
 popover:
   css:
@@ -214,16 +197,15 @@ popover:
   js:
     /libraries/bootstrap/js/tooltip.js: { weight: -2 }
     /libraries/bootstrap/js/popover.js: { weight: -1 }
-    assets/js/popover_svg.min.js: { }
-  dependencies:
-    - core/drupal
-    - core/jquery
-    - core/once
 
 select2:
   css:
     component:
+      /libraries/select2/dist/css/select2.min.css: {}
       assets/css/select2.css: {}
+  js:
+    /libraries/select2/dist/js/select2.min.js: { minified: true }
+    assets/js/select2.init.min.js: { minified: true }
 
 tabledrag:
   js:
@@ -266,16 +248,6 @@ form-post-create:
   css:
     component:
       assets/css/form-post-create.css: {}
-
-form--filter-membership:
-  css:
-    component:
-      assets/css/form--filter-membership.css: {}
-
-forum:
-  css:
-    component:
-      assets/css/forum.css: {}
 
 group-managers:
   css:
@@ -327,11 +299,6 @@ photoswipe.image:
     /libraries/photoswipe/dist/photoswipe-ui-default.min.js: { minified: true }
     assets/js/photoswipe.min.js: { minified: true }
 
-post:
-  css:
-    component:
-      assets/css/post.css: {}
-
 ### 2.4 Templates
 layout:
   css:
@@ -357,30 +324,13 @@ page-preview:
     layout:
       assets/css/page-preview.css: {}
 
-email-preview:
-  css:
-    layout:
-      assets/css/email-preview.css: {}
-
 ### 2.5 Libraries
 charts:
   css:
     component:
       assets/css/morrisjs.css: {}
   js:
-    /libraries/morris.js06/dist/morris.min.js: { minified: true }
+    /libraries/morris.js/morris.min.js: { minified: true }
     /libraries/mocha/mocha.js: {}
     /libraries/raphael/raphael.min.js: { minified: true }
     /libraries/eve-raphael/eve.js: {}
-
-# Contains libraries required for the layout builder that have been previously
-# removed in Open Social to fix our own modals.
-layout_builder:
-  css:
-    component:
-      /core/assets/vendor/jquery.ui/themes/base/core.css: {}
-      /core/assets/vendor/jquery.ui/themes/base/button.css: {}
-      /core/assets/vendor/jquery.ui/themes/base/dialog.css: {}
-      /core/assets/vendor/jquery.ui/themes/base/menu.css: {}
-    theme:
-      /core/assets/vendor/jquery.ui/themes/base/theme.css: {}

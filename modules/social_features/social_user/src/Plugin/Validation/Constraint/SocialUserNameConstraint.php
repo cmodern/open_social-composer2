@@ -14,9 +14,6 @@ use Symfony\Component\Validator\Constraint;
  */
 class SocialUserNameConstraint extends Constraint {
 
-  /**
-   * The error message for this constraint.
-   */
-  public string $usernameIsEmailMessage = 'The username can not be an email address.';
+  public $usernameIsEmailMessage = 'The username can not be an email address.';
 
 }

@@ -24,10 +24,22 @@ class SocialEventManagersConfigOverride implements ConfigFactoryOverrideInterfac
     if (in_array($config_name, $names)) {
       $config = \Drupal::service('config.factory')->getEditable($config_name);
       // Add a field group.
-      if ($group_attachment = $config->get('third_party_settings.field_group.group_attachments')) {
-        $group_attachment['children'][] = 'field_event_managers';
-        $overrides[$config_name]['third_party_settings']['field_group']['group_attachments'] = $group_attachment;
-      }
+      $field_group_settings = $config->get('third_party_settings.field_group');
+      $field_group_settings['group_event_managers'] = [
+        'children' => [
+          'field_event_managers',
+        ],
+        'parent_name' => '',
+        'weight' => 9,
+        'label' => 'Event organisers',
+        'format_type' => 'fieldset',
+        'format_settings' => [
+          'label' => 'Event organisers',
+          'id' => 'event-managers',
+          'classes' => 'card',
+          'required_fields' => FALSE,
+        ],
+      ];
 
       // Add the field to the content.
       $content = $config->get('content');
@@ -37,11 +49,17 @@ class SocialEventManagersConfigOverride implements ConfigFactoryOverrideInterfac
       $content['field_event_managers']['settings']['placeholder'] = '';
       $content['field_event_managers']['settings']['size'] = '60';
       $content['field_event_managers']['type'] = 'entity_reference_autocomplete';
-      $content['field_event_managers']['weight'] = 100;
-      $content['field_event_managers']['region'] = 'content';
-      $content['field_event_managers']['third_party_settings'] = [];
+      $content['field_event_managers']['weight'] = 0;
+      if (!isset($content['field_event_managers']['third_party_settings'])) {
+        $content['field_event_managers']['third_party_settings'] = [];
+      }
 
-      $overrides[$config_name]['content'] = $content;
+      $overrides[$config_name] = [
+        'third_party_settings' => [
+          'field_group' => $field_group_settings,
+        ],
+        'content' => $content,
+      ];
 
     }
 

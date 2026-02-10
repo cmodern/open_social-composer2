@@ -2,7 +2,6 @@
 
 namespace Drupal\activity_viewer\Plugin\views\argument;
 
-use Drupal\Core\Database\Query\Condition;
 use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 
 /**
@@ -27,7 +26,7 @@ class ActivityGroupArgument extends ArgumentPluginBase {
     $this->query->addTable('activity__field_activity_entity');
     $this->query->addTable('activity__field_activity_destinations');
 
-    $or_condition = new Condition('OR');
+    $or_condition = db_or();
 
     // Group is a recipient.
     $or_condition->condition('activity__field_activity_recipient_group.field_activity_recipient_group_target_id', $this->argument, '=');

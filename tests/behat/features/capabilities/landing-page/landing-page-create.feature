@@ -1,4 +1,4 @@
-@api @javascript
+@api @landing-page @stability @perfect @critical @DS-4130 @stability-4
 Feature: Create Landing Page
   Benefit: In order to share useful information with users
   Role: AN
@@ -7,23 +7,20 @@ Feature: Create Landing Page
   Scenario: Successfully create Landing Page
 
     Given I enable the module "social_landing_page"
-    And event content:
+    Given event content:
       | title          | field_event_date | status | field_content_visibility |
       | Featured Event | +10 minutes      | 1      | public                   |
-    And "topic_types" terms:
-      | name                  |
-      | News                  |
-      | Blog                  |
-    And topic content:
+
+    Given topic content:
       | title            | field_topic_type | status | field_content_visibility |
       | Featured Topic 1 | News             | 1      | public                   |
       | Featured Topic 2 | Blog             | 1      | public                   |
     # Create Landing Page Hero
-    And I am logged in as an "contentmanager"
-    And I am on "node/add/landing_page"
+    Given I am logged in as an "sitemanager"
+    When I am on "node/add/landing_page"
     And I fill in the following:
       | Title | This is a dynamic page |
-    And I click radio button "Public" with the id "edit-field-content-visibility-public"
+    And I click radio button "Public - visible to everyone including people who are not a member" with the id "edit-field-content-visibility-public"
     And I press "Add Section"
     And I wait for AJAX to finish
     And I press "Add Hero"
@@ -43,9 +40,11 @@ Feature: Create Landing Page
     And I select "btn-primary" from "field_landing_page_section[0][subform][field_section_paragraph][0][subform][field_hero_buttons][1][subform][field_button_style]"
     And I press "Add Section"
     And I wait for AJAX to finish
+    And I wait for "3" seconds
     # Create Introduction
     And I press "Add Introduction"
     And I wait for AJAX to finish
+    And I wait for "3" seconds
     And I fill in the following:
       | field_landing_page_section[1][subform][field_section_paragraph][0][subform][field_introduction_title][0][value]   | Introduction title             |
       | field_landing_page_section[1][subform][field_section_paragraph][0][subform][field_introduction_link_an][0][uri]   | /log-in                        |
@@ -54,36 +53,37 @@ Feature: Create Landing Page
       | field_landing_page_section[1][subform][field_section_paragraph][0][subform][field_introduction_link_lu][0][title] | Introduction Link LU           |
     And I press "Add Section"
     And I wait for AJAX to finish
+    And I wait for "5" seconds
     # Create Featured
     And I press "Add Featured"
     And I wait for AJAX to finish
+    And I wait for "3" seconds
     And I fill in the following:
       | field_landing_page_section[2][subform][field_section_paragraph][0][subform][field_featured_title][0][value] | Featured title  |
       | field_landing_page_section[2][subform][field_section_paragraph][0][subform][field_featured_link][0][uri]    | /search/content |
       | field_landing_page_section[2][subform][field_section_paragraph][0][subform][field_featured_link][0][title]  | Featured Link   |
     And I fill in "field_landing_page_section[2][subform][field_section_paragraph][0][subform][field_featured_items][0][target_id]" with "Featured Event"
-    And I press "Add another item"
-    And I wait for AJAX to finish
     And I fill in "field_landing_page_section[2][subform][field_section_paragraph][0][subform][field_featured_items][1][target_id]" with "Featured Topic 1"
-    And I press "Add another item"
-    And I wait for AJAX to finish
     And I fill in "field_landing_page_section[2][subform][field_section_paragraph][0][subform][field_featured_items][2][target_id]" with "Featured Topic 2"
     And I press "Add Section"
     And I wait for AJAX to finish
+    And I wait for "3" seconds
     # Create Block
     And I press "Add Block"
     And I wait for AJAX to finish
+    And I wait for "3" seconds
     And I select "views_block:community_activities-block_stream_landing" from "field_landing_page_section[3][subform][field_section_paragraph][0][subform][field_block_reference][0][plugin_id]"
     And I select "activity_overview_block" from "field_landing_page_section[3][subform][field_section_paragraph][0][subform][field_block_reference_secondary][0][plugin_id]"
     And I fill in the following:
       | field_landing_page_section[3][subform][field_section_paragraph][0][subform][field_block_link][0][uri]   | /explore   |
       | field_landing_page_section[3][subform][field_section_paragraph][0][subform][field_block_link][0][title] | Block Link |
     # Set URL Alias
-    And I click the xth "0" element with the css "#edit-group-settings summary"
-    And I set alias as "landingpage"
-    And I press "Create landing page"
+    And I click "URL path settings"
+    And I fill in "URL alias" with "landingpage"
+    And I press "Save"
+    And I wait for "3" seconds
     # Ses as LU
-    And I should see "Landing page This is a dynamic page has been created."
+    Then I should see "Landing page This is a dynamic page has been created."
     And I should see "Hero title"
     And I should see "Hero subtitle"
     And I should see the link "Hero Link LU"
@@ -99,8 +99,8 @@ Feature: Create Landing Page
     And I should see the link "Featured Topic 2"
     And I should see "Community activities"
     # Quick edit
-    And I click "Edit content"
-    And I should see "Hero title"
+    Given I click "Edit content"
+    Then I should see "Hero title"
     And I should see "Hero subtitle"
     And I should see the link "Hero Link LU"
     And I should see "Introduction title"
@@ -111,16 +111,17 @@ Feature: Create Landing Page
     And I should see the link "Featured Topic 1"
     And I should see the link "Featured Topic 2"
     And I should see "Community activities"
-    And I press "field_landing_page_section_0_edit"
+    When I press "field_landing_page_section_0_edit"
     And I wait for AJAX to finish
     And I fill in the following:
       | field_landing_page_section[0][subform][field_section_paragraph][0][subform][field_hero_title][0][value] | Hero title edited |
     And I press "Save"
-    And I should see "Landing page This is a dynamic page has been updated."
+    And I wait for "3" seconds
+    Then I should see "Landing page This is a dynamic page has been updated."
     # See as AN
-    And I logout
+    Given I logout
     And I go to "landingpage"
-    And I should see "Hero title" in the "Main content"
+    Then I should see "Hero title" in the "Main content"
     And I should see "Hero subtitle" in the "Main content"
     And I should not see the link "Hero Link LU"
     And I should see the link "Hero Link AN"

@@ -1,22 +1,10 @@
-social_group.page_redirect:
-  path: '/group/{group}'
+social_group.social_group_controller_redirectGroupMemberships:
+  path: '/group/{group}/membership'
   defaults:
-    _controller: '\Drupal\social_group\Controller\SocialGroupController::otherGroupPage'
-    _title: 'Group'
+    _content: '\Drupal\social_group\Controller\SocialGroupContentListBuilder::render'
+    _title_callback: '\Drupal\social_group\Controller\SocialGroupController::groupMembersTitle'
   requirements:
-    _user_is_logged_in: 'TRUE'
-
-social_group.anonymous_join:
-  path: '/group/{group}/anonymous-join'
-  defaults:
-    _controller: '\Drupal\social_group\Controller\SocialGroupController::anonymousRequestMembership'
-  requirements:
-    _user_is_logged_in: 'FALSE'
-  options:
-    parameters:
-      group:
-        type: 'entity:group'
-
+    _group_permission: 'administer members'
 social_group.settings:
   path: '/admin/config/opensocial/social-group'
   defaults:
@@ -24,27 +12,3 @@ social_group.settings:
     _title: 'Group settings'
   requirements:
     _permission: 'set social group settings'
-
-social_group.stream:
-  path: '/group/{group}/stream'
-  defaults:
-    _content: '\Drupal\social_group\Controller\SocialGroupController::groupStream'
-    _title_callback: '\Drupal\social_group\Controller\SocialGroupController::groupStreamTitle'
-    _entity_view: 'group.stream'
-  requirements:
-    _group_permission: 'view group stream page'
-
-social_group.my_groups:
-  path: '/my-groups'
-  defaults:
-    _controller: '\Drupal\social_group\Controller\SocialGroupController:redirectMyGroups'
-  requirements:
-    _user_is_logged_in: 'TRUE'
-
-entity.group.collection:
-  path: '/admin/hub'
-  defaults:
-    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-    _title: 'Hubs'
-  requirements:
-    _permission: 'access group overview'

@@ -7,13 +7,11 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
-use Drupal\Core\Template\Attribute;
-use Drupal\comment\CommentInterface;
 
 /**
  * Implements template_preprocess_form().
  */
-function socialbase_preprocess_form(&$variables): void {
+function socialbase_preprocess_form(&$variables) {
 
   $element = $variables['element'];
 
@@ -48,21 +46,6 @@ function socialbase_preprocess_form(&$variables): void {
             ->getViewBuilder('profile')
             ->view($user_profile, 'compact');
           $variables['current_user_picture'] = $content;
-          $variables['comment_wrapper'] = new Attribute();
-          $variables['comment_reply_form_wrapper'] = new Attribute();
-          // Used for example for ajax comments in form--comment.html.twig, see
-          // Drupal\social_ajax_comments\Controller::socialCancel().
-          if (!empty($element['form_html_id']['#value'])) {
-            $variables['comment_wrapper']->addClass('social_' . $element['form_html_id']['#value']);
-            // Only on reply ajax call add another class and wrapper.
-            // we need this class so ajax_comments understand to remove this
-            // element so there won't be multiple reply forms opened.
-            if (!empty($element['#action']) && strpos($element['#action'], 'ajax_comments/reply') !== FALSE) {
-              $variables['comment_reply_form_wrapper']->addClass('ajax-comments-form-reply');
-              $variables['comment_reply_form_wrapper']->addClass('comments');
-              $variables['comment_reply_form_wrapper']->addClass('social_reply_form_wrapper_' . $element['form_html_id']['#value']);
-            }
-          }
         }
       }
     }
@@ -71,17 +54,14 @@ function socialbase_preprocess_form(&$variables): void {
     if (\Drupal::routeMatch()->getRouteName() === 'entity.comment.edit_form') {
       $comment = \Drupal::routeMatch()->getParameter('comment');
 
-      if ($comment instanceof CommentInterface) {
+      if (is_object($comment)) {
         // Display comment created date in format 'time ago'.
         $created_time_ago = \Drupal::service('date.formatter')
-          ->formatTimeDiffSince($comment->getCreatedTime(), [
-            'granularity' => 1,
-            'return_as_object' => TRUE,
-          ]);
+          ->formatTimeDiffSince($comment->getCreatedTime(), ['granularity' => 1, 'return_as_object' => TRUE]);
 
         $submitted = t('@time ago', ['@time' => $created_time_ago->getString()]);
-        $variables['submitted'] = Link::fromTextAndUrl($submitted, $comment->toUrl('canonical'));
-        $variables['#cache']['max-age'] = $created_time_ago->getCacheMaxAge();
+        $variables['submitted'] = Link::fromTextAndUrl($submitted, $comment->urlInfo('canonical'));
+        $variables['#cache']['max-age'] = $created_time_ago->getMaxAge();
 
         // Display author information.
         $account = $comment->getOwner();
@@ -103,7 +83,7 @@ function socialbase_preprocess_form(&$variables): void {
             '#theme' => 'username',
             '#account' => $account,
           ];
-          $variables['author'] = \Drupal::service('renderer')->render($username);
+          $variables['author'] = drupal_render($username);
         }
       }
 
@@ -116,17 +96,14 @@ function socialbase_preprocess_form(&$variables): void {
     if (\Drupal::routeMatch()->getRouteName() === 'entity.post.edit_form') {
       $post_id = $element['#post_id'];
       /** @var \Drupal\social_post\Entity\Post $post */
-      $post = \Drupal::service('entity_type.manager')->getStorage('post')->load($post_id);
+      $post = entity_load('post', $post_id);
 
       // Display post created date in format 'time ago'.
       $created_time_ago = \Drupal::service('date.formatter')
-        ->formatTimeDiffSince($post->getCreatedTime(), [
-          'granularity' => 1,
-          'return_as_object' => TRUE,
-        ]);
+        ->formatTimeDiffSince($post->getCreatedTime(), ['granularity' => 1, 'return_as_object' => TRUE]);
       $date = t('%time ago', ['%time' => $created_time_ago->getString()]);
       $variables['date']['#markup'] = $date;
-      $variables['#cache']['max-age'] = $created_time_ago->getCacheMaxAge();
+      $variables['#cache']['max-age'] = $created_time_ago->getMaxAge();
 
       // To change user picture settings (e.g. image style), edit the 'compact'
       // view mode on the User entity. Note that the 'compact' view mode might
@@ -154,7 +131,7 @@ function socialbase_preprocess_form(&$variables): void {
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_social_post_entity_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_social_post_entity_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['actions']['#inline'] = TRUE;
   $form['field_visibility']['#inline'] = TRUE;
 
@@ -168,10 +145,10 @@ function socialbase_form_social_post_entity_form_alter(&$form, FormStateInterfac
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_comment_post_comment_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_comment_post_comment_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
   if (isset($form['actions']['submit']['#button_type'])) {
-    $form['actions']['submit']['#button_type'] = 'primary';
+    $form['actions']['submit']['#button_type'] = 'flat';
     $form['actions']['submit']['#comment_button'] = TRUE;
   }
 
@@ -183,7 +160,7 @@ function socialbase_form_comment_post_comment_form_alter(&$form, FormStateInterf
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_private_message_add_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_private_message_add_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
   foreach ($form['actions'] as $key => &$actions) {
     // Must be pretty sure it's a submit button.
@@ -201,7 +178,7 @@ function socialbase_form_private_message_add_form_alter(&$form, FormStateInterfa
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_comment_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_comment_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['field_comment_body']['widget'][0]['#title_display'] = 'invisible';
   if (isset($form['actions']['submit']['#button_type'])) {
     $form['actions']['submit']['#button_type'] = 'primary';
@@ -212,7 +189,7 @@ function socialbase_form_comment_form_alter(&$form, FormStateInterface $form_sta
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_node_event_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_node_event_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['field_event_address'])) {
     $form['field_event_address']['widget'][0]['#title'] = '';
   }
@@ -221,7 +198,7 @@ function socialbase_form_node_event_form_alter(&$form, FormStateInterface $form_
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_profile_profile_edit_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_profile_profile_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['field_profile_address'])) {
     $form['field_profile_address']['widget'][0]['#title'] = '';
   }
@@ -230,7 +207,7 @@ function socialbase_form_profile_profile_edit_form_alter(&$form, FormStateInterf
 /**
  * Implements hook_form_user_form_alter().
  */
-function socialbase_form_user_form_alter(&$form): void {
+function socialbase_form_user_form_alter(&$form) {
   if (isset($form['email_notifications'])) {
     $form['#attached']['library'][] = 'socialbase/form-horizontal';
     $form['timezone']['#attributes']['class'][] = 'form-horizontal';
@@ -238,9 +215,9 @@ function socialbase_form_user_form_alter(&$form): void {
 }
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_form_FORM_ID_alter().
  */
-function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
   // Client side validation is not consistent accross devices. Disable for now.
   if (!isset($form['#attributes']['novalidate'])) {
@@ -260,81 +237,55 @@ function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id)
     unset($form['#attributes']['novalidate']);
   }
 
-  $social_group_types = [];
-  \Drupal::moduleHandler()->alter('social_group_types', $social_group_types);
-
-  $group_add_card_to_forms = [];
-  $group_confirm_forms = [];
-  $group_default_forms = [];
-  $content_reporting_forms = [];
-
-  foreach ($social_group_types as $social_group_type) {
-    $group_add_card_to_forms[] = "group_content_{$social_group_type}-group_membership_group-join_form";
-    $group_add_card_to_forms[] = "group_content_{$social_group_type}-group_membership_add_form";
-    $group_add_card_to_forms[] = "group_content_{$social_group_type}-group_membership_edit_form";
-    $group_confirm_forms[] = "group_content_{$social_group_type}-group_membership_group-leave_form";
-    $group_confirm_forms[] = "group_content_{$social_group_type}-group_membership_delete_form";
-    $group_confirm_forms[] = "group_content_{$social_group_type}-group_membership_delete_form";
-    $group_confirm_forms[] = "group_content_{$social_group_type}-group_invitation_delete_form";
-    $group_confirm_forms[] = "group_content_{$social_group_type}-group_invitation_add_form";
-    $group_confirm_forms[] = "bulk_group_invitation";
-    $group_confirm_forms[] = "bulk_group_invitation_confirm";
-    $group_confirm_forms[] = "group_{$social_group_type}_delete_form";
-    $group_default_forms[] = "group_{$social_group_type}_add_form";
-    $group_default_forms[] = "group_{$social_group_type}_edit_form";
-  }
-
-  // Add card classes to all the social_content_reporting forms if enabled.
-  // Get all 'report_' flags.
-  if (\Drupal::hasService('social_content_report.content_report_service')) {
-    $report_types = \Drupal::service('social_content_report.content_report_service')->getReportFlagTypes();
-    foreach ($report_types as $report_type) {
-      $content_reporting_forms[] = 'flagging_' . $report_type . '_add_form';
-      $content_reporting_forms[] = 'flagging_' . $report_type . '_edit_form';
-    }
-  }
-
   // These forms have a container with class form-action at the bottom and
   // we style it in a way that the primary/submit button is aligned right
   // Also we define the style of the buttons based on their function.
-  $default_forms = array_merge(
-    $group_add_card_to_forms,
-    $group_confirm_forms,
-    $group_default_forms,
-    $content_reporting_forms,
-    [
-      'user_form',
-      'user_pass_reset',
-      'social_user_login_form',
-      'user_register_form',
-      'profile_profile_add_form',
-      'profile_profile_edit_form',
-      'social_user_password_form',
-      'user_cancel_form',
-      'social_group_add',
-      'node_event_form',
-      'node_topic_form',
-      'comment_comment_delete_form',
-      'comment_post_comment_delete_form',
-      'comment_comment_delete_form',
-      'post_delete_form',
-      'post_photo_delete_form',
-      'node_event_delete_form',
-      'node_topic_delete_form',
-      'profile_profile_delete_form',
-      'private_message_thread_delete_form',
-      'data_policy_edit_form',
-      'data_policy_data_policy_agreement',
-      'data_policy_data_policy_revision_edit',
-      'event_an_enroll_form',
-      'block_content_custom_content_list_form',
-      'block_content_custom_content_list_edit_form',
-      'bulk_group_invitation',
-      'social_bulk_group_invitation',
-      'enroll_invite_email_form',
-      'enroll_invite_user_form',
-    ]
-  );
+  $default_forms = [
+    'user_form',
+    'user_pass_reset',
+    'social_user_login_form',
+    'user_register_form',
+    'profile_profile_add_form',
+    'profile_profile_edit_form',
+    'social_user_password_form',
+    'user_cancel_form',
+    'social_group_add',
+    'group_open_group_add_form',
+    'group_open_group_edit_form',
+    'group_closed_group_add_form',
+    'group_closed_group_edit_form',
+    'group_public_group_add_form',
+    'group_public_group_edit_form',
+    'node_event_form',
+    'node_topic_form',
+    'group_content_open_group-group_membership_group-join_form',
+    'group_content_open_group-group_membership_group-leave_form',
+    'group_content_open_group-group_membership_add_form',
+    'group_content_open_group-group_membership_edit_form',
+    'group_content_open_group-group_membership_delete_form',
+    'group_content_closed_group-group_membership_group-join_form',
+    'group_content_closed_group-group_membership_group-leave_form',
+    'group_content_closed_group-group_membership_add_form',
+    'group_content_closed_group-group_membership_edit_form',
+    'group_content_closed_group-group_membership_delete_form',
+    'group_content_public_group-group_membership_group-join_form',
+    'group_content_public_group-group_membership_group-leave_form',
+    'group_content_public_group-group_membership_add_form',
+    'group_content_public_group-group_membership_edit_form',
+    'group_content_public_group-group_membership_delete_form',
+    'group_open_group_delete_form',
+    'group_closed_group_delete_form',
+    'group_public_group_delete_form',
+    'comment_comment_delete_form',
+    'comment_post_comment_delete_form',
+    'comment_comment_delete_form',
+    'post_delete_form',
+    'post_photo_delete_form',
+    'node_event_delete_form',
+    'node_topic_delete_form',
+    'profile_profile_delete_form',
+    'private_message_thread_delete_form',
+  ];
 
   if (in_array($form_id, $default_forms)) {
     $form['#attributes']['class'][] = 'form--default';
@@ -355,6 +306,7 @@ function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id)
       }
 
     }
+
     if (isset($form['actions']['cancel'])) {
 
       // Some `cancel` buttons are not inputs but links.
@@ -367,37 +319,19 @@ function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id)
     }
   }
 
-  if ($form_id ==='user_pass_reset') {
-    $form['message']['#prefix'] = '<div class="card"><div class="card__block">';
-    $form['help']['#suffix'] = '</div></div>';
-  }
-
   // Here we list all the forms that need to be wrapped in cards.
-  $add_card_to_forms = array_merge(
-    $group_add_card_to_forms,
-    [
-      'event_an_enroll_form',
-      'data_policy_edit_form',
-      'data_policy_data_policy_agreement',
-      'data_policy_data_policy_revision_edit',
-      'views_bulk_operations_configure_action',
-      'views_bulk_operations_confirm_action',
-      'bulk_group_invitation',
-      'enroll_invite_user_form',
-    ]
-  );
-
-  if (in_array($form_id, $add_card_to_forms)) {
-    $form['#attributes']['class'][] = 'card';
-    $form['actions']['#prefix'] = '</div></div>';
-  }
-
-  // The content reporting form also needs a card display except when rendered
-  // in a dialog.
-  if (in_array($form_id, $content_reporting_forms) && !\Drupal::request()->isXmlHttpRequest()) {
-    $form['#attributes']['class'][] = 'card';
-    $form['actions']['#prefix'] = '</div></div>';
-  }
+  $add_card_to_forms = [
+    'group_content_open_group-group_membership_group-join_form',
+    'group_content_open_group-group_membership_add_form',
+    'group_content_open_group-group_membership_edit_form',
+    'group_content_closed_group-group_membership_group-join_form',
+    'group_content_closed_group-group_membership_add_form',
+    'group_content_closed_group-group_membership_edit_form',
+    'social_user_login_form',
+    'user_register_form',
+    'user_pass_reset',
+    'social_user_password_form',
+  ];
 
   if (\Drupal::routeMatch()->getRouteName() === 'private_message.private_message_create' && $form_id == 'private_message_add_form') {
     $form['#attributes']['class'][] = 'card';
@@ -410,20 +344,31 @@ function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id)
     }
   }
 
+  if (in_array($form_id, $add_card_to_forms)) {
+    $form['#attributes']['class'][] = 'card';
+    $form['actions']['#prefix'] = '</div></div>';
+  }
+
   // List all the confirmation forms here. We need to close the card
   // before showing the actions.
-  $confirm_forms = array_merge($group_confirm_forms, [
+  $confirm_forms = [
     'user_cancel_form',
     'post_delete_form',
     'post_photo_delete_form',
     'node_event_delete_form',
     'node_topic_delete_form',
+    'group_open_group_delete_form',
+    'group_closed_group_delete_form',
     'comment_comment_delete_form',
     'comment_post_comment_delete_form',
+    'group_content_open_group-group_membership_delete_form',
+    'group_content_open_group-group_membership_group-leave_form',
+    'group_content_closed_group-group_membership_delete_form',
+    'group_content_closed_group-group_membership_group-leave_form',
     '_auth_login_notice_form',
     'private_message_thread_delete_form',
     'profile_profile_delete_form',
-  ]);
+  ];
 
   if (in_array($form_id, $confirm_forms)) {
     $form['description']['#prefix'] = '<div class="clearfix">';
@@ -436,26 +381,6 @@ function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id)
     $form['enroll_for_this_event']['#attributes']['class'][] = 'btn-lg';
   }
 
-  // Ensure the sign-up or login link is displayed as a nested card section.
-  // Bootstrap already converted the fieldset itself to a card.
-  if (
-    $form_id === 'social_user_login_form' &&
-    isset($form['username_login']['sign-up-link'])
-  ) {
-    $form['username_login']['sign-up-link']['#prefix'] = '<div class="card__nested-section">';
-    $form['username_login']['sign-up-link']['#suffix'] = '</div>';
-  }
-  elseif ($form_id === 'user_register_form') {
-    $form['account']['login-link']['#prefix'] = '<div class="card__nested-section">';
-    $form['account']['login-link']['#suffix'] = '</div>';
-  }
-  elseif (
-    $form_id === 'social_user_password_form' &&
-    isset($form['forgot']['sign-up-link'])
-  ) {
-    $form['forgot']['sign-up-link']['#prefix'] = '<div class="card__nested-section">';
-    $form['forgot']['sign-up-link']['#suffix'] = '</div>';
-  }
 }
 
 /**
@@ -464,31 +389,13 @@ function socialbase_form_alter(&$form, FormStateInterface $form_state, $form_id)
  * Set button types for input elements.
  * Note that these variables are read in hook_preprocess_input.
  */
-function socialbase_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
+function socialbase_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['#attributes']['class'][] = 'form--default';
 
   // Delete is not an input element, so we must apply extra classes
   // to anchor directly.
-  $button_size = theme_get_setting('button_size');
   if (isset($form['actions']['delete'])) {
     $form['actions']['delete']['#attributes']['class'][] = 'btn btn-flat';
-
-    if ($button_size === 'btn-xs') {
-      $form['actions']['delete']['#attributes']['class'][] = 'btn-xs';
-    }
-    elseif ($button_size === 'btn-sm') {
-      $form['actions']['delete']['#attributes']['class'][] = 'btn-sm';
-    }
-    elseif ($button_size === 'btn-lg') {
-      $form['actions']['delete']['#attributes']['class'][] = 'btn-lg';
-    }
-  }
-
-  // Unlock is not an input element, so we must apply extra classes
-  // to anchor directly.
-  if (isset($form['actions']['unlock'])) {
-    $form['actions']['unlock']['#attributes']['class'][] = 'btn';
-    $form['actions']['unlock']['#attributes']['class'][] = 'btn-flat';
   }
 
   if (isset($form['actions']['preview'])) {
@@ -506,22 +413,5 @@ function socialbase_form_node_form_alter(&$form, FormStateInterface $form_state,
     $form['actions']['unpublish']['#button_level'] = 'raised';
     $form['actions']['unpublish']['#button_type'] = 'primary';
   }
-}
 
-/**
- * Implements hook_form_search_content_form_alter().
- */
-function socialbase_form_search_content_form_alter(&$form): void {
-  $form['actions']['submit']['#icon'] = [
-    '#type' => "inline_template",
-    '#template' => '<svg class="icon--search"><use xlink:href="#icon-search"></use></svg>',
-  ];
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function socialbase_form_node_layout_builder_form_alter(&$form, FormStateInterface $form_state, $form_id): void {
-  // Make the layout builder specific styling available.
-  $form['#attached']['library'][] = 'socialbase/form--toolbar';
 }

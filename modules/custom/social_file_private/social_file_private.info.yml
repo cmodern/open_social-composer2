@@ -1,9 +1,6 @@
-name: Social File Private (Deprecated)
-description: |
-  This module is deprecated and will automatically uninstall in Open Social 12
-  and be removed in Open Social 13. Starting in Open Social 11.8.0 the private
-  file system is the default for sensitive fields and is opt-out.
+name: 'Social File Private'
+description: 'Enforces the use of Private Files for content, posts and file uploads (highly recommended!). More info: https://github.com/goalgorilla/drupal_social/wiki/Private-files'
 type: module
-core_version_requirement: ^9 || ^10
+core: 8.x
 dependencies:
   - drupal:file

@@ -11,11 +11,6 @@
 .metainfo__avatar {
   margin-right: 12px;
 
-  [dir='rtl'] & {
-    margin-right: 0;
-    margin-left: 12px;
-  }
-
   .img-metainfo__avatar {
     width: 44px;
     height: auto;
@@ -56,58 +51,30 @@
 
 .meta-engage {
   display: flex;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
-  justify-content: space-between;
 
-  [dir='rtl'] & {
-    flex-direction: row-reverse;
-  }
-
-  @include for-tablet-landscape-down {
-    flex-direction: column;
-
-    [dir='rtl'] & {
-      flex-direction: column-reverse;
-    }
-  }
-
-  .badge + .badge,
-  .meta-engage--buttons > * + * {
-    margin-left: 5px;
-  }
-  .meta-engage--buttons {
+  .badge {
     margin-right: 5px;
   }
 
-  .btn {
-    margin-bottom: 3px;
-
-    @include for-tablet-landscape-down {
-      .btn:first-child {
-        margin-left: 0;
-      }
-    }
+  @include for-tablet-portrait-up {
+    flex-wrap: nowrap;
+    margin-bottom: 2rem;
   }
+}
 
-  > * {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 1rem;
-
-    [dir='rtl'] & {
-      flex-direction: row-reverse;
-    }
-  }
-
-  .meta-engage--buttons {
-    @include for-tablet-landscape-up {
-      order: 1;
-    }
-  }
+// put the button on the right side
+.meta-follow {
+  margin-right: 0;
+  margin-left: auto;
+  flex-basis: 100%;
+  margin-bottom: 1rem;
 
   @include for-tablet-portrait-up {
-    margin-bottom: 1.5rem;
+    flex-basis: auto;
+    order: 10;
+    margin-bottom: 0;
   }
 }
 
@@ -116,9 +83,6 @@
   border-top: 1px solid $gray-lighter;
 
   .article__special-field {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
     margin-bottom: 15px;
 
     &:last-child {
@@ -133,13 +97,7 @@
     display: inline-block;
     vertical-align: middle;
     fill: $gray-darker;
-    margin-top: 5px;
     margin-right: 12px;
-
-    [dir='rtl'] & {
-      margin-right: 0;
-      margin-left: 12px;
-    }
   }
 }
 
@@ -151,8 +109,4 @@
   top: 0;
   right: 0;
   padding: 0.5em 1em;
-
-  .stream-item & {
-    border-top-right-radius: 0;
-  }
 }

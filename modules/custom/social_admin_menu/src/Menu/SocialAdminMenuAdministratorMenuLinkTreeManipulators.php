@@ -2,13 +2,8 @@
 
 namespace Drupal\social_admin_menu\Menu;
 
-use Drupal\Core\Access\AccessManagerInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Menu\DefaultMenuLinkTreeManipulators;
 use Drupal\Core\Menu\MenuTreeParameters;
-use Drupal\Core\Security\TrustedCallbackInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\toolbar\Menu\ToolbarMenuLinkTree;
 
 /**
  * Provides a couple of menu link tree manipulators.
@@ -19,32 +14,7 @@ use Drupal\toolbar\Menu\ToolbarMenuLinkTree;
  * - generate a unique index for the elements in a tree and sorting by it
  * - flatten a tree (i.e. a 1-dimensional tree)
  */
-class SocialAdminMenuAdministratorMenuLinkTreeManipulators extends DefaultMenuLinkTreeManipulators implements TrustedCallbackInterface {
-
-  /**
-   * The toolbar menu link tree.
-   *
-   * @var \Drupal\toolbar\Menu\ToolbarMenuLinkTree
-   */
-  protected $toolbarMenuLinkTree;
-
-  /**
-   * Constructs a \Drupal\Core\Menu\DefaultMenuLinkTreeManipulators object.
-   *
-   * @param \Drupal\Core\Access\AccessManagerInterface $access_manager
-   *   The access manager.
-   * @param \Drupal\Core\Session\AccountInterface $account
-   *   The current user.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
-   * @param \Drupal\toolbar\Menu\ToolbarMenuLinkTree $toolnar_menu_link_tree
-   *   The toolbar menu link tree.
-   */
-  public function __construct(AccessManagerInterface $access_manager, AccountInterface $account, EntityTypeManagerInterface $entity_type_manager, ToolbarMenuLinkTree $toolnar_menu_link_tree) {
-    parent::__construct($access_manager, $account, $entity_type_manager);
-
-    $this->toolbarMenuLinkTree = $toolnar_menu_link_tree;
-  }
+class SocialAdminMenuAdministratorMenuLinkTreeManipulators extends DefaultMenuLinkTreeManipulators {
 
   /**
    * Performs access checks of a menu tree.
@@ -141,34 +111,20 @@ class SocialAdminMenuAdministratorMenuLinkTreeManipulators extends DefaultMenuLi
    * @see admin_toolbar_prerender_toolbar_administration_tray()
    */
   public function renderForm() {
+    $menu_tree = \Drupal::service('toolbar.menu_tree');
     $parameters = new MenuTreeParameters();
-    $parameters->setRoot('system.admin')
-      ->excludeRoot()
-      ->setMaxDepth(4)
-      ->onlyEnabledLinks();
+    $parameters->setRoot('system.admin')->excludeRoot()->setMaxDepth(4)->onlyEnabledLinks();
     $manipulators = [
-      ['callable' => 'menu.default_tree_manipulators:checkAccess'],
-      ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
-      ['callable' => 'toolbar_tools_menu_navigation_links'],
-      ['callable' => 'social_admin_menu.administrator_menu_tree_manipulators:checkAccess'],
+        ['callable' => 'menu.default_tree_manipulators:checkAccess'],
+        ['callable' => 'menu.default_tree_manipulators:generateIndexAndSort'],
+        ['callable' => 'toolbar_tools_menu_navigation_links'],
+        ['callable' => 'social_admin_menu.administrator_menu_tree_manipulators:checkAccess'],
     ];
-    $tree = $this->toolbarMenuLinkTree->load('system.admin', $parameters);
-    $tree = $this->toolbarMenuLinkTree->transform($tree, $manipulators);
-    $element['toolbar_administration'] = [
-      '#type' => 'container',
-      '#attributes' => [
-        'class' => ['toolbar-menu-administration'],
-      ],
-      'administration_menu' => $this->toolbarMenuLinkTree->build($tree),
-    ];
+    $tree = $menu_tree->load(NULL, $parameters);
+    $tree = $menu_tree->transform($tree, $manipulators);
+    $element['administration_menu'] = $menu_tree->build($tree);
+    $element['administration_menu']['#cache']['contexts'][] = 'user.roles';
     return $element;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function trustedCallbacks() {
-    return ['renderForm'];
   }
 
 }

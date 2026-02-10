@@ -53,12 +53,9 @@
     <h4 class="section-title"> {{ header }} </h4>
   {% endif %}
 
-  {% if empty %}
-    {{ empty }}
-  {% else %}
-    {{ rows }}
-  {% endif %}
 
+  {{ rows }}
+  {{ empty }}
   {{ pager }}
   {{ more }}
 

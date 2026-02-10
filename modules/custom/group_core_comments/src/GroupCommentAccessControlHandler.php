@@ -4,8 +4,7 @@ namespace Drupal\group_core_comments;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\comment\CommentAccessControlHandler;
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\group\Entity\GroupRelationship;
+use Drupal\group\Entity\GroupContent;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 
@@ -14,7 +13,7 @@ use Drupal\Core\Session\AccountInterface;
  *
  * @see \Drupal\comment\Entity\Comment
  *
- * @todo Implement setting to make it possible overridden on per-group basis.
+ * @todo: Implement setting to make it possible overridden on per-group basis.
  */
 class GroupCommentAccessControlHandler extends CommentAccessControlHandler {
 
@@ -27,10 +26,7 @@ class GroupCommentAccessControlHandler extends CommentAccessControlHandler {
     $parent_access = parent::checkAccess($entity, $operation, $account);
 
     $commented_entity = $entity->getCommentedEntity();
-    if (!($commented_entity instanceof ContentEntityInterface)) {
-      return AccessResult::neutral();
-    }
-    $group_contents = GroupRelationship::loadByEntity($commented_entity);
+    $group_contents = GroupContent::loadByEntity($commented_entity);
 
     // Check for 'delete all comments' permission in case content is not from
     // group.
@@ -46,7 +42,7 @@ class GroupCommentAccessControlHandler extends CommentAccessControlHandler {
       return ($operation != 'view') ? $access : $access->andIf($entity->getCommentedEntity()->access($operation, $account, TRUE));
     }
 
-    // @todo Only react on if $parent === allowed Is this good/safe enough?
+    // @todo: Only react on if $parent === allowed Is this good/safe enough?
     if ($parent_access->isAllowed()) {
       // Only react if it is actually posted inside a group.
       if (!empty($group_contents)) {
@@ -74,7 +70,7 @@ class GroupCommentAccessControlHandler extends CommentAccessControlHandler {
 
     // Only when you have permission to view the comments.
     foreach ($group_contents as $group_content) {
-      /** @var \Drupal\group\Entity\GroupRelationship $group_content */
+      /** @var \Drupal\group\Entity\GroupContent $group_content */
       $group = $group_content->getGroup();
       /** @var \Drupal\group\Entity\Group $group */
       if ($group->hasPermission($perm, $account)) {

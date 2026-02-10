@@ -11,12 +11,8 @@
   background-color: #f3f3f3;
 }
 
-.form-type-managed-file .image-widget .messages {
-  margin-bottom: 16px;
-}
-
 .form-type-managed-file .image-widget + .help-block {
-  margin-top: -0.5rem;
+  margin-top: -0.875rem;
 }
 
 .btn--post-remove-image {
@@ -39,10 +35,6 @@
           transform: rotate(90deg);
 }
 
-.btn--post-remove-image:focus {
-  outline: none;
-}
-
 .btn--post-remove-image .btn-icon {
   fill: white;
   height: 32px;
@@ -58,8 +50,6 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
   }
   .form-type-managed-file .image-widget .preview {
     -webkit-box-flex: 0;
@@ -69,9 +59,8 @@
   .form-type-managed-file .image-widget .file--image {
     margin-bottom: 0.5rem;
   }
-  .form-type-managed-file .image-widget .image-widget-data {
-    -webkit-box-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
+  .form--post-create .field--name-field-post-image.container-post-image {
+    -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
   }
 }

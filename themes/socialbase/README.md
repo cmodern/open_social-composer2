@@ -69,14 +69,6 @@ automatically:
 
 Set up your front-end development build tools:
 
-You are now also able to contribute by using the provided dockerfile.
-
-```
-docker compose run node yarn install && docker compose run node yarn run gulp
-```
-
-or
-
 1. [Install Yarn](https://yarnpkg.com/en/docs/install), see their website for
 documentation
 

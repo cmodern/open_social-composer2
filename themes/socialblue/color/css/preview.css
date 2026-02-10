@@ -33,7 +33,7 @@
 }
 
 .color-preview-hero .cover-img {
-  background-image: url('/profiles/contrib/social/themes/socialblue/os-builder/kss-assets/homepage-block.jpg');
+  background-image: url('/sites/default/files/styles/social_an_hero/public/homepage-block.jpg');
 }
 
 .color-preview-main {
@@ -47,19 +47,4 @@
   .color-preview .layout--with-complementary>.region--content {
     padding-left: 1em;
   }
-}
-
-/*Two rows of the header*/
-.header-top {
-  display: none;
-  padding: 2rem 1rem;
-  background: #fff;
-}
-
-.navbar-second-line .header-top {
-  display: block;
-}
-
-.navbar-second-line .navbar-default .navbar-brand {
-  display: none;
 }

@@ -30,13 +30,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "delete_form" = "/admin/structure/mentions/{mentions_type}/delete"
  *   },
  *
- *   config_export = {
+ *   config_expport = {
  *     "id",
- *     "name",
- *     "description",
- *     "mention_type",
- *     "input",
- *     "output",
+ *     "name"
  *   }
  *
  * )
@@ -48,46 +44,46 @@ class MentionsType extends ConfigEntityBase implements MentionsTypeInterface {
    *
    * @var string
    */
-  protected string $id;
+  protected $id;
 
   /**
    * Name and ID of Mentions Type.
    *
    * @var string
    */
-  protected string $name;
+  protected $name;
 
   /**
    * Description of Mentions Type.
    *
    * @var string
    */
-  protected string $description;
+  protected $description;
 
   /**
    * Where mention type appears.
    *
    * @var string
    */
-  protected string $mentionType;
+  protected $mentionType;
 
   /**
    * What is looked for when mentions are parsed.
    *
    * Keys of array: prefix, entity_type, inputvalue, suffix.
    *
-   * @var array
+   * @var string
    */
-  protected array $input = [];
+  protected $input = [];
 
   /**
    * What is looked for when mentions are parsed.
    *
    * Keys of array: outputvalue, renderlink.
    *
-   * @var array
+   * @var string
    */
-  protected array $output = [];
+  protected $output = [];
 
   /**
    * {@inheritdoc}
@@ -99,14 +95,14 @@ class MentionsType extends ConfigEntityBase implements MentionsTypeInterface {
   /**
    * {@inheritdoc}
    */
-  public function mentionType(): string {
+  public function mentionType() {
     return $this->mentionType;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getInputSettings(): array {
+  public function getInputSettings() {
     return $this->input;
   }
 

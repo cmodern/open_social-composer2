@@ -13,9 +13,6 @@ use Drupal\user\Entity\Role;
 function social_profile_privacy_install() {
   // Set some default permissions.
   _social_profile_privacy_set_permissions();
-
-  // Update our search indexes for our custom processor..
-  _social_profile_privacy_resave_search_indexes();
 }
 
 /**
@@ -62,11 +59,4 @@ function _social_profile_privacy_get_permissions($role) {
   }
 
   return $permissions[$role];
-}
-
-/**
- * Implements hook_update_last_removed().
- */
-function social_profile_privacy_update_last_removed() : int {
-  return 8002;
 }

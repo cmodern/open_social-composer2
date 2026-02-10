@@ -1,54 +1,44 @@
 {#
 /**
  * @file
- * The template file to display icons for the like and dislike links.
+ * The template file for the like and dislike links.
+ *
+ * Template used to display icons for the like and dislike links.
  *
  * Available variables:
- *   - entity_id: The id of the entity for which is the vote is done.
- *   - entity_type: The entity type id of the entity for which the vote is
+ *   - likes : The number of likes.
+ *   - dislikes : The number of dislikes.
+ *   - entity_id : The id of the entity for which is the vote is done.
+ *   - entity_type : The entity type id of the entity for which the vote is
  *     done.
- *   - icons: An associative array of icons keyed by type. Each icon contains
- *     the following properties:
- *     - label: The label for the vote type.
- *     - count: The number of votes.
- *     - attributes: HTML attributes for the vote link.
- *   - url: The path to a page with a votes list.
+ *   - like_attributes : Set of attributes for like link.
+ *   - dislike_attributes : Set of attributes for dislike link.
  */
 #}
 
 <div class="vote-widget vote-widget--like-and-dislike">
   <div class="vote__wrapper">
-    {% for type, icon in icons %}
+    <div class="vote-like type-{{ entity_type }}" id="like-container-{{ entity_type }}-{{ entity_id }}">
+      <a {{ like_attributes }} >
+        <svg class="icon-vote">
+          <use xlink:href="#icon-like"></use>
+        </svg>
+      </a>
+    </div>
 
-      {% set count = icon.count %}
+    <div class="vote-dislike type-{{ entity_type }}" id="dislike-container-{{ entity_type }}-{{ entity_id }}">
+      <a {{ dislike_attributes }}>Dislike</a>
+      <span class="count">{{ dislikes }}</span>
+    </div>
 
-      {% if type == 'dislike' %}
-        <div class="vote-dislike type-{{ entity_type }}" id="dislike-container-{{ entity_type }}-{{ entity_id }}">
-          <a {{ icon.attributes }} title="{% trans %} Number of likes {% endtrans %}">{{ icon.label }}</a>
-          <span class="count">{{ count }}</span>
-        </div>
+    <div class="vote__count">
+      {% if logged_in %}
+      <a class="use-ajax" data-dialog-options='{"title":"{{ modal_title }}","width":"auto"}' data-dialog-type="modal" href="/wholiked/{{ entity_type }}/{{ entity_id }}">
+        {% trans %}{{ likes }} like {% plural likes %} {{ likes }} likes{% endtrans %}
+      </a>
+      {% else %}
+        {% trans %}{{ likes }} like {% plural likes %} {{ likes }} likes{% endtrans %}
       {% endif %}
-
-      {% if type == 'like' %}
-        <div class="vote-like type-{{ entity_type }}" id="like-container-{{ entity_type }}-{{ entity_id }}">
-          <a {{ icon.attributes }} title="{% trans %} Number of likes {% endtrans %}">
-            <svg class="icon-vote" aria-hidden="true">
-              <title>{% trans %} Total amount of likes {% endtrans %}</title>
-              <use xlink:href="#icon-like"></use>
-            </svg>
-          </a>
-        </div>
-
-        <div class="vote__count">
-          {% if logged_in %}
-            <a class="use-ajax" data-dialog-options='{"title":"{{ modal_title }}","width":"auto"}' data-dialog-type="modal" href="{{ url }}" title="{% trans %} Number of likes {% endtrans %}">
-              {% trans %} {{ count }} like {% plural count %} {{ count }} likes {% endtrans %}
-            </a>
-          {% else %}
-            {% trans %} {{ count }} like {% plural count %} {{ count }} likes {% endtrans %}
-          {% endif %}
-        </div>
-      {% endif %}
-    {% endfor %}
+    </div>
   </div>
 </div>

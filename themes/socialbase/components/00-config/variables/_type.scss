@@ -11,7 +11,6 @@ $font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace !def
 $font-family-base:        $font-family-sans-serif !default;
 
 $font-weight-strong:      500;
-$font-weight-bold:      700;
 
 $font-size-base:          16px;
 $font-size-large:         floor(($font-size-base * 1.25));
@@ -36,7 +35,7 @@ $headings-color:          inherit !default;
 //** Horizontal offset for forms and lists.
 $component-offset-horizontal: 180px !default;
 //** Text muted color
-$text-muted:                  $gray !default;
+$text-muted:                  $gray-light !default;
 //** Abbreviations and acronyms border color
 $abbr-border-color:           $gray-light !default;
 //** Headings small color

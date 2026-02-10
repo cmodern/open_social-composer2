@@ -1,11 +1,6 @@
 name: Social Tagging
 type: module
 description: Content tagging module
-core_version_requirement: ^9 || ^10
-package: Social
+core: 8.x
+package: social
 configure: social_tagging.settings
-dependencies:
-  - drupal:taxonomy
-  - social:social_core
-  - social:social_search
-  - select2:select2

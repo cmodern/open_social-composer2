@@ -1,3 +1,0 @@
-__global_actions:
-  import_configs:
-    - views.view.group_membership_requests

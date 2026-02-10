@@ -7,7 +7,7 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 
 /**
- * Plugin manager for DemoContent plugin.
+ * Class DemoContentManager.
  *
  * @package Drupal\social_demo
  */
@@ -24,8 +24,6 @@ class DemoContentManager extends DefaultPluginManager {
       'Drupal\social_demo\DemoContentInterface',
       'Drupal\social_demo\Annotation\DemoContent'
     );
-    $this->alterInfo('demo_content_plugin_info');
-    $this->setCacheBackend($cache_backend, 'demo_content_plugins');
   }
 
   /**
@@ -56,7 +54,7 @@ class DemoContentManager extends DefaultPluginManager {
     $instances = [];
 
     foreach ($plugin_ids as $plugin_id) {
-      $configuration = $configurations[$plugin_id] ?? [];
+      $configuration = isset($configurations[$plugin_id]) ? $configurations[$plugin_id] : [];
       $instances[$plugin_id] = static::createInstance($plugin_id, $configuration);
     }
 

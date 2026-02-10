@@ -1,7 +1,7 @@
 name: Dropdown
 type: module
 description: Dropdown field.
-core_version_requirement: ^9 || ^10
+core: 8.x
 package: Field types
 dependencies:
   - drupal:options

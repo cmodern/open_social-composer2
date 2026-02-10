@@ -16,7 +16,7 @@ class ActivityForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\activity_creator\Entity\Activity $entity */
+    /* @var $entity \Drupal\activity_creator\Entity\Activity */
     $form = parent::buildForm($form, $form_state);
     return $form;
   }
@@ -30,13 +30,13 @@ class ActivityForm extends ContentEntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        $this->messenger()->addStatus($this->t('Created the %label Activity.', [
+        drupal_set_message($this->t('Created the %label Activity.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        $this->messenger()->addStatus($this->t('Saved the %label Activity.', [
+        drupal_set_message($this->t('Saved the %label Activity.', [
           '%label' => $entity->label(),
         ]));
     }

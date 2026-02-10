@@ -10,7 +10,7 @@
  *
  * Perform actions related to the installation of mentions.
  */
-function mentions_install(): void {
+function mentions_install() {
   // Set default configurations.
   _mentions_set_default_config();
 }
@@ -18,7 +18,7 @@ function mentions_install(): void {
 /**
  * Set default settings.
  */
-function _mentions_set_default_config(): void {
+function _mentions_set_default_config() {
   $config = \Drupal::configFactory()->getEditable('mentions.settings');
 
   $supported_entity_types = ['node', 'comment', 'taxonomy_term', 'user'];
@@ -32,7 +32,7 @@ function _mentions_set_default_config(): void {
 /**
  * Implements hook_uninstall().
  */
-function mentions_uninstall(): void {
+function mentions_uninstall() {
   \Drupal::service('config.factory')
     ->getEditable('mentions.settings')
     ->delete();

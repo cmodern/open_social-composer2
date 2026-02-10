@@ -5,167 +5,228 @@
  * The Social activity install.
  */
 
-use Drupal\language\ConfigurableLanguageManagerInterface;
 use Drupal\menu_link_content\Entity\MenuLinkContent;
+use Drupal\message\Entity\MessageTemplate;
+use Drupal\block\Entity\Block;
+use Drupal\views\Views;
 
 /**
  * Social activity install function.
  */
 function social_activity_install() {
-  // Add menu item.
-  $parents = \Drupal::entityTypeManager()->getStorage('menu_link_content')
-    ->loadByProperties(['menu_name' => 'main', 'title' => 'Explore', 'expanded' => TRUE]);
-  $parent = reset($parents);
-  if ($parent !== FALSE) {
+  // Add menu items.
+  _social_activity_create_menu_links();
+
+  // We can't add this as dependency, because this modules should be installed
+  // after config and other activity modules installation.
+  $modules = [
+    'activity_basics',
+    'activity_send_email',
+  ];
+  \Drupal::service('module_installer')->install($modules);
+
+  _social_activity_create_activity_homepage_block();
+}
+
+/**
+ * Function to create some menu items.
+ */
+function _social_activity_create_menu_links() {
+  $menu_links = MenuLinkContent::loadMultiple();
+  $parent = NULL;
+  /** @var \Drupal\menu_link_content\Entity\MenuLinkContent $menu_link */
+  foreach ($menu_links as $menu_link) {
+    if ($menu_link->label() === 'Explore' && $menu_link->isExpanded()) {
+      $parent = 'menu_link_content:' . $menu_link->uuid();
+    }
+  }
+
+  if (!is_null($parent)) {
     MenuLinkContent::create([
       'title' => t('Community'),
       'link' => ['uri' => 'internal:/explore'],
       'menu_name' => 'main',
       'expanded' => FALSE,
       'weight' => 10,
-      'parent' => 'menu_link_content:' . $parent->uuid(),
+      'parent' => $parent,
     ])->save();
   }
 }
 
 /**
- * Implements hook_update_dependencies().
+ * Place a block for the activity stream homepage.
  */
-function social_activity_update_dependencies() : array {
-  // Ensure configurations updates runs after the group migration has completed,
-  // but before the group types are removed.
-  $dependencies['social_activity'][13000] = [
-    'social_group' => 13000,
-  ];
-  $dependencies['social_group'][13001] = [
-    'social_activity' => 13000,
-  ];
-
-  return $dependencies;
+function social_activity_update_8001() {
+  _social_activity_create_activity_homepage_block();
 }
 
 /**
- * Implements hook_update_last_removed().
+ * Create a block for the activity stream homepage.
  */
-function social_activity_update_last_removed() : int {
-  return 11701;
-}
+function _social_activity_create_activity_homepage_block() {
+  // Revert view so it has the block display.
+  $config_update_service = \Drupal::service('features.config_update');
 
-/**
- * Remove deprecated group types.
- */
-function social_activity_update_13000(): ?string {
-  // Allow platforms to opt out of the group migration, for example if they want
-  // to build it themselves and take more scenario's into account than common
-  // Open Social installations will have.
-  if (\Drupal::state()->get('social_group_group_type_migration_opt_out', FALSE)) {
-    \Drupal::logger('social_group')->info('Platform has opted out of group migration.');
-    return NULL;
+  // Check if view exists.
+  $view = Views::getView('activity_stream');
+  if (is_object($view)) {
+    // If exists, we revert.
+    $config_update_service->revert('view', 'activity_stream');
+  }
+  else {
+    // Otherwise we import.
+    $config_update_service->import('view', 'activity_stream');
   }
 
-  /** @var \Drupal\update_helper\Updater $updateHelper */
-  $updateHelper = \Drupal::service('update_helper.updater');
+  $config = \Drupal::configFactory();
 
-  // Execute configuration update definitions with logging of success.
-  $updateHelper->executeUpdate('social_activity', __FUNCTION__);
+  // Do not add a new block if it already exists.
+  $block = Block::load('views_block__activity_stream_block_stream_homepage');
+  if (!isset($block)) {
+    $visibility = [
+      'request_path' => [
+        'id' => 'request_path',
+        'pages' => '/stream',
+        'negate' => FALSE,
+        'context_mapping' => [],
+      ],
+    ];
 
-  // Output logged messages to related channel of update execution.
-  return $updateHelper->logger()->output();
-}
+    $settings = [
+      'plugin' => 'views_block:activity_stream-block_stream_homepage',
+      'region' => 'content',
+      'id' => 'views_block__activity_stream_block_stream_homepage',
+      'theme' => $config->get('system.theme')->get('default'),
+      'label' => '',
+      'visibility' => $visibility,
+      'weight' => NULL,
+    ];
 
-/**
- * Change token-replacement from create message template.
- */
-function social_activity_update_13001(): void {
-  $message_templates = [
-    'message.template.create_topic_community',
-    'message.template.create_topic_gc',
-    'message.template.create_topic_group',
-    'message.template.create_event_group',
-    'message.template.create_event_gc',
-    'message.template.create_event_community',
-    'message.template.create_content_in_joined_group',
-  ];
+    $values = [];
+    foreach (['region', 'id', 'theme', 'plugin', 'weight', 'visibility'] as $key) {
+      $values[$key] = $settings[$key];
+      // Remove extra values that do not belong in the settings array.
+      unset($settings[$key]);
+    }
+    foreach ($values['visibility'] as $id => $visibility) {
+      $values['visibility'][$id]['id'] = $id;
+    }
 
-  $config_factory = \Drupal::configFactory();
-  foreach ($message_templates as $message_template) {
-    $config = $config_factory->getEditable($message_template);
+    $settings = [
+      'id' => 'views_block:activity_stream-block_stream_homepage',
+      'label' => '',
+      'provider' => 'views',
+      'label_display' => '0',
+      'views_label' => '',
+      'items_per_page' => 'none',
+    ];
+    $values['settings'] = $settings;
+    $block = Block::create($values);
 
-    $texts = array_map(function ($text) {
-      $text['value'] = str_replace('message:author', 'message:revision_author', $text['value']);
-
-      return $text;
-    }, $config->get('text'));
-
-    $config->set('text', $texts)
-      ->save();
-  }
-}
-
-/**
- * Adds no translation property to user profile link HTML in message templates.
- */
-function social_activity_update_13002(): void {
-  $message_templates = [
-    'message.template.create_topic_community',
-    'message.template.create_topic_gc',
-    'message.template.create_topic_group',
-    'message.template.create_event_group',
-    'message.template.create_event_gc',
-    'message.template.create_event_community',
-    'message.template.create_content_in_joined_group',
-  ];
-
-  $config_factory = \Drupal::configFactory();
-  foreach ($message_templates as $message_template) {
-    $config = $config_factory->getEditable($message_template);
-
-    $texts = array_map(function ($text) {
-      $text['value'] = str_replace('<a href="[message:revision_author:url:absolute]" translate="no">[message:revision_author:display-name]</a>', '<a href="[message:revision_author:url:absolute]" translate="no">[message:revision_author:display-name]</a>', $text['value']);
-
-      return $text;
-    }, $config->get('text'));
-
-    $config->set('text', $texts)
-      ->save();
+    $block->save();
   }
 }
 
 /**
- * Update token from message configuration translation .
+ * Update all existing Message Templates to work with newest Message version.
  */
-function social_activity_update_13003(): void {
-  $message_templates = [
-    'message.template.create_topic_community',
-    'message.template.create_topic_gc',
-    'message.template.create_topic_group',
-    'message.template.create_event_group',
-    'message.template.create_event_gc',
-    'message.template.create_event_community',
-    'message.template.create_content_in_joined_group',
-  ];
+function social_activity_update_8002() {
+  $templates = MessageTemplate::loadMultiple();
 
-  $language_manager = \Drupal::languageManager();
-  if (!$language_manager instanceof ConfigurableLanguageManagerInterface) {
-    return;
-  }
+  if (!empty($templates)) {
+    foreach ($templates as $name => $template) {
+      $new_text = [];
 
-  $enabled_languages = $language_manager->getLanguages();
+      // Check if text is in the wrong format.
+      if (!empty($text_array = $template->get('text'))) {
 
-  foreach ($enabled_languages as $language) {
-    foreach ($message_templates as $message_template) {
-      $config_translation = $language_manager->getLanguageConfigOverride($language->getId(), $message_template);
-
-      $messages = $config_translation->get('text');
-
-      if ($messages) {
-        foreach ($messages as $key => $message) {
-          $messages[$key]['value'] = str_replace('message:author', 'message:revision_author', $message['value']);
+        foreach ($text_array as $text) {
+          if (is_string($text)) {
+            $new_text[] = [
+              'format' => 'full_html',
+              'value' => $text,
+            ];
+          }
         }
 
-        $config_translation->set('text', $messages)
-          ->save();
+        // If all text was ok this would be empty,
+        // no need to update in that case.
+        if (!empty($new_text)) {
+          $templates[$name]->set('text', $new_text);
+          $templates[$name]->save();
+
+          $config_name = "message.template.{$template->getConfigTarget()}";
+          $config = \Drupal::service('config.factory')->getEditable($config_name);
+
+          if (!empty($config)) {
+            $config->set('text', $new_text);
+            $config->save();
+          }
+        }
       }
     }
   }
+}
+
+/**
+ * Update Dynamic Entity Reference.
+ *
+ * Related configs to work with latest version of DER.
+ */
+function social_activity_update_8003() {
+  $config = \Drupal::service('config.factory')->getEditable('core.entity_view_display.activity.activity.default');
+
+  // Only update if config exists and this is not a fresh install.
+  if (!empty($config) && !empty($settings = $config->get('content.field_activity_entity.settings'))) {
+    if (!empty($settings['view_mode'])) {
+      $config->clear('content.field_activity_entity.settings');
+
+      $config->set('content.field_activity_entity.settings', social_activity_get_der_settings());
+      $config->save();
+    }
+  }
+}
+
+/**
+ * Get entity view mode settings for Dynamic Entity Reference update.
+ *
+ * @return array
+ *   View mode settings, keyed by entity machine name.
+ */
+function social_activity_get_der_settings() {
+  $result = [];
+
+  $settings = [
+    'activity' => [
+      'comment',
+      'node',
+      'post',
+    ],
+    'stream' => [
+      'group',
+    ],
+    'default' => [
+      'crop',
+      'event_enrollment',
+      'flagging',
+      'message',
+      'search_api_task',
+      'activity',
+      'block_content',
+      'menu_link_content',
+      'file',
+      'group_content',
+      'profile',
+      'taxonomy_term',
+      'user',
+    ],
+  ];
+
+  foreach ($settings as $view_mode => $entities) {
+    foreach ($entities as $entity) {
+      $result[$entity]['view_mode'] = $view_mode;
+    }
+  }
+
+  return $result;
 }
