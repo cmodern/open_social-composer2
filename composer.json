@@ -13,7 +13,30 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
+        },
+        {
+          "type": "package",
+          "package": {
+            "name": "node-waves/waves",
+            "version": "0.7.6",
+            "dist": {
+              "url": "https://github.com/fians/Waves/archive/refs/tags/v0.7.6.zip",
+              "type": "zip"
+            }
+          }
+        },
+        {
+          "type": "package",
+          "package": {
+            "name": "jonthornton/jquery-timepicker",
+            "version": "1.11.14",
+            "dist": {
+              "url": "https://github.com/jonthornton/jquery-timepicker/archive/refs/tags/v1.11.14.zip",
+              "type": "zip"
+            }
+          }
         }
+        
     ],
     "scripts": {
         "post-install-cmd": [
@@ -69,9 +92,6 @@
     },
     "require": {
         "cweagans/composer-patches": "^1.5.0",
-        "composer/installers": "^1.0",
-        "oomphinc/composer-installers-extender": "^1.1",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
         "drupal/core": "~8.5.6",
         "drupal/address": "1.4",
         "drupal/addtoany": "1.9",
@@ -118,8 +138,8 @@
         "happyr/linkedin-api-client": "^1.0",
         "abraham/twitteroauth": "^0.7.2",
         "swiftmailer/swiftmailer" : "5.4.8",
-        "bower-asset/waves": "0.7.6",
-        "bower-asset/timepicker": "1.11.4",
+        "node-waves/waves": "^0.7.6",
+        "jonthornton/jquery-timepicker": "^1.11.14",
         "bower-asset/tablesaw": "2.0.3",
         "bower-asset/morris.js": "0.5.1",
         "bower-asset/raphael": "2.2.7",
